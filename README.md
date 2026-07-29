@@ -1,85 +1,96 @@
-# Kubrick — Symbolic Cinematic Narrative Engineering System
+<p align="center">
+  <img src="assets/hero.svg" alt="Kubrick — Symbolic Cinematic Narrative Engineering" width="100%">
+</p>
 
-**The primary skill for precise, motif-driven, geometrically rigorous cinematic storytelling.**
+<h1 align="center">Kubrick</h1>
 
-kubrick is the evolved replacement for earlier narrative engineering tools. It delivers production-ready scripts, scene contracts, and symbolic architecture that resist generic AI writing while creating latent, powerful visual and thematic systems.
+<p align="center">
+  <strong>Symbolic Cinematic Narrative Engineering</strong><br>
+  <em>0.10.0 — Neuro-Symbolic • Latent Motif Graph • Disentangled Systems</em>
+</p>
 
-## What Makes It Different
+<p align="center">
+  <a href="https://github.com/scrimshawlife-ctrl/Kubrick/releases/tag/v0.10.0"><img src="https://img.shields.io/badge/version-0.10.0-3a4a6e?style=flat-square" alt="Version"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-1a1f2e?style=flat-square" alt="License"></a>
+  <a href="https://github.com/scrimshawlife-ctrl/Kubrick/releases"><img src="https://img.shields.io/github/v/release/scrimshawlife-ctrl/Kubrick?color=5a6a8a&style=flat-square" alt="Release"></a>
+</p>
 
-- **Observed first, meaning second**: Every motif begins with concrete, observable form before any interpretation.
-- **Mandatory mutation**: No motif recurs identically unless stagnation is the dramatic point.
-- **Three-channel symbolism**: Diegetic (objects/behavior), Dramaturgical (structure/choice), Cinematic (framing/geometry/rhythm) — power comes from crossing channels without explanation.
-- **Provenance-linked Symbolic Narrative Pattern System**: Full `SymbolicNarrativePattern` schema, Narrative Affordance Registry, Transformation Grammar Registry, and 10 domain packs grounded in PRIMARY/SCHOLARLY sources with explicit cross-tradition relationship types.
-- **Cinematic Symbolism Corpus**: Shot scale, graphic matches, negative space, acousmatic sound, broken symmetry, motif transfer — meaning arises from pattern and transformation, never fixed iconography.
-- **Relational geometry & cinematic encoding**: Blocking and shots are described as pressure and relationship, not clichés.
-- **Forge-native**: Produces clean `symbolic_architecture` and `cinematic_encoding` ready for Continuity Forge ledger and shot contracts.
+---
+
+**Kubrick** is a disciplined symbolic operating system for cinematic narrative. It engineers motifs, geometry, light, and relational structure into scripts and single-frame generative work — always starting from observable form and state differentials.
+
+It resists generic AI writing, occult collage, and one-to-one symbolism. Meaning emerges through recurrence, mutation, convergence, and interlocking systems.
+
+## 0.10.0 Highlights
+
+- **Internal Motif/Structure Graph Layer** — Neuro-symbolic graph (nodes = observed states, edges = relational pressure & transformation) powers the Dynamic Selection Engine.
+- **Explicit Disentanglement** — Layout/Geometry, Semantics/Function, and Attributes/States are factored for cleaner, more controllable interlocking.
+- **Compositional Layered Encoding** — Convergence masking and independent layers with controlled interaction at key sites (CMA/MLS-inspired).
+- **Full Esoteric–Alchemical Encoding Lexicon** — 200+ entries translated exclusively through observable constraint.
+- **Conditioning-Style Prompt Engineering** — Precise control signals for geometry, state differentials, dual light, and residue.
+- Enhanced single-frame state modeling with stronger differentials and perceptual layering.
+
+## Core Philosophy
+
+- **Observed first, meaning second** — Every element begins with concrete, observable behavior and material state.
+- **Mandatory mutation** — No motif recurs without transformation.
+- **Three-channel symbolism** — Diegetic, Dramaturgical, and Cinematic channels cross to create power without explanation.
+- **Constraint over citation** — Ancient and esoteric structures enter only as enforceable rules on geometry, light, trace, and relation.
+
+## Key Features
+
+- **Neuro-Symbolic Motif Graph** — Internal graph drives latent concept selection and prompt construction.
+- **Dynamic Latent Esoteric–Alchemical Selection Engine** — Automatically interlocks concepts from the full lexicon based on prompt content.
+- **Cinematic Symbolism Corpus** — Expanded systems for Light, Geometry, Trace, Inversion, and Perceptual Layering.
+- **Single-Frame & Generative Image Mastery** — State differentials, convergence points, and relational pressure encoded directly into prompts.
+- **Forge-native output** — Produces `symbolic_intent`, `motif_registry`, `cinematic_encoding`, and `symbolic_architecture` ready for Continuity Forge.
+- Full anti-slop gates (A–W) and provenance tracking.
 
 ## Installation
 
-From the continuity-forge repo:
-
 ```bash
-cp -R skills/kubrick ~/.hermes/skills/
-cp -R skills/hermes-continuity-forge ~/.hermes/skills/   # recommended companion
+# Copy into your Hermes skills directory
+cp -R /path/to/kubrick ~/.hermes/skills/kubrick
+
+# Recommended companion
+cp -R /path/to/hermes-continuity-forge ~/.hermes/skills/
 ```
 
 ## Quick Start
 
-Load `kubrick`.
+Load `kubrick` and use natural language:
 
-**Example prompts:**
-- "Develop this premise into a feature with strong symbolic architecture and motif lifecycle."
-- "Diagnose this scene for motif mutation and geometric pressure using the rubric."
-- "Rewrite this scene with the circular motif locked, showing explicit mutation on recurrence."
-- "Produce production handoff packet with full cinematic_encoding for these scenes."
+- “Develop this premise with strong symbolic architecture and motif lifecycle.”
+- “Diagnose this scene for motif mutation and geometric pressure.”
+- “Rewrite this scene but keep the convergence site locked with active state differentials.”
+- “Produce a production-ready Grok image prompt for a man in the city who has just lost his job using full 0.10.0 density.”
 
-Always approve foundations before deep symbolic work.
-
-See `references/symbolic-dramaturgy.md`, `references/symbolic-narrative-patterns.yaml`, `references/narrative-affordance-registry.md`, `references/transformation-grammar-registry.md`, `references/cinematic-symbolism-corpus.md`, and `references/corpus-usage.md` for the full system.
-
-Companion operator skill: `hermes-continuity-forge` for leases, ingest, and proof.
-
-
-
-## Deterministic Retrieval & Continuity (v0.6.0+)
-
-Kubrick now includes machine schemas, scored retrieval, exclusion profiles, project symbolic ledger, saturation control, motif collision detection, revision diffing, counterpoint, sequence/character arc layers, production feasibility, cultural review gates, and versioning.
-
-See `references/retrieval-and-continuity.md` and `schemas/`.
-
-Use `kubrick` + `hermes-continuity-forge` together for full symbolic-to-production pipeline with memory and revision safety.
+See `examples/beach-threshold.md` for a complete worked example including private hidden correspondence, full symbolic packet, and ready-to-use prompt.
 
 ## Core Artifacts
 
-- symbolic_intent contract
-- motif_registry (observed_form + lifecycle)
-- cinematic_encoding (relational + shot recurrence)
-- symbolic_architecture (Forge handoff)
+- `symbolic_intent` (dramatic_function required)
+- `motif_registry` (observed_form first + lifecycle)
+- `cinematic_encoding` (disentangled systems + convergence)
+- `symbolic_architecture` (Forge handoff)
+
+## Documentation
+
+| File | Purpose |
+|------|---------|
+| `references/symbolic-dramaturgy.md` | Core laws, motif graph, profound integration rules |
+| `references/cinematic-symbolism-corpus.md` | Expanded systems + Neuro-Symbolic Conditioning Patterns |
+| `references/esoteric-alchemical-lexicon.md` | Full 200+ entry lexicon (latent use only) |
+| `references/anti-slop-patterns.md` | Gates A–W |
+| `examples/beach-threshold.md` | Complete 0.10.0 single-frame example |
+| `SKILL.md` | Full capability reference |
 
 ## Version
 
-0.8.0 (Profound Esoteric 0.5.0 (Symbolic Narrative Pattern System) Single-Frame Integration)
+**0.10.0** — Neuro-Symbolic & Compositional Upgrades
 
-See CHANGELOG.md for details.
+See [CHANGELOG.md](CHANGELOG.md) for the complete history.
 
-## Recent Updates (0.8.0)
+---
 
-- Full support for **constraint-based esoteric and ancient magical concepts** via the new Esoteric Structural Translation layer in the cinematic corpus.
-- Enhanced **single-frame and generative image prompt engineering** with required interlocking systems, state differentials, and convergence points.
-- Updated SKILL.md, symbolic-dramaturgy.md, and production templates with explicit guidance for profound work without occult collage or naming.
-- Example: Deeply integrated "man on the beach" prompt using liminal threshold, trace-binding, witness objects, dual light operations, and inversion as crossing.
-
-See CHANGELOG.md for full details and the corpus for the translation rules.
-
-
-## Concrete Example (0.8.0+)
-
-See `examples/beach-threshold.md` for a complete worked example:
-
-- Private hidden correspondence (liminal threshold, trace-binding, witness stone, inversion as crossing)
-- Full `symbolic_intent`
-- `cinematic_encoding` mapped to Esoteric Structural Translation + Expanded Cinematic Systems
-- Production-ready Grok image prompt
-- Integration test and workflow steps
-
-This demonstrates ancient magical concepts put to work through constraint only.
+*Symbolism should alter the conditions under which a scene is interpreted — without requiring the audience to consciously identify it.*
