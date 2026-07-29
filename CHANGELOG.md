@@ -1,4 +1,4 @@
-## [0.9.0] - 2026-07-28
+## [0.9.0] - 2026-07-29
 ### Added — OpenClaw Agent Skill Portability
 - Canonical OpenClaw frontmatter with trigger-focused description, runtime
   requirements, optional state configuration, and homepage metadata.
@@ -26,6 +26,9 @@
 - Removed undefined “same as base” workflow references and duplicate gate
   numbering.
 - Added JSON-only operation when PyYAML is unavailable.
+- Corrected OpenClaw installation examples to pin the permanent `openclaw`
+  branch, repaired the portability-test command, and routed Hermes users to
+  the canonical `main` branch.
 
 ## [0.7.1] - 2026-07-29
 ### Added — Autonomous Evolution from Use

@@ -18,8 +18,9 @@
 
 Kubrick is a portable OpenClaw Agent Skill for developing, diagnosing,
 revising, and preparing cinematic narratives with controlled motif systems,
-visual grammar, dramatic causality, and production-aware continuity. The same
-skill remains compatible with Hermes.
+visual grammar, dramatic causality, and production-aware continuity. This
+edition is maintained on the permanent `openclaw` branch. The repository's
+`main` branch remains the canonical Hermes edition.
 
 It converts a creative brief into explicit narrative contracts and traceable symbolic architecture—without reducing symbols to fixed meanings or allowing cinematic style to override character agency, causality, or feasibility.
 
@@ -270,17 +271,17 @@ evolution receipt.
 
 ## Installation
 
-Install directly from Git after the OpenClaw branch is merged:
+Install the permanent OpenClaw branch directly from Git:
 
 ```bash
-openclaw skills install git:scrimshawlife-ctrl/Kubrick --global
+openclaw skills install git:scrimshawlife-ctrl/Kubrick@openclaw --global
 python3 ~/.openclaw/skills/kubrick/scripts/doctor.py
 ```
 
 For a checked-out development copy:
 
 ```bash
-git clone https://github.com/scrimshawlife-ctrl/Kubrick.git
+git clone --branch openclaw --single-branch https://github.com/scrimshawlife-ctrl/Kubrick.git
 cd Kubrick
 python3 -m pip install -r requirements.txt
 ./install.sh
@@ -290,10 +291,10 @@ The manual installer uses `~/.openclaw/skills/kubrick`, OpenClaw's shared
 managed-skill directory. OpenClaw discovers the skill from its `SKILL.md`
 frontmatter and loads the body only when the request matches.
 
-Hermes remains supported:
+Hermes users should install the canonical `main` branch instead:
 
 ```bash
-./install.sh --hermes
+git clone --branch main --single-branch https://github.com/scrimshawlife-ctrl/Kubrick.git Kubrick-Hermes
 ```
 
 Mutable receipts, outcomes, rankings, and evolution overlays default to
@@ -415,7 +416,7 @@ Within the ecosystem:
 - **Kubrick** engineers narrative and symbolic form.
 - **Continuity Forge** governs canonical production state and revision integrity.
 - **OpenClaw** provides the primary agent execution surface.
-- **Hermes** remains a compatible Agent Skills runtime.
+- **Hermes** uses the canonical skill edition maintained on `main`.
 - **Zero State** provides the creative philosophy, design language, and ecosystem identity.
 
 > **Zero State — creativity and authenticity as primary resources during changing times.**
@@ -427,6 +428,10 @@ Within the ecosystem:
 **0.9.0 — OpenClaw Portability + Immutable Package State**
 
 See [CHANGELOG.md](CHANGELOG.md) for release details.
+
+## License
+
+Kubrick is available under the [MIT License](LICENSE).
 
 <div align="center">
 

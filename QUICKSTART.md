@@ -6,16 +6,16 @@ works without Continuity Forge and remains compatible with Hermes.
 
 ## 1. Install
 
-Install the merged repository as a shared managed skill:
+Install the permanent OpenClaw branch as a shared managed skill:
 
 ```bash
-openclaw skills install git:scrimshawlife-ctrl/Kubrick --global
+openclaw skills install git:scrimshawlife-ctrl/Kubrick@openclaw --global
 ```
 
 Or install a checkout manually:
 
 ```bash
-git clone https://github.com/scrimshawlife-ctrl/Kubrick.git
+git clone --branch openclaw --single-branch https://github.com/scrimshawlife-ctrl/Kubrick.git
 cd Kubrick
 python3 -m pip install -r requirements.txt
 ./install.sh
@@ -23,10 +23,11 @@ python3 -m pip install -r requirements.txt
 
 The manual installer targets `~/.openclaw/skills/kubrick`.
 
-Hermes compatibility:
+Hermes users should use the repository's `main` branch, which remains the
+canonical Hermes edition:
 
 ```bash
-./install.sh --hermes
+git clone --branch main --single-branch https://github.com/scrimshawlife-ctrl/Kubrick.git Kubrick-Hermes
 ```
 
 The manual installer moves an existing installation to a timestamped backup
@@ -111,7 +112,7 @@ installed corpus.
 
 ```bash
 python3 -m py_compile scripts/*.py evals/test_openclaw_portability.py
-python3 -m unittest -v evals/test_openclaw_portability.py
+python3 -m unittest discover -s evals -p 'test_*.py' -v
 python3 scripts/doctor.py
 bash -n install.sh
 ```
