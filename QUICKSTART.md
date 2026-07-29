@@ -33,19 +33,23 @@ Restart Hermes after copying or updating the skill.
 
 ## 2. Validate the Installed Skill
 
-The validator uses only the Python standard library and may be run from any working directory:
+The validators may be run from any working directory:
 
 ```bash
 python ~/.hermes/skills/kubrick/scripts/validate_hermes_skill.py
+python ~/.hermes/skills/kubrick/scripts/validate_pattern_corpus.py
+python ~/.hermes/skills/kubrick/scripts/audit_corpus_coverage.py
 ```
 
-It checks:
+They check:
 
 - Hermes frontmatter,
 - required references and schemas,
 - Python syntax,
 - relative-path portability,
-- repository-only assumptions,
+- pattern schema essentials and duplicate IDs,
+- manifest and registry coverage,
+- unresolved index references,
 - optional Continuity Forge status,
 - fail-closed `NOT_COMPUTABLE` policy.
 
@@ -99,20 +103,41 @@ Kubrick must continue locally when the companion skill is absent.
 ## 4. Deterministic Retrieval
 
 Use retrieval when concrete pattern candidates improve the task—not for every request.
+The canonical v0.11.5 entrypoint consumes the consolidated executable registry:
 
 ```bash
-python scripts/retrieve_symbolic_patterns.py --brief path/to/brief.yaml
+python scripts/retrieve_symbolic_patterns_registry.py --brief path/to/brief.yaml
+```
+
+Inspect route matches without running selection:
+
+```bash
+python scripts/retrieve_symbolic_patterns_registry.py \
+  --brief path/to/brief.yaml \
+  --show-routes
+```
+
+Emit only the coverage gap report:
+
+```bash
+python scripts/retrieve_symbolic_patterns_registry.py \
+  --brief path/to/brief.yaml \
+  --gap-report-only
 ```
 
 The retriever consumes project ledger state when supplied and emits:
 
+- matched consolidated routes,
 - ranked patterns,
 - score decomposition,
+- route and strong-default bonuses,
 - collision and exclusion results,
 - production-cost pressure,
 - `NOT_COMPUTABLE` reason vectors,
-- pattern-gap reporting,
-- a receipt cache key based on brief and ledger snapshot.
+- domain and route gap reporting,
+- a versioned receipt cache key based on algorithm, brief, and ledger snapshot.
+
+The earlier `retrieve_symbolic_patterns.py` remains the stable base scorer. The registry-aware entrypoint is the default operator surface.
 
 Runtime receipts should be written to a project output directory, not treated as corpus source files.
 
@@ -161,6 +186,8 @@ Use it only after retrieval receipts and project outcomes provide evidence. Stru
 
 - `SKILL.md` — Hermes operating contract
 - `references/hermes-runtime-contract.md` — dependency, path, artifact, and canon policy
+- `references/executable-corpus-registry.yaml` — consolidated default routes and guards
+- `references/corpus-index.yaml` — normalized dramatic-problem and domain routing
 - `docs/ROADMAP-v0.11.md` — production-hardening roadmap
 - `references/patterns/` — executable pattern sidecars
 - `schemas/motif-structure-graph.schema.yaml` — graph intermediate representation
