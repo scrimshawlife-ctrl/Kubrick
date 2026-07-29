@@ -1,6 +1,20 @@
-# Kubrick
+<div align="center">
 
-**Deterministic symbolic narrative engineering for Hermes.**
+# KUBRICK
+
+### Deterministic Symbolic Narrative Engineering
+
+**A Zero State creative-technology system for Hermes**
+
+*Structure before pages · Behavior before explanation · Mutation before repetition*
+
+[Quickstart](QUICKSTART.md) · [Skill Specification](SKILL.md) · [Changelog](CHANGELOG.md)
+
+</div>
+
+---
+
+## Overview
 
 Kubrick is a standalone Hermes skill for developing, diagnosing, revising, and preparing cinematic narratives with controlled motif systems, visual grammar, dramatic causality, and production-aware continuity.
 
@@ -8,18 +22,20 @@ It converts a creative brief into explicit narrative contracts and traceable sym
 
 > **Observed form first. Dramatic function second. Interpretation remains latent.**
 
-[Quickstart](QUICKSTART.md) · [Skill specification](SKILL.md) · [Changelog](CHANGELOG.md)
+Kubrick is developed under **Zero State**, an independent creative-technology practice focused on tools that preserve curiosity, authorship, structural coherence, and human creative agency during changing technological conditions.
+
+Kubrick is a Hermes skill—not a Python package—and works without Continuity Forge.
 
 ---
 
 ## Why Kubrick
 
-Most generative writing systems can produce pages. Kubrick is designed to produce a **coherent cinematic operating system** behind those pages.
+Most generative writing systems can produce pages. Kubrick is designed to produce the **coherent cinematic operating system behind those pages**.
 
 It provides:
 
 - **Narrative engineering** from premise through scene-level execution
-- **Motif lifecycle control**, requiring meaningful mutation across recurrence
+- **Motif lifecycle control** requiring meaningful mutation across recurrence
 - **Three-channel symbolism** across diegetic, dramaturgical, and cinematic form
 - **Deterministic pattern retrieval** with scoring, exclusions, provenance, and receipts
 - **Anti-slop diagnosis** for exposition, symbolic redundancy, cliché, obscurity, and continuity drift
@@ -27,15 +43,13 @@ It provides:
 - **Optional Continuity Forge handoff** for canonical ingestion, ledgers, revision safety, and shot contracts
 - **Evidence-based evolution** from recorded project outcomes rather than opaque autonomous rewriting
 
-Kubrick is a Hermes skill—not a Python package—and works without Continuity Forge.
-
 ---
 
 ## Core Principle
 
 A symbol should alter the conditions under which a scene is interpreted without requiring the audience to consciously identify or decode it.
 
-Kubrick therefore models symbolism as a transformation process:
+Kubrick models symbolism as a transformation process:
 
 ```text
 observable form
@@ -82,7 +96,7 @@ flowchart LR
 
 ### 1. Intake and constraint extraction
 
-Kubrick begins by separating what is known from what is merely suggested.
+Kubrick begins by separating known constraints from suggestions and interpretive possibilities.
 
 Typical inputs include:
 
@@ -105,7 +119,7 @@ python scripts/retrieve_symbolic_patterns.py \
   --brief evals/retrieval/inputs/sample_melodrama_lowbudget.yaml
 ```
 
-The retriever emits a `retrieval_receipt` containing ranked patterns, score decomposition, provenance, exclusions, and fallback state. When the available evidence is insufficient, retrieval returns `NOT_COMPUTABLE` rather than inventing a recommendation.
+The retriever emits a `retrieval_receipt` containing ranked patterns, score decomposition, provenance, exclusions, and fallback state. When evidence is insufficient, retrieval returns `NOT_COMPUTABLE` rather than inventing a recommendation.
 
 ### 3. Symbolic intent contract
 
@@ -113,11 +127,11 @@ Before motifs are selected, Kubrick defines why symbolic structure is needed.
 
 A valid `symbolic_intent` specifies:
 
-- the dramatic function
-- the pressure or contradiction being externalized
-- the interpretive field being altered
-- the channels in which the system may operate
-- boundaries that prevent one-to-one symbolism or unsupported cultural equivalence
+- dramatic function
+- pressure or contradiction being externalized
+- interpretive field being altered
+- channels in which the system may operate
+- boundaries preventing one-to-one symbolism or unsupported cultural equivalence
 
 Purely decorative or esoteric symbolism is rejected.
 
@@ -157,12 +171,10 @@ Symbolism remains subordinate to agency, causality, clarity, tone, and productio
 
 ### 6. Scene contracts
 
-Before or alongside screenplay pages, Kubrick can create scene contracts that define:
+Before or alongside screenplay pages, Kubrick can create scene contracts defining:
 
-- scene objective
-- source of pressure
-- value change
-- entrance and exit state
+- scene objective and source of pressure
+- value change and entrance/exit state
 - character knowledge
 - continuity dependencies
 - active motifs and required mutations
@@ -185,11 +197,9 @@ Kubrick translates narrative and symbolic decisions into filmable form through `
 - sonic motifs
 - lighting and production-design states
 
-The emphasis is relational. A centered frame, circular move, threshold, or repeated sound is only useful when its behavior changes with dramatic conditions.
+A centered frame, circular move, threshold, or repeated sound matters only when its behavior changes with dramatic conditions.
 
 ### 8. Diagnosis and revision
-
-Kubrick supports eight operating modes:
 
 | Mode | Purpose |
 |---|---|
@@ -202,19 +212,7 @@ Kubrick supports eight operating modes:
 | `PRODUCTION` | Produce scene contracts, cinematic encoding, and handoff packets |
 | `ADAPT` | Change format while preserving dramatic core and symbolic grammar |
 
-Diagnosis applies the standard anti-slop gates plus symbolic gates for:
-
-- symbol explanation
-- occult collage
-- symbolic redundancy
-- one-to-one symbolism
-- repetition without mutation
-- archetype costume
-- tradition flattening
-- numerology inflation
-- symbolic supremacy
-- mystery by obscurity
-- premature interpretive closure
+Diagnosis checks for symbol explanation, occult collage, symbolic redundancy, one-to-one symbolism, repetition without mutation, archetype costume, tradition flattening, numerology inflation, symbolic supremacy, mystery by obscurity, and premature interpretive closure.
 
 ### 9. Optional Continuity Forge handoff
 
@@ -236,13 +234,9 @@ Continuity Forge
   drift audit
 ```
 
-Typical handoff operations:
-
 ```bash
 continuity-forge compile <script-or-outline> --out <output-directory>
 ```
-
-For governed writes, acquire a lease and ingest with a complete mutation contract, including actor identity, authorization scope, idempotency key, rationale, and expected state hash.
 
 After ingestion, the Forge ledger and intermediate representation become the source of truth. Local Kubrick artifacts remain proposals unless committed through Forge.
 
@@ -252,15 +246,8 @@ See [`references/continuity-forge-integration.md`](references/continuity-forge-i
 
 Kubrick improves retrieval rankings from explicit project evidence.
 
-Retrievals are logged under:
-
 ```text
 references/usage/receipts/
-```
-
-After a project, sequence, revision, or Forge handoff, record outcomes under:
-
-```text
 references/usage/outcomes/
 ```
 
@@ -270,21 +257,11 @@ Then run:
 python scripts/evolve_from_use.py
 ```
 
-The evolution engine may update:
-
-- pattern confidence
-- usage history
-- corpus ordering
-- overuse or weakness flags
-- recommendations for human-reviewed structural changes
-
-It does **not** autonomously invent new governing patterns or rewrite the corpus without review. Every run emits an evolution receipt.
+The evolution engine may update pattern confidence, usage history, corpus ordering, and overuse or weakness flags. It does **not** autonomously invent new governing patterns or rewrite the corpus without review. Every run emits an evolution receipt.
 
 ---
 
 ## Installation
-
-### Recommended
 
 ```bash
 git clone https://github.com/scrimshawlife-ctrl/Kubrick.git
@@ -292,43 +269,26 @@ cd Kubrick
 ./install.sh
 ```
 
-This installs Kubrick to:
+Default installation path:
 
 ```text
 ~/.hermes/skills/kubrick
 ```
 
-For Hermes installations organized by category:
+Categorized Hermes installation:
 
 ```bash
 ./install.sh creative
 ```
 
-This installs to:
-
-```text
-~/.hermes/skills/creative/kubrick
-```
-
-Restart Hermes after installation.
-
-### Development symlink
-
-Use a symbolic link when actively modifying the skill:
+Development symlink:
 
 ```bash
 mkdir -p ~/.hermes/skills
 ln -s "$(pwd)" ~/.hermes/skills/kubrick
 ```
 
-### Manual installation
-
-```bash
-mkdir -p ~/.hermes/skills
-cp -R . ~/.hermes/skills/kubrick
-```
-
-No Continuity Forge installation is required for standalone use.
+Restart Hermes after installation. No Continuity Forge installation is required for standalone use.
 
 ---
 
@@ -336,14 +296,10 @@ No Continuity Forge installation is required for standalone use.
 
 ### In Hermes
 
-Use a natural-language request that activates the skill:
-
 ```text
 Develop this premise into a feature outline with a controlled motif lifecycle,
 relational cinematic geometry, and scene-level symbolic pressure.
 ```
-
-Other useful requests:
 
 ```text
 Diagnose this scene for motif repetition, exposition, and geometric drift.
@@ -361,18 +317,12 @@ shot recurrence rules, and symbolic architecture.
 
 ### From the command line
 
-Run the included retrieval example:
-
 ```bash
 python scripts/retrieve_symbolic_patterns.py \
   --brief evals/retrieval/inputs/sample_melodrama_lowbudget.yaml
 ```
 
-A minimal brief and expected output pair is also available in:
-
-```text
-examples/minimal-retrieval-example.zip
-```
+A minimal input and expected-output pair is available in `examples/minimal-retrieval-example.zip`.
 
 ---
 
@@ -444,19 +394,18 @@ Kubrick:
 
 ---
 
-## Companion System
+## Zero State Ecosystem
 
-Use [`hermes-continuity-forge`](https://github.com/scrimshawlife-ctrl/continuity-forge) when the project requires:
+Kubrick is a **Zero State** system: a modular creative instrument built to help authors use advanced generative technology without surrendering intention, authorship, curiosity, or structural control.
 
-- canonical state management
-- deterministic compilation
-- write leases and mutation contracts
-- scene and shot identifiers
-- continuity ledgers
-- drift detection
-- revision-safe production handoffs
+Within the ecosystem:
 
-Kubrick remains fully usable without it.
+- **Kubrick** engineers narrative and symbolic form.
+- **Continuity Forge** governs canonical production state and revision integrity.
+- **Hermes** provides the agent execution surface.
+- **Zero State** provides the creative philosophy, design language, and ecosystem identity.
+
+> **Zero State — creativity and authenticity as primary resources during changing times.**
 
 ---
 
@@ -465,3 +414,11 @@ Kubrick remains fully usable without it.
 **0.8.0 — Executable Retrieval + Self-Evolution**
 
 See [CHANGELOG.md](CHANGELOG.md) for release details.
+
+<div align="center">
+
+**ZERO STATE**
+
+*Tools for making what does not exist yet.*
+
+</div>
