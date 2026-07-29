@@ -58,12 +58,28 @@ It resists generic AI writing, occult collage, and one-to-one symbolism. Meaning
 
 ## Key Features
 
-- **Neuro-Symbolic Motif Graph** — Internal graph drives latent concept selection and prompt construction.
-- **Dynamic Latent Esoteric–Alchemical Selection Engine** — Automatically interlocks concepts from the full lexicon based on prompt content.
-- **Cinematic Symbolism Corpus** — Expanded systems for Light, Geometry, Trace, Inversion, and Perceptual Layering.
-- **Single-Frame & Generative Image Mastery** — State differentials, convergence points, and relational pressure encoded directly into prompts.
-- **Forge-native output** — Produces `symbolic_intent`, `motif_registry`, `cinematic_encoding`, and `symbolic_architecture` ready for Continuity Forge.
-- Full anti-slop gates (A–W) and provenance tracking.
+### Neuro-Symbolic Engine (0.10.0+)
+- **Internal Motif/Structure Graph Layer** — Maintains a lightweight neuro-symbolic graph of motifs, observed states, and relational pressures to drive selection and encoding.
+- **Dynamic Latent Esoteric–Alchemical Selection Engine** — Automatically analyzes prompt content and selects/interlocks concepts from the full lexicon without surface disclosure.
+- **Full Esoteric–Alchemical Encoding Lexicon** — 200+ entries (Hermetic principles, alchemical operations, Great Work stages, vessels, polarities, etc.) available for latent structural use.
+- **Explicit Disentanglement** — Separates Layout/Geometry, Semantics/Function, and Attributes/States for precise control and cleaner composition.
+- **Compositional Layered Encoding** — Convergence masking, independent layers, and controlled interaction at key sites (CMA/MLS-inspired).
+
+### Cinematic & Generative Mastery
+- **Cinematic Symbolism Corpus** — Expanded interlocking systems for Light, Geometry, Trace, Inversion, and Perceptual Layering.
+- **Single-Frame & AI Image Prompt Engineering** — State differentials, active erasure, residue/charge, dual light operations, and convergence points encoded directly into prompts.
+- **Relational Geometry & Blocking** — All spatial and formal decisions expressed as pressure, tension, and transformation rather than clichés.
+- **Multi-Channel Symbolism** — Meaning generated through crossing of diegetic, dramaturgical, and cinematic channels.
+
+### Symbolic Architecture & Output
+- **Forge-native Artifacts** — Produces clean `symbolic_intent`, `motif_registry`, `cinematic_encoding`, and `symbolic_architecture` ready for Continuity Forge and production pipelines.
+- **Production Handoff Templates** — Structured visual_identity sections for consistent character, wardrobe, lighting, and composition across generations.
+- **Provenance-Linked Retrieval** — Machine-readable schemas, scored retrieval, motif collision detection, and revision safety.
+
+### Discipline & Quality
+- **Anti-Slop Gates (A–W)** — Rigorous enforcement against generic language, emotional labels, occult collage, redundancy, and one-to-one symbolism.
+- **Observed-First + Mandatory Mutation** — Every motif must be grounded in concrete form and must transform on recurrence.
+- **Latent Operation** — Symbolic and esoteric structures operate invisibly; nothing is named or illustrated on the surface unless explicitly requested.
 
 ## Installation
 
