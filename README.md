@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/hero.svg" alt="Kubrick — Symbolic Cinematic Narrative Engineering" width="100%">
+  <img src="assets/hero.jpg" alt="Kubrick — Symbolic Cinematic Narrative Engineering" width="100%">
 </p>
 
 <h1 align="center">Kubrick</h1>
@@ -73,7 +73,7 @@ It resists generic AI writing, occult collage, and one-to-one symbolism. Meaning
 
 ### Symbolic Architecture & Output
 - **Forge-native Artifacts** — Produces clean `symbolic_intent`, `motif_registry`, `cinematic_encoding`, and `symbolic_architecture` ready for Continuity Forge and production pipelines.
-- **Production Handoff Templates** — Structured visual_identity sections for consistent character, wardrobe, lighting, and composition across generations.
+- **Production Handoff Templates** — Structured visual_identity sections for consistent character,wardrobe, lighting, and composition across generations.
 - **Provenance-Linked Retrieval** — Machine-readable schemas, scored retrieval, motif collision detection, and revision safety.
 
 ### Discipline & Quality
