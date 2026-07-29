@@ -1,3 +1,54 @@
+## [0.10.0] - 2026-07-29
+
+### Added — Neuro-Symbolic & Compositional Upgrades
+
+- **Internal Motif/Structure Graph Layer**: Lightweight neuro-symbolic graph (nodes = motifs + observed states; edges = relational pressures and state transformations) used internally by the Dynamic Selection Engine. Translated exclusively into observable constraints.
+- **Explicit Disentanglement of Cinematic Systems**: Layout/Geometry, Semantics/Function, and Attributes/States factored (SL-VAE style) to reduce leakage and enable cleaner interlocking.
+- **Compositional Layered Encoding**: Analogs to Compositional Masked Attention (CMA) and Multi-Layered Sampler (MLS) — convergence masking, independent layers with controlled interaction, prioritized constraints.
+- **Conditioning-Style Prompt Engineering**: Prompt sections act as precise control signals (geometry, state differentials, dual light, object participation).
+- **Neuro-Symbolic Predicate Validation**: Internal combinatorial coherence checks treating lexicon entries as observable predicates.
+- **Enhanced Single-Frame State Modeling**: Stronger before/after differentials, persistent residue as charge, layered time within one frame.
+
+- Added section 17 "Neuro-Symbolic Motif Graph Layer" to references/symbolic-dramaturgy.md.
+- Added "Neuro-Symbolic Conditioning Patterns (0.10.0+)" major section to references/cinematic-symbolism-corpus.md.
+- SKILL.md bumped to 0.10.0 with full upgrade description.
+- Goal: Higher relational precision, convergence strength, and controllable symbolic density for narrative + single-frame work while preserving full latency and anti-slop rules.
+
+## [0.9.0] - 2026-07-29
+
+### Added — Dynamic Latent Esoteric–Alchemical Encoding
+
+- Full **Kubrick Esoteric–Alchemical Encoding Lexicon** (200+ entries across Hermetic Principles, Classical Alchemical Operations, Magnum Opus stages, Substances, Vessels, Polarity, Geometry, Elements, Planetary Forces, Initiatory Structures, Mythic Archetypes, Magical Operations, Chaos Magic, Theurgy, Kabbalah, Gnosticism, Neoplatonism, Time/Recursion, Shadow work, Dream/Astral, Divination, Ritual, Color, Sound, and Kubrick-native hidden structures).
+- **Dynamic Esoteric–Alchemical Selection Engine**:
+  - Analyzes prompt content or resulting image description.
+  - Dynamically selects and interlocks multiple lexicon concepts.
+  - Applies exclusively as observable structural constraints (state differentials, convergence points, relational pressure, recurrence-with-mutation, etc.).
+  - **Latent operation**: No automatic disclosure or naming. Outputs are significantly more symbolically dense by default.
+  - Explicit user query only ("what esoteric concepts were used?") triggers private report.
+- New reference file: `references/esoteric-alchemical-lexicon.md`.
+- Updated cinematic-symbolism-corpus.md with full Dynamic Selection rules, triggers, density mandates, and feedback loop for image analysis.
+- SKILL.md updated with 0.9.0 capabilities and latent encoding behavior.
+- Goal: Produce much higher symbolic density through content-driven, interlocking esoteric grammar without wasting tokens on explanation.
+
+See `examples/beach-threshold.md` for baseline; 0.9.0+ runs will be denser.
+
+## [0.8.0] - 2026-07-29
+
+### Added — Profound Esoteric & Single-Frame Integration
+
+- **Esoteric Structural Translation** in `references/cinematic-symbolism-corpus.md`
+  - Formal translation layer for ancient magical and esoteric concepts (liminal/threshold, trace as binding/erasure, witness objects, erasure as active operation, inversion as crossing, dual preservation/dissolution, residue/charge).
+  - All concepts enter exclusively via enforceable structural rules and constraint — never naming, iconography, or occult collage.
+  - New "Core Translation Principles", "Rules for Profound Esoteric Work", and "Single-Frame Esoteric Mappings".
+
+- Expanded **Cinematic Systems** in corpus: Light Systems, Geometry & Negative Space, Material & Trace, Inversion & Reflection, Perceptual Layering & Residue (with profound interlocking requirements).
+
+- **Single-Frame & Generative Image Translation** section with concrete mappings, test criteria, and enforcement via Corpus Integration Rules.
+
+- Integration points added across symbolic-dramaturgy.md, SKILL.md, and templates/production-handoff.md for esoteric and profound single-frame work.
+
+- Stronger requirement for image prompts: interlocking from Light + Geometry + Material/Trace + Inversion at convergence point with state differentials.
+
 ## [0.7.1] - 2026-07-29
 ### Added — Autonomous Evolution from Use
 - `scripts/evolve_from_use.py` — self-improvement engine

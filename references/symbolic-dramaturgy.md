@@ -18,6 +18,21 @@ A motif becomes powerful when it crosses channels without being explicitly ident
 
 Symbolism must first function as drama, behavior, space, rhythm, image or sound. Esoteric source systems may govern the hidden architecture, but the screenplay should expose their effects rather than their labels. Every motif must accumulate association, mutate under pressure and converge with consequential character action. Never substitute obscurity, iconography or occult terminology for causality, emotion or scene change.
 
+## Profound Integration (Required Standard)
+Use the expanded sections in cinematic-symbolism-corpus.md (Expanded Cinematic Systems, Single-Frame & Generative Image Translation, Corpus Integration Rules) when implementing profound work.
+
+Profound symbolism does not decorate or illustrate. It operates as a **latent conditioning field** that alters how every other element in the frame or scene is perceived and related.
+
+Requirements for profound integration:
+- **Interlocking systems**: At least two (ideally three) channels must be active and mutually transformative. A cinematic choice (light, geometry, negative space) must change the reading of a diegetic element (object, trace, material state), and vice versa.
+- **Motif as transformer**: The primary motif must not only recur or mutate — it must actively reshape the conditions under which other elements (including the figure) are read. Removing it must collapse or fundamentally shift the perceptual structure.
+- **State and relational depth**: In single frames, use visible state differentials (multiple "ages," reflections, shadows, material memory, erosion) so the image contains layered time and transformation without explicit narrative.
+- **Perceptual layering**: The work must reward sustained looking. First reading is coherent and causal. Sustained reading reveals additional relational pressures, inversions, or residues that were always present but not foregrounded.
+- **Constraint as depth**: Any hidden system (alchemical, geometric, ritual, mnemonic) enters only through enforceable structural rules — phase, inversion, residue, boundary behavior — never through citation or aesthetic borrowing.
+- **Field conditioning**: Geometry, light, and negative space are not backdrops. They are active agents that can invert, contain, dissolve, or preserve other elements.
+
+Surface integration (motif present + nice lighting + geometric composition) fails this standard. Profound integration produces an image or scene whose full meaning cannot be extracted without the interlocking structure.
+
 ## 1. Symbolic Intent Contract (required before embedding)
 
 Before embedding symbolism, define what the symbolic layer is doing dramatically.
@@ -294,6 +309,18 @@ correspondence_map:
 
 Express bindings through behavior, setting, movement and material transformation — not dialogue about elements.
 
+## 16. Profound Single-Frame Integration (for images and stills)
+
+When working with static images or generative prompts, recurrence is replaced by **layered differentials within one frame**:
+
+- Multiple states of the same motif visible simultaneously (clear vs. eroding trace, reflected vs. absorbed light, preserved vs. dissolving form).
+- Light and shadow as active transformers (rim light that "holds" a figure while fill light dissolves its lower edge into environment).
+- Negative space and geometry as conditioning agents (a strong horizontal that the vertical figure both breaks and is measured against; a shadow that creates a second, inverted or incomplete figure).
+- Object participation: secondary elements must carry memory or perform an action that modifies the primary motif (stone whose previous placement left a mark now being lowered into the active erasure zone).
+- Perceptual residue: details that only become legible on sustained viewing (a reflection that inverts sky/ground, a shadow edge that aligns with a tide line only at one angle).
+
+The prompt must be written so that the resulting image contains a coherent surface reading and a deeper structural reading that interlocks with it. The symbolism should feel discovered, not applied.
+
 ## New Anti-Slop Quality Gates (M–W)
 
 Apply in addition to A–L. Flag specific lines/passages. Provide concrete replacements.
@@ -390,3 +417,46 @@ governance:
 - Are tradition boundaries respected and provenance recorded?
 
 This module turns the skill from a tracking system into a **latent symbolic operating system** beneath the script. Meaning emerges through recurrence, relation, rhythm, transformation, and retrospective recognition.
+
+## Esoteric Embedding
+Esoteric and ancient magical concepts are translated exclusively through the Esoteric Structural Translation section in cinematic-symbolism-corpus.md. They enter as constraint (threshold behavior, trace as binding/erasure, witness objects, inversion as crossing, dual operations of preservation and dissolution, residue). Never through naming, iconography, or aesthetic borrowing. See Profound Integration requirements and the new Esoteric section.
+
+
+## 17. Neuro-Symbolic Motif Graph Layer (0.10.0+)
+
+The system maintains an **internal neuro-symbolic motif graph** (inspired by scene graph conditioning and neuro-symbolic hybrids) to drive the Dynamic Latent Selection Engine:
+
+```yaml
+internal_motif_graph:
+  nodes:
+    - id: primary_figure
+      type: motif
+      state: current (e.g. "weight on back leg, front foot at active boundary, residue on cuff")
+      attributes: [posture, gaze, object_participation]
+    - id: convergence_site
+      type: relational
+      state: "foot + briefcase shadow + painted line + water film + older trace overlap"
+    - id: trace_record
+      type: motif
+      states: [older_preserved, actively_eroded, newly_overwritten]
+  edges:
+    - source: primary_figure
+      target: convergence_site
+      relation: "participates and is transformed by"
+    - source: trace_record
+      target: convergence_site
+      relation: "provides state differential evidence of mutation"
+```
+
+- Nodes carry **observed state** (never abstract meaning).
+- Edges represent **relational pressure** and **state transformation**.
+- The graph is used internally only for:
+  - Dynamic lexicon selection (prefer combinations that create dense, interlocking edges at 1–2 convergence sites).
+  - Enforcing disentanglement (layout edges vs state/attribute edges).
+  - Compositional prioritization (masking/weighting strongest constraints on high-degree convergence nodes).
+- Translation to output: The graph is rendered exclusively as observable prompt language (geometry, blocking, light behavior, material differentials). No graph structure or node names appear in final prompts or artifacts.
+
+This layer provides the structural backbone for the neuro-symbolic upgrades without violating latency or anti-slop rules.
+
+
+- 0.10.0 enhancement note: Use internal motif graph + disentangled layers + compositional masking when building single-frame prompts.

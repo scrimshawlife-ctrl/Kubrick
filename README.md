@@ -1,434 +1,85 @@
-<div align="center">
+# Kubrick — Symbolic Cinematic Narrative Engineering System
 
-# KUBRICK
+**The primary skill for precise, motif-driven, geometrically rigorous cinematic storytelling.**
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](./LICENSE)
-[![Hermes Skill](https://img.shields.io/badge/Hermes-skill-f59e0b?style=for-the-badge)](./SKILL.md)
-[![Version](https://img.shields.io/badge/version-0.8.0-7c3aed?style=for-the-badge)](./SKILL.md)
+kubrick is the evolved replacement for earlier narrative engineering tools. It delivers production-ready scripts, scene contracts, and symbolic architecture that resist generic AI writing while creating latent, powerful visual and thematic systems.
 
-### Deterministic Symbolic Narrative Engineering
+## What Makes It Different
 
-**A Zero State creative-technology system for Hermes**
-
-*Structure before pages · Behavior before explanation · Mutation before repetition*
-
-[Quickstart](QUICKSTART.md) · [Skill Specification](SKILL.md) · [Changelog](CHANGELOG.md)
-
-</div>
-
----
-
-## Overview
-
-Kubrick is a standalone Hermes skill for developing, diagnosing, revising, and preparing cinematic narratives with controlled motif systems, visual grammar, dramatic causality, and production-aware continuity.
-
-It converts a creative brief into explicit narrative contracts and traceable symbolic architecture—without reducing symbols to fixed meanings or allowing cinematic style to override character agency, causality, or feasibility.
-
-> **Observed form first. Dramatic function second. Interpretation remains latent.**
-
-Kubrick is developed under **Zero State**, an independent creative-technology practice focused on tools that preserve curiosity, authorship, structural coherence, and human creative agency during changing technological conditions.
-
-Kubrick is a Hermes skill—not a Python package—and works without Continuity Forge.
-
----
-
-## Why Kubrick
-
-Most generative writing systems can produce pages. Kubrick is designed to produce the **coherent cinematic operating system behind those pages**.
-
-It provides:
-
-- **Narrative engineering** from premise through scene-level execution
-- **Motif lifecycle control** requiring meaningful mutation across recurrence
-- **Three-channel symbolism** across diegetic, dramaturgical, and cinematic form
-- **Deterministic pattern retrieval** with scoring, exclusions, provenance, and receipts
-- **Anti-slop diagnosis** for exposition, symbolic redundancy, cliché, obscurity, and continuity drift
-- **Production-facing artifacts** such as scene contracts, cinematic encoding, and symbolic architecture
-- **Optional Continuity Forge handoff** for canonical ingestion, ledgers, revision safety, and shot contracts
-- **Evidence-based evolution** from recorded project outcomes rather than opaque autonomous rewriting
-
----
-
-## Core Principle
-
-A symbol should alter the conditions under which a scene is interpreted without requiring the audience to consciously identify or decode it.
-
-Kubrick models symbolism as a transformation process:
-
-```text
-observable form
-    ↓
-contextual association
-    ↓
-recurrence under new pressure
-    ↓
-formal mutation
-    ↓
-convergence with character choice
-    ↓
-retrospective legibility
-```
-
-The system rejects the weaker pattern:
-
-```text
-symbol appears → symbol is explained → meaning is delivered
-```
-
----
-
-## Workflow
-
-```mermaid
-flowchart LR
-    A[Creative Brief] --> B[Intake and Constraints]
-    B --> C[Pattern Retrieval]
-    C --> D[Symbolic Intent]
-    D --> E[Motif Registry]
-    E --> F[Narrative Architecture]
-    F --> G[Scene Contracts]
-    G --> H[Cinematic Encoding]
-    H --> I[Diagnosis and Quality Gates]
-    I --> J{Production Governance?}
-    J -- Standalone --> K[Script and Production Packet]
-    J -- Continuity Forge --> L[Compile and Canonical Ingest]
-    L --> M[Ledger and Shot Contracts]
-    K --> N[Outcome Recording]
-    M --> N
-    N --> O[Evolution Receipt]
-```
-
-### 1. Intake and constraint extraction
-
-Kubrick begins by separating known constraints from suggestions and interpretive possibilities.
-
-Typical inputs include:
-
-- format and target duration
-- premise, dramatic question, and intended audience effect
-- character pressures and irreversible choices
-- genre and production constraints
-- visual, sonic, spatial, or cultural references
-- locked canon and prohibited changes
-- desired deliverables: logline, beat sheet, script, diagnosis, rewrite, or production packet
-
-The result is a bounded creative problem rather than an unrestricted generation prompt.
-
-### 2. Deterministic pattern retrieval
-
-Kubrick searches its symbolic pattern corpus using the project brief, exclusions, genre context, dramatic function, and saturation constraints.
-
-```bash
-python scripts/retrieve_symbolic_patterns.py \
-  --brief evals/retrieval/inputs/sample_melodrama_lowbudget.yaml
-```
-
-The retriever emits a `retrieval_receipt` containing ranked patterns, score decomposition, provenance, exclusions, and fallback state. When evidence is insufficient, retrieval returns `NOT_COMPUTABLE` rather than inventing a recommendation.
-
-### 3. Symbolic intent contract
-
-Before motifs are selected, Kubrick defines why symbolic structure is needed.
-
-A valid `symbolic_intent` specifies:
-
-- dramatic function
-- pressure or contradiction being externalized
-- interpretive field being altered
-- channels in which the system may operate
-- boundaries preventing one-to-one symbolism or unsupported cultural equivalence
-
-Purely decorative or esoteric symbolism is rejected.
-
-### 4. Motif registry and lifecycle
-
-Each motif begins with observable form—not an assigned meaning.
-
-Kubrick records:
-
-- physical or behavioral form
-- first narrative context
-- channel usage
-- recurrence points
-- pressure applied at each recurrence
-- required mutation
-- inversion, fracture, convergence, or exhaustion state
-- collision and saturation risk
-
-A motif may recur unchanged only when stagnation itself is the dramatic point.
-
-### 5. Narrative architecture
-
-The symbolic system is integrated with ordinary dramatic engineering:
-
-1. premise
-2. character objectives and contradictions
-3. world rules
-4. thematic tensions
-5. macrostructure
-6. sequences and beats
-7. scene engines
-8. dialogue and prose
-9. continuity state
-10. revision logic
-
-Symbolism remains subordinate to agency, causality, clarity, tone, and production feasibility.
-
-### 6. Scene contracts
-
-Before or alongside screenplay pages, Kubrick can create scene contracts defining:
-
-- scene objective and source of pressure
-- value change and entrance/exit state
-- character knowledge
-- continuity dependencies
-- active motifs and required mutations
-- blocking and spatial relationships
-- visual and sonic recurrence rules
-- production constraints
-
-These contracts make scenes testable and reduce narrative compression or visual drift during downstream generation.
-
-### 7. Cinematic encoding
-
-Kubrick translates narrative and symbolic decisions into filmable form through `cinematic_encoding`:
-
-- relational composition
-- geometric patterns
-- blocking systems
-- camera behavior
-- shot recurrence and mutation
-- edit cadence
-- sonic motifs
-- lighting and production-design states
-
-A centered frame, circular move, threshold, or repeated sound matters only when its behavior changes with dramatic conditions.
-
-### 8. Diagnosis and revision
-
-| Mode | Purpose |
-|---|---|
-| `DEVELOP` | Build premise, characters, structure, and symbolic architecture |
-| `DRAFT` | Generate scenes or screenplay pages from approved foundations |
-| `DIAGNOSE` | Identify structural, symbolic, continuity, and execution failures |
-| `REVISE` | Change material while preserving locked constraints and canon |
-| `POLISH` | Improve dialogue, rhythm, specificity, and voice without structural drift |
-| `CONTINUITY` | Audit state, recurrence, knowledge, and motif lifecycle consistency |
-| `PRODUCTION` | Produce scene contracts, cinematic encoding, and handoff packets |
-| `ADAPT` | Change format while preserving dramatic core and symbolic grammar |
-
-Diagnosis checks for symbol explanation, occult collage, symbolic redundancy, one-to-one symbolism, repetition without mutation, archetype costume, tradition flattening, numerology inflation, symbolic supremacy, mystery by obscurity, and premature interpretive closure.
-
-### 9. Optional Continuity Forge handoff
-
-Kubrick creates proposals. Continuity Forge can make approved material canonical.
-
-```text
-Kubrick
-  creative development
-  symbolic architecture
-  scene contracts
-  cinematic encoding
-        ↓
-Continuity Forge
-  compile
-  canonical ingest
-  ledger
-  mutation control
-  shot contracts
-  drift audit
-```
-
-```bash
-continuity-forge compile <script-or-outline> --out <output-directory>
-```
-
-After ingestion, the Forge ledger and intermediate representation become the source of truth. Local Kubrick artifacts remain proposals unless committed through Forge.
-
-See [`references/continuity-forge-integration.md`](references/continuity-forge-integration.md) for the exact integration procedure.
-
-### 10. Outcome recording and controlled evolution
-
-Kubrick improves retrieval rankings from explicit project evidence.
-
-```text
-references/usage/receipts/
-references/usage/outcomes/
-```
-
-Then run:
-
-```bash
-python scripts/evolve_from_use.py
-```
-
-The evolution engine may update pattern confidence, usage history, corpus ordering, and overuse or weakness flags. It does **not** autonomously invent new governing patterns or rewrite the corpus without review. Every run emits an evolution receipt.
-
----
+- **Observed first, meaning second**: Every motif begins with concrete, observable form before any interpretation.
+- **Mandatory mutation**: No motif recurs identically unless stagnation is the dramatic point.
+- **Three-channel symbolism**: Diegetic (objects/behavior), Dramaturgical (structure/choice), Cinematic (framing/geometry/rhythm) — power comes from crossing channels without explanation.
+- **Provenance-linked Symbolic Narrative Pattern System**: Full `SymbolicNarrativePattern` schema, Narrative Affordance Registry, Transformation Grammar Registry, and 10 domain packs grounded in PRIMARY/SCHOLARLY sources with explicit cross-tradition relationship types.
+- **Cinematic Symbolism Corpus**: Shot scale, graphic matches, negative space, acousmatic sound, broken symmetry, motif transfer — meaning arises from pattern and transformation, never fixed iconography.
+- **Relational geometry & cinematic encoding**: Blocking and shots are described as pressure and relationship, not clichés.
+- **Forge-native**: Produces clean `symbolic_architecture` and `cinematic_encoding` ready for Continuity Forge ledger and shot contracts.
 
 ## Installation
 
-```bash
-git clone https://github.com/scrimshawlife-ctrl/Kubrick.git
-cd Kubrick
-./install.sh
-```
-
-Default installation path:
-
-```text
-~/.hermes/skills/kubrick
-```
-
-Categorized Hermes installation:
+From the continuity-forge repo:
 
 ```bash
-./install.sh creative
+cp -R skills/kubrick ~/.hermes/skills/
+cp -R skills/hermes-continuity-forge ~/.hermes/skills/   # recommended companion
 ```
-
-Development symlink:
-
-```bash
-mkdir -p ~/.hermes/skills
-ln -s "$(pwd)" ~/.hermes/skills/kubrick
-```
-
-Restart Hermes after installation. No Continuity Forge installation is required for standalone use.
-
----
 
 ## Quick Start
 
-### In Hermes
+Load `kubrick`.
 
-```text
-Develop this premise into a feature outline with a controlled motif lifecycle,
-relational cinematic geometry, and scene-level symbolic pressure.
-```
+**Example prompts:**
+- "Develop this premise into a feature with strong symbolic architecture and motif lifecycle."
+- "Diagnose this scene for motif mutation and geometric pressure using the rubric."
+- "Rewrite this scene with the circular motif locked, showing explicit mutation on recurrence."
+- "Produce production handoff packet with full cinematic_encoding for these scenes."
 
-```text
-Diagnose this scene for motif repetition, exposition, and geometric drift.
-```
+Always approve foundations before deep symbolic work.
 
-```text
-Rewrite this sequence while keeping the broken-circle motif and circular
-blocking locked, but mutate their function under the protagonist's new choice.
-```
+See `references/symbolic-dramaturgy.md`, `references/symbolic-narrative-patterns.yaml`, `references/narrative-affordance-registry.md`, `references/transformation-grammar-registry.md`, `references/cinematic-symbolism-corpus.md`, and `references/corpus-usage.md` for the full system.
 
-```text
-Create a production handoff with scene contracts, cinematic encoding,
-shot recurrence rules, and symbolic architecture.
-```
+Companion operator skill: `hermes-continuity-forge` for leases, ingest, and proof.
 
-### From the command line
 
-```bash
-python scripts/retrieve_symbolic_patterns.py \
-  --brief evals/retrieval/inputs/sample_melodrama_lowbudget.yaml
-```
 
-A minimal input and expected-output pair is available in `examples/minimal-retrieval-example.zip`.
+## Deterministic Retrieval & Continuity (v0.6.0+)
 
----
+Kubrick now includes machine schemas, scored retrieval, exclusion profiles, project symbolic ledger, saturation control, motif collision detection, revision diffing, counterpoint, sequence/character arc layers, production feasibility, cultural review gates, and versioning.
+
+See `references/retrieval-and-continuity.md` and `schemas/`.
+
+Use `kubrick` + `hermes-continuity-forge` together for full symbolic-to-production pipeline with memory and revision safety.
 
 ## Core Artifacts
 
-| Artifact | Purpose |
-|---|---|
-| `symbolic_intent` | Defines the dramatic purpose and limits of symbolic work |
-| `motif_registry` | Records observable motifs, channels, recurrence, and lifecycle |
-| `motif_lifecycle` | Specifies pressure-driven mutation across appearances |
-| `cinematic_encoding` | Converts narrative relationships into composition, blocking, camera, edit, sound, and design rules |
-| `symbolic_architecture` | Packages the complete symbolic system for production or Forge handoff |
-| `scene_contract` | Defines scene causality, state changes, continuity, motifs, and visual execution |
-| `retrieval_receipt` | Preserves ranked pattern results, scoring, exclusions, and provenance |
-| `evolution_receipt` | Records corpus-confidence changes derived from explicit outcomes |
-| `revision_diff` | Tracks symbolic and continuity effects of a proposed revision |
-
----
-
-## Three Symbolic Channels
-
-| Channel | Surface | Typical evidence |
-|---|---|---|
-| **Diegetic** | Elements inside the story world | objects, gestures, architecture, costume, sound, repeated behavior |
-| **Dramaturgical** | Causal and structural repetition | choices, reversals, roles, thresholds, bargains, repeated situations |
-| **Cinematic** | Formal presentation | framing, geometry, movement, rhythm, light, sound placement, editing |
-
-The strongest motifs cross channels without every channel stating the same thing.
-
----
-
-## Repository Map
-
-```text
-Kubrick/
-├── SKILL.md                         # Hermes behavior, routing, gates, and procedures
-├── QUICKSTART.md                    # Minimal installation and execution path
-├── CHANGELOG.md                     # Version history
-├── install.sh                       # Hermes installer
-├── scripts/
-│   ├── retrieve_symbolic_patterns.py
-│   └── evolve_from_use.py
-├── references/
-│   ├── patterns/                    # Machine-readable pattern sidecars
-│   ├── corpus/                      # Genre and domain pattern packs
-│   ├── usage/                       # Retrieval receipts, outcomes, and ledgers
-│   ├── evolution/                   # Evolution receipts
-│   ├── symbolic-dramaturgy.md
-│   └── continuity-forge-integration.md
-├── evals/                           # Retrieval and behavior evaluation fixtures
-└── examples/                        # Minimal working examples
-```
-
----
-
-## Design Boundaries
-
-Kubrick:
-
-- **does** develop and assess narrative material
-- **does** create explicit symbolic and cinematic contracts
-- **does** produce provenance-linked recommendations and receipts
-- **does** integrate with Continuity Forge when available
-- **does not** own canonical production state
-- **does not** treat archetypes as declared character identities
-- **does not** flatten distinct traditions into unsupported equivalence
-- **does not** allow symbolism to override causality or character agency
-- **does not** claim `NOT_COMPUTABLE` problems have been solved
-
----
-
-## Zero State Ecosystem
-
-Kubrick is a **Zero State** system: a modular creative instrument built to help authors use advanced generative technology without surrendering intention, authorship, curiosity, or structural control.
-
-Within the ecosystem:
-
-- **Kubrick** engineers narrative and symbolic form.
-- **Continuity Forge** governs canonical production state and revision integrity.
-- **Hermes** provides the agent execution surface.
-- **Zero State** provides the creative philosophy, design language, and ecosystem identity.
-
-> **Zero State — creativity and authenticity as primary resources during changing times.**
-
----
+- symbolic_intent contract
+- motif_registry (observed_form + lifecycle)
+- cinematic_encoding (relational + shot recurrence)
+- symbolic_architecture (Forge handoff)
 
 ## Version
 
-**0.8.0 — Executable Retrieval + Self-Evolution**
+0.8.0 (Profound Esoteric 0.5.0 (Symbolic Narrative Pattern System) Single-Frame Integration)
 
-See [CHANGELOG.md](CHANGELOG.md) for release details.
+See CHANGELOG.md for details.
 
-<div align="center">
+## Recent Updates (0.8.0)
 
-**ZERO STATE**
+- Full support for **constraint-based esoteric and ancient magical concepts** via the new Esoteric Structural Translation layer in the cinematic corpus.
+- Enhanced **single-frame and generative image prompt engineering** with required interlocking systems, state differentials, and convergence points.
+- Updated SKILL.md, symbolic-dramaturgy.md, and production templates with explicit guidance for profound work without occult collage or naming.
+- Example: Deeply integrated "man on the beach" prompt using liminal threshold, trace-binding, witness objects, dual light operations, and inversion as crossing.
 
-*Tools for making what does not exist yet.*
+See CHANGELOG.md for full details and the corpus for the translation rules.
 
-</div>
 
-## License
+## Concrete Example (0.8.0+)
 
-**MIT** — Copyright (c) 2026 Daniel Meyer / Applied Alchemy Labs.
+See `examples/beach-threshold.md` for a complete worked example:
 
-Free to use, copy, modify, merge, publish, distribute, sublicense, and sell, subject to including the copyright and permission notice. See [`LICENSE`](./LICENSE) for the full text.
+- Private hidden correspondence (liminal threshold, trace-binding, witness stone, inversion as crossing)
+- Full `symbolic_intent`
+- `cinematic_encoding` mapped to Esoteric Structural Translation + Expanded Cinematic Systems
+- Production-ready Grok image prompt
+- Integration test and workflow steps
+
+This demonstrates ancient magical concepts put to work through constraint only.

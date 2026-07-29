@@ -1,11 +1,10 @@
 ---
 name: kubrick
-description: "Symbolic narrative engineering with executable retrieval and self-evolution from use."
-version: 0.8.0
-license: MIT
+description: "Symbolic narrative engineering with motif mutation. Profound esoteric structural translation (ancient magical concepts via constraint), single-frame/generative image prompt engineering, and latent symbolic operating system for interlocking systems."
+version: 0.10.0
 author: Hermes
 platforms: [linux, macos, windows]
-tags: [Kubrick, NarrativeEngineering, SymbolicDramaturgy, CinematicEncoding, MotifMutation, VisualMotif, Geometry, ArchetypeFunction, Screenplay, ContinuityForge, Ledger, AntiSlop, ProductionHandoff, Canon]
+tags: [Kubrick, NarrativeEngineering, SymbolicDramaturgy, CinematicEncoding, MotifMutation, VisualMotif, Geometry, EsotericStructuralTranslation, ProfoundSingleFrame, ImagePromptEngineering, AncientMagicalConcepts, ArchetypeFunction, Screenplay, ContinuityForge, Ledger, AntiSlop, ProductionHandoff, Canon]
 triggers:
   - develop screenplay
   - write script
@@ -38,7 +37,7 @@ triggers:
 
 **Purpose**: A disciplined writers' room + script editor + cinematic symbolic engineer. Develops ideas from premise to production-ready scripts using precise symbolic dramaturgy, relational composition, motif lifecycle, archetypal function, and visual encoding. Resists generic AI writing, continuity drift, character flattening, exposition dumping, occult collage, and one-to-one symbolism.
 
-**Standalone by default**. This skill runs fully independently inside Hermes. It can optionally hand off clean artifacts to Continuity Forge when that system is also installed. The skill produces high-quality narrative artifacts with latent symbolic operating system; Forge owns and enforces the canonical record.
+**Primary backend for canonical state**: Continuity Forge (ledger, Production IR, shot contracts, provenance). The skill produces high-quality narrative artifacts with latent symbolic operating system; Forge owns and enforces the canonical record.
 
 This skill **does not** own canon, run the deterministic kernel, or claim production-ready media.
 
@@ -125,6 +124,7 @@ Before or alongside scene work:
 - Map `archetypal_functions` (observable behaviors + spatial/relationship/transformation roles; explicit naming disallowed by default).
 - Record `tradition_boundaries` and `correspondence_map` (private/hidden where appropriate).
 - Translate to `cinematic_encoding`: composition_patterns (relational, not cliché), geometric_patterns, blocking_patterns, camera_patterns, shot_recurrence (with mutation ledger), edit_cadence, sonic_motifs, production_design_states.
+        - Draw from the expanded cinematic-symbolism-corpus.md (Light/Geometry/Trace/Inversion systems, Single-Frame Translation mappings, and enforced Corpus Integration Rules for profound interlocking).
 
 **12. Handoff to Continuity Forge (critical phase)**
 
@@ -333,3 +333,76 @@ Approved scenes → production packet + visual_identity (grounded in symbolic ar
 See CHANGELOG.md in this skill and the main Continuity Forge repo.
 
 **0.3.0** — Assimilated Symbolic Narrative Upgrade: added MODULE 5B (Symbolic Dramaturgy and Cinematic Encoding), full motif lifecycle, symbolic_packet, intent contracts, shot/blocking grammar, relational composition, hidden correspondence, archetypal function (no naming), tradition guards, Gates M–W, sonic/edit symbolism, esoteric-through-constraint. Renamed to kubrick. Renamed and upgraded from prior scriptwriting base.
+## Neuro-Symbolic & Compositional Upgrades (0.10.0+)
+
+Drawing from neuro-symbolic scene graph conditioning, disentangled scene graph representations (SL-VAE style), Compositional Masked Attention (CMA), Multi-Layered Sampler techniques, and structured conditioning in diffusion models:
+
+- **Internal Motif/Structure Graph Layer**: The Dynamic Selection Engine now maintains an internal lightweight neuro-symbolic graph (nodes = motifs/objects + states; edges = relational pressures, convergences, state differentials). This graph guides latent selection and is translated **exclusively** into observable cinematic constraints. Never emitted directly.
+- **Explicit Disentanglement**: Cinematic systems are factored into:
+  - Layout/Geometry (grid pressure, thresholds, convergence sites)
+  - Semantics/Function (dramatic roles via blocking and relations)
+  - Attributes/States (light duality, trace/residue differentials, material memory)
+  This reduces relational confusion and attribute leakage while enabling precise interlocking at convergence points.
+- **Compositional Layered Encoding**: Analogs to Compositional Masked Attention and Multi-Layered Sampler are applied during prompt construction:
+  - Strongest constraints are "masked" / prioritized at the primary convergence site.
+  - Independent motif/object layers are composed while preserving cross-layer interactions only at defined relational points.
+  - Supports object/motif-level manipulation in single-frame or iterative work without drift.
+- **Conditioning-Style Prompt Engineering**: Prompt sections function as explicit control signals (geometric relations, differential trace descriptions, dual light operations) analogous to ControlNet/gated conditioning.
+- **Neuro-Symbolic Validation**: Lexicon concepts are treated as observable predicates. The engine performs internal combinatorial checks for coherence before translation.
+- **Enhanced Single-Frame State Modeling**: Stronger before/after differentials, residue as persistent charge, and layered time within one frame, informed by structured scene graph methods.
+
+These upgrades increase symbolic density, relational precision, and controllability for both narrative scenes and single-frame generative prompts while remaining fully latent and anti-slop compliant.
+
+See:
+- `references/symbolic-dramaturgy.md` (new Neuro-Symbolic Motif Graph and Disentangled sections)
+- `references/cinematic-symbolism-corpus.md` (Neuro-Symbolic Conditioning Patterns, Disentangled Cinematic Systems, Compositional Layered Encoding)
+- Dynamic Esoteric–Alchemical Selection Engine updates
+
+## Profound Esoteric & Single-Frame Capabilities (0.8.0+)
+
+The skill now supports deep constraint-based embedding of ancient magical and esoteric concepts:
+
+- **Esoteric Structural Translation**: Concepts such as liminal thresholds, trace as binding/erasure, witness objects, active erasure operations, inversion as crossing, and dual preservation/dissolution are translated into interlocking cinematic systems (Light, Geometry, Material/Trace, Inversion) without ever naming sources or using iconography.
+- **Single-Frame Profound Work**: For generative images and cinematic stills, enforce state differentials, convergence points, relational objects, and perceptual layering. Requires at least one technique from each major system interlocking at the site of the operation.
+- **Hidden Correspondence**: Private maps (alchemical, ritual-liminal, mnemonic, sympathetic) govern structure while the image or scene remains dramatically causal and observable.
+- **Corpus Integration**: All work draws from the expanded `cinematic-symbolism-corpus.md` (Esoteric Structural Translation section + Expanded Cinematic Systems) and follows Corpus Integration Rules.
+
+See:
+- `references/cinematic-symbolism-corpus.md` (Esoteric Structural Translation and Single-Frame sections)
+- `references/symbolic-dramaturgy.md` (Profound Integration and Esoteric Embedding)
+- `templates/production-handoff.md` (visual_identity extensions for AI generators)
+
+Example use: "a man on the beach" prompt demonstrating threshold magic via graduated trace, witness stone, dual light operation, and sky-in-ground inversion at convergence — all without explicit symbolism.
+
+
+## Quick Examples (updated for 0.8.0)
+
+**Esoteric single-frame image prompt (new in 0.8.0)**:
+Vague idea ("a man on the beach") → define symbolic_intent (bind/transform/invert/witness) → map to cinematic_encoding using Esoteric Structural Translation (threshold, trace as binding, witness object, dual light, inversion at convergence) → output full prompt via Single-Frame Esoteric Mappings. See examples/beach-threshold.md for the complete packet and integration test.
+
+**DEVELOP + Forge handoff (symbolic)**:
+Vague idea → this skill produces strong logline + sequence outline + scene contracts + `symbolic_intent` + `motif_registry` (observed forms) + `cinematic_encoding` (relational compositions, geometric patterns, shot recurrence plan) → "Use continuity-forge compile and ingest_script with this material under lease."
+
+**DIAGNOSE scene then Forge**:
+Diagnose weak scene (gates A–W + contract) → revise motif mutation and blocking → emit updated scene contract + symbolic delta → ingest delta to Forge.
+
+**PRODUCTION handoff**:
+Approved scenes → production packet + visual_identity (grounded in symbolic architecture and geometric patterns) from this skill → feed IDs/contracts into Forge shot system.
+
+## Dynamic Latent Esoteric Encoding (0.9.0+)
+
+The skill now includes a **Dynamic Esoteric–Alchemical Selection Engine**.
+
+- Analyzes prompt content (seed, intent, objects, actions, themes) or image description.
+- Dynamically selects relevant concepts from the full Esoteric–Alchemical Lexicon (`references/esoteric-alchemical-lexicon.md`).
+- Applies them exclusively as structural constraints (interlocking geometry, light, trace, inversion, rhythm, persistence, convergence).
+- **Latent by default**: No automatic explanation or naming in outputs. The result is significantly higher symbolic density.
+- User may query "what concepts were used?" to receive a private report.
+
+This produces much denser observable symbolism while preserving coherent dramatic surface reading. Selection and application follow the rules in cinematic-symbolism-corpus.md (Dynamic Esoteric–Alchemical Selection Engine section).
+
+See also:
+- references/esoteric-alchemical-lexicon.md (full 200+ entry lexicon)
+- references/cinematic-symbolism-corpus.md (Dynamic Selection Engine + application rules)
+- examples/beach-threshold.md (baseline; denser results expected with 0.9.0 analysis)
+
