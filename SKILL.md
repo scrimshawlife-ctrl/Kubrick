@@ -2,6 +2,7 @@
 name: kubrick
 description: "Symbolic narrative engineering with executable retrieval and self-evolution from use."
 version: 0.8.0
+license: MIT
 author: Hermes
 platforms: [linux, macos, windows]
 tags: [Kubrick, NarrativeEngineering, SymbolicDramaturgy, CinematicEncoding, MotifMutation, VisualMotif, Geometry, ArchetypeFunction, Screenplay, ContinuityForge, Ledger, AntiSlop, ProductionHandoff, Canon]

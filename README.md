@@ -2,6 +2,10 @@
 
 # KUBRICK
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](./LICENSE)
+[![Hermes Skill](https://img.shields.io/badge/Hermes-skill-f59e0b?style=for-the-badge)](./SKILL.md)
+[![Version](https://img.shields.io/badge/version-0.8.0-7c3aed?style=for-the-badge)](./SKILL.md)
+
 ### Deterministic Symbolic Narrative Engineering
 
 **A Zero State creative-technology system for Hermes**
@@ -422,3 +426,9 @@ See [CHANGELOG.md](CHANGELOG.md) for release details.
 *Tools for making what does not exist yet.*
 
 </div>
+
+## License
+
+**MIT** — Copyright (c) 2026 Daniel Meyer / Applied Alchemy Labs.
+
+Free to use, copy, modify, merge, publish, distribute, sublicense, and sell, subject to including the copyright and permission notice. See [`LICENSE`](./LICENSE) for the full text.
