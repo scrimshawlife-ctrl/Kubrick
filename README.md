@@ -11,31 +11,50 @@
 
 <p align="center">
   <a href="https://github.com/scrimshawlife-ctrl/Kubrick/releases/tag/v0.10.0"><img src="https://img.shields.io/badge/version-0.10.0-3a4a6e?style=flat-square" alt="Version"></a>
+  <a href="https://github.com/scrimshawlife-ctrl/Kubrick"><img src="https://img.shields.io/github/stars/scrimshawlife-ctrl/Kubrick?style=flat-square" alt="GitHub Stars"></a>
+  <a href="https://github.com/scrimshawlife-ctrl/Kubrick/issues"><img src="https://img.shields.io/github/issues/scrimshawlife-ctrl/Kubrick?style=flat-square" alt="Issues"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-1a1f2e?style=flat-square" alt="License"></a>
-  <a href="https://github.com/scrimshawlife-ctrl/Kubrick/releases"><img src="https://img.shields.io/github/v/release/scrimshawlife-ctrl/Kubrick?color=5a6a8a&style=flat-square" alt="Release"></a>
+  <a href="https://github.com/scrimshawlife-ctrl/Kubrick/releases"><img src="https://img.shields.io/github/v/release/scrimshawlife-ctrl/Kubrick?color=5a6a8a&style=flat-square" alt="Latest Release"></a>
+  <a href="#installation"><img src="https://img.shields.io/badge/Hermes-Skill-8b5cf6?style=flat-square" alt="Hermes Skill"></a>
+</p>
+
+<p align="center">
+  <strong>Precision-engineered symbolic systems for cinematic narrative and single-frame generative work.</strong>
 </p>
 
 ---
 
-**Kubrick** is a disciplined symbolic operating system for cinematic narrative. It engineers motifs, geometry, light, and relational structure into scripts and single-frame generative work — always starting from observable form and state differentials.
+**Kubrick** is a disciplined symbolic operating system for cinematic narrative. It engineers motifs, geometry, light, and relational structure into scripts and generative images — always starting from observable form and state differentials.
 
-It resists generic AI writing, occult collage, and one-to-one symbolism. Meaning emerges through recurrence, mutation, convergence, and interlocking systems.
+It resists generic AI writing, occult collage, and one-to-one symbolism. Meaning emerges through recurrence, mutation, convergence, and interlocking observable systems.
+
+## Table of Contents
+
+- [0.10.0 Highlights](#0100-highlights)
+- [Core Philosophy](#core-philosophy)
+- [Key Features](#key-features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Core Artifacts](#core-artifacts)
+- [Documentation](#documentation)
+- [Version & Changelog](#version--changelog)
+- [Contributing](#contributing)
 
 ## 0.10.0 Highlights
 
 - **Internal Motif/Structure Graph Layer** — Neuro-symbolic graph (nodes = observed states, edges = relational pressure & transformation) powers the Dynamic Selection Engine.
-- **Explicit Disentanglement** — Layout/Geometry, Semantics/Function, and Attributes/States are factored for cleaner, more controllable interlocking.
-- **Compositional Layered Encoding** — Convergence masking and independent layers with controlled interaction at key sites (CMA/MLS-inspired).
-- **Full Esoteric–Alchemical Encoding Lexicon** — 200+ entries translated exclusively through observable constraint.
-- **Conditioning-Style Prompt Engineering** — Precise control signals for geometry, state differentials, dual light, and residue.
-- Enhanced single-frame state modeling with stronger differentials and perceptual layering.
+- **Explicit Disentanglement** — Layout/Geometry, Semantics/Function, and Attributes/States are cleanly factored for controllable interlocking.
+- **Compositional Layered Encoding** — Convergence masking and independent layers with controlled interaction at key sites (inspired by Compositional Masked Attention and Multi-Layered Samplers).
+- **Full Esoteric–Alchemical Encoding Lexicon** — 200+ entries translated exclusively through observable constraint (never named or illustrated directly).
+- **Conditioning-Style Prompt Engineering** — Precise control signals for geometry, state differentials, dual light, residue, and perceptual layering.
+- **Enhanced Single-Frame State Modeling** — Stronger differentials, object participation, and sustained perceptual reward.
 
 ## Core Philosophy
 
 - **Observed first, meaning second** — Every element begins with concrete, observable behavior and material state.
-- **Mandatory mutation** — No motif recurs without transformation.
-- **Three-channel symbolism** — Diegetic, Dramaturgical, and Cinematic channels cross to create power without explanation.
-- **Constraint over citation** — Ancient and esoteric structures enter only as enforceable rules on geometry, light, trace, and relation.
+- **Mandatory mutation** — No motif recurs identically unless stagnation itself is the dramatic point.
+- **Three-channel symbolism** — Diegetic (objects/behavior), Dramaturgical (structure/choice), and Cinematic (framing/geometry/rhythm) channels cross to generate power without explanation.
+- **Constraint over citation** — Ancient and esoteric structures enter only as enforceable rules on geometry, light, trace, threshold, and relation.
 
 ## Key Features
 
@@ -65,7 +84,7 @@ Load `kubrick` and use natural language:
 - “Rewrite this scene but keep the convergence site locked with active state differentials.”
 - “Produce a production-ready Grok image prompt for a man in the city who has just lost his job using full 0.10.0 density.”
 
-See `examples/beach-threshold.md` for a complete worked example including private hidden correspondence, full symbolic packet, and ready-to-use prompt.
+See [`examples/beach-threshold.md`](examples/beach-threshold.md) for a complete worked example (private hidden correspondence, full symbolic packet, and ready-to-use prompt).
 
 ## Core Artifacts
 
@@ -76,21 +95,27 @@ See `examples/beach-threshold.md` for a complete worked example including privat
 
 ## Documentation
 
-| File | Purpose |
-|------|---------|
-| `references/symbolic-dramaturgy.md` | Core laws, motif graph, profound integration rules |
+| File                                      | Purpose                                      |
+|-------------------------------------------|----------------------------------------------|
+| `references/symbolic-dramaturgy.md`       | Core laws, motif graph, profound integration rules |
 | `references/cinematic-symbolism-corpus.md` | Expanded systems + Neuro-Symbolic Conditioning Patterns |
-| `references/esoteric-alchemical-lexicon.md` | Full 200+ entry lexicon (latent use only) |
-| `references/anti-slop-patterns.md` | Gates A–W |
-| `examples/beach-threshold.md` | Complete 0.10.0 single-frame example |
-| `SKILL.md` | Full capability reference |
+| `references/esoteric-alchemical-lexicon.md` | Full 200+ entry lexicon (latent use only)   |
+| `references/anti-slop-patterns.md`        | Gates A–W                                    |
+| `examples/beach-threshold.md`             | Complete 0.10.0 single-frame example         |
+| `SKILL.md`                                | Full capability reference                    |
 
-## Version
+## Version & Changelog
 
 **0.10.0** — Neuro-Symbolic & Compositional Upgrades
 
 See [CHANGELOG.md](CHANGELOG.md) for the complete history.
 
+## Contributing
+
+Issues and pull requests are welcome. Please keep changes aligned with the observed-first, constraint-based philosophy.
+
 ---
 
-*Symbolism should alter the conditions under which a scene is interpreted — without requiring the audience to consciously identify it.*
+<p align="center">
+  <em>Symbolism should alter the conditions under which a scene is interpreted — without requiring the audience to consciously identify it.</em>
+</p>
