@@ -3,9 +3,9 @@ $id: https://kubrick.zero-state.dev/schemas/motif-structure-graph.schema.yaml
 title: Kubrick Motif Structure Graph
 type: object
 additionalProperties: false
-required: [schema_version, graph_id, intent, nodes, edges, layers, convergence_sites, validation]
+required: [schema_version, graph_id, intent, nodes, edges, layers, convergence_sites, residue, surface_output, validation]
 properties:
-  schema_version: {const: 1.0.0}
+  schema_version: {const: 1.1.0}
   graph_id: {type: string, minLength: 1}
   intent:
     type: object
@@ -29,12 +29,8 @@ properties:
         initial_state: {type: string, minLength: 1}
         target_state: {type: string, minLength: 1}
         provenance_label: {enum: [OBSERVED, INFERRED, SPECULATIVE]}
-        lexicon_links:
-          type: array
-          items: {type: string}
-        pattern_links:
-          type: array
-          items: {type: string}
+        lexicon_links: {type: array, items: {type: string}}
+        pattern_links: {type: array, items: {type: string}}
   edges:
     type: array
     minItems: 1
@@ -53,15 +49,9 @@ properties:
     additionalProperties: false
     required: [layout_geometry, semantics_function, attributes_states]
     properties:
-      layout_geometry:
-        type: array
-        items: {type: string}
-      semantics_function:
-        type: array
-        items: {type: string}
-      attributes_states:
-        type: array
-        items: {type: string}
+      layout_geometry: {type: array, items: {type: string}}
+      semantics_function: {type: array, items: {type: string}}
+      attributes_states: {type: array, items: {type: string}}
   convergence_sites:
     type: array
     minItems: 1
@@ -71,26 +61,32 @@ properties:
       additionalProperties: false
       required: [site_id, node_ids, edge_ids, observable_effect, mask_priority]
       properties:
-        site_id: {type: string}
-        node_ids:
-          type: array
-          minItems: 2
-          items: {type: string}
-        edge_ids:
-          type: array
-          minItems: 1
-          items: {type: integer, minimum: 0}
+        site_id: {type: string, minLength: 1}
+        node_ids: {type: array, minItems: 2, items: {type: string}}
+        edge_ids: {type: array, minItems: 1, items: {type: integer, minimum: 0}}
         observable_effect: {type: string, minLength: 1}
         mask_priority: {type: number, minimum: 0, maximum: 1}
-  residue:
-    type: array
-    items: {type: string}
+  residue: {type: array, items: {type: string}}
+  surface_output:
+    type: object
+    additionalProperties: false
+    required: [audience_prompt, geometry, light, material, state_differentials, convergence, residue]
+    properties:
+      audience_prompt: {type: string}
+      geometry: {type: array, items: {type: string}}
+      light: {type: array, items: {type: string}}
+      material: {type: array, items: {type: string}}
+      state_differentials: {type: array, items: {type: string}}
+      convergence: {type: array, items: {type: string}}
+      residue: {type: array, items: {type: string}}
   validation:
     type: object
     additionalProperties: false
-    required: [attribute_leakage, convergence_density, named_esoterica_surface, status]
+    required: [attribute_leakage, convergence_density, named_esoterica_surface, unknown_references, errors, status]
     properties:
       attribute_leakage: {type: array, items: {type: string}}
       convergence_density: {type: number, minimum: 0}
       named_esoterica_surface: {type: array, items: {type: string}}
+      unknown_references: {type: array, items: {type: string}}
+      errors: {type: array, items: {type: string}}
       status: {enum: [VALID, INVALID, NOT_COMPUTABLE]}
