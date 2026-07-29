@@ -2,11 +2,6 @@
 """
 Kubrick Self-Evolution Engine
 
-This script is self-contained. It works completely independently when the
-skill is installed in Hermes (cp -R skills/kubrick ~/.hermes/skills/).
-
-It does not require continuity-forge or any optional extras.
-
 Evolves the symbolic corpus according to actual use.
 
 Usage:
@@ -20,7 +15,7 @@ It:
 - Emits an evolution_receipt
 - Never mutates without producing a receipt and provenance note
 
-Run periodically or after significant project activity.
+Run periodically or after significant Forge project activity.
 """
 
 import argparse
@@ -29,30 +24,22 @@ import os
 import glob
 from datetime import datetime
 from collections import defaultdict
+import hashlib
 
-try:
-    import yaml
-except ImportError:
-    yaml = None
-
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-SKILL_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
+SKILL_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 PATTERNS_DIR = os.path.join(SKILL_ROOT, "references", "patterns")
 USAGE_RECEIPTS = os.path.join(SKILL_ROOT, "references", "usage", "receipts")
 USAGE_OUTCOMES = os.path.join(SKILL_ROOT, "references", "usage", "outcomes")
 EVOLUTION_DIR = os.path.join(SKILL_ROOT, "references", "evolution")
 
-
 def load_json(path):
     with open(path, "r") as f:
         return json.load(f)
-
 
 def save_json(path, data):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w") as f:
         json.dump(data, f, indent=2)
-
 
 def find_sidecar(pattern_id):
     for root, _, files in os.walk(PATTERNS_DIR):
@@ -60,7 +47,6 @@ def find_sidecar(pattern_id):
             if f == f"{pattern_id}.json":
                 return os.path.join(root, f)
     return None
-
 
 def load_all_sidecars():
     sidecars = {}
@@ -72,21 +58,20 @@ def load_all_sidecars():
                 sidecars[data.get("pattern_id", fname)] = {"path": path, "data": data}
     return sidecars
 
-
 def aggregate_usage(receipts_dir, outcomes_dir):
     usage = defaultdict(lambda: {"uses": 0, "total_score": 0.0, "success_signals": 0, "failure_signals": 0, "projects": []})
 
+    # From receipts
     for path in glob.glob(os.path.join(receipts_dir, "*.json")) + glob.glob(os.path.join(receipts_dir, "*.yaml")):
         try:
             if path.endswith(".json"):
                 receipt = load_json(path)
             else:
-                if yaml is None:
-                    continue
+                import yaml
                 receipt = yaml.safe_load(open(path))
             rec = receipt.get("retrieval_receipt", receipt)
             ranked = rec.get("ranked_patterns", [])
-            for item in ranked[:3]:
+            for item in ranked[:3]:  # top patterns
                 pid = item.get("pattern_id")
                 if pid:
                     usage[pid]["uses"] += 1
@@ -95,6 +80,7 @@ def aggregate_usage(receipts_dir, outcomes_dir):
         except Exception as e:
             print(f"Warning: could not parse {path}: {e}")
 
+    # From outcomes (simple signals)
     for path in glob.glob(os.path.join(outcomes_dir, "*.json")):
         try:
             outcome = load_json(path)
@@ -111,7 +97,6 @@ def aggregate_usage(receipts_dir, outcomes_dir):
 
     return usage
 
-
 def evolve_sidecar(sidecar_info, usage_stats):
     data = sidecar_info["data"]
     pid = data["pattern_id"]
@@ -126,6 +111,7 @@ def evolve_sidecar(sidecar_info, usage_stats):
     total_signals = success + failure or 1
     success_rate = success / total_signals
 
+    # Compute delta
     current_conf = data.get("confidence", 0.7)
     delta = 0.0
 
@@ -133,11 +119,13 @@ def evolve_sidecar(sidecar_info, usage_stats):
         delta += (avg_score - 0.6) * 0.15
         delta += (success_rate - 0.5) * 0.25
 
+    # Penalty for repeated failures
     if failure > success and uses >= 2:
         delta -= 0.1
 
     new_conf = max(0.3, min(0.98, round(current_conf + delta, 4)))
 
+    # Record history
     if "usage_history" not in data:
         data["usage_history"] = []
     data["usage_history"].append({
@@ -153,22 +141,23 @@ def evolve_sidecar(sidecar_info, usage_stats):
 
     data["confidence"] = new_conf
     data["version"] = data.get("version", "0.6.0")
+    # bump patch for evolution
     parts = data["version"].split(".")
     if len(parts) >= 3:
         parts[2] = str(int(parts[2]) + 1)
         data["version"] = ".".join(parts)
 
     data["last_evolved"] = datetime.utcnow().isoformat() + "Z"
+
     return data
 
-
 def update_index_from_usage(index_path, usage_stats, sidecars):
-    if yaml is None:
-        return None
+    # Light update: promote high performers in by_dramatic_problem hints
     try:
+        import yaml
         with open(index_path, "r") as f:
             index = yaml.safe_load(f)
-    except Exception:
+    except:
         return None
 
     changed = False
@@ -190,8 +179,8 @@ def update_index_from_usage(index_path, usage_stats, sidecars):
         with open(index_path, "w") as f:
             yaml.safe_dump(index, f, sort_keys=False)
         return "corpus-index.yaml updated with performance-based ordering"
-    return None
 
+    return None
 
 def main():
     parser = argparse.ArgumentParser()
@@ -236,7 +225,6 @@ def main():
         print(f"\nEvolved {len(evolved)} patterns. Sidecars updated in place with usage_history.")
     else:
         print("\nNo patterns met evolution thresholds in this window.")
-
 
 if __name__ == "__main__":
     main()
