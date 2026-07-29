@@ -4,7 +4,7 @@
 
 ### Deterministic Symbolic Narrative Engineering
 
-**A Zero State creative-technology system for Hermes**
+**A Zero State creative-technology system for OpenClaw and compatible Agent Skills runtimes**
 
 *Structure before pages · Behavior before explanation · Mutation before repetition*
 
@@ -16,7 +16,10 @@
 
 ## Overview
 
-Kubrick is a standalone Hermes skill for developing, diagnosing, revising, and preparing cinematic narratives with controlled motif systems, visual grammar, dramatic causality, and production-aware continuity.
+Kubrick is a portable OpenClaw Agent Skill for developing, diagnosing,
+revising, and preparing cinematic narratives with controlled motif systems,
+visual grammar, dramatic causality, and production-aware continuity. The same
+skill remains compatible with Hermes.
 
 It converts a creative brief into explicit narrative contracts and traceable symbolic architecture—without reducing symbols to fixed meanings or allowing cinematic style to override character agency, causality, or feasibility.
 
@@ -24,7 +27,8 @@ It converts a creative brief into explicit narrative contracts and traceable sym
 
 Kubrick is developed under **Zero State**, an independent creative-technology practice focused on tools that preserve curiosity, authorship, structural coherence, and human creative agency during changing technological conditions.
 
-Kubrick is a Hermes skill—not a Python package—and works without Continuity Forge.
+Kubrick is an Agent Skill—not a Python package—and works without Continuity
+Forge.
 
 ---
 
@@ -247,8 +251,8 @@ See [`references/continuity-forge-integration.md`](references/continuity-forge-i
 Kubrick improves retrieval rankings from explicit project evidence.
 
 ```text
-references/usage/receipts/
-references/usage/outcomes/
+~/.openclaw/state/kubrick/receipts/
+~/.openclaw/state/kubrick/outcomes/
 ```
 
 Then run:
@@ -257,44 +261,51 @@ Then run:
 python scripts/evolve_from_use.py
 ```
 
-The evolution engine may update pattern confidence, usage history, corpus ordering, and overuse or weakness flags. It does **not** autonomously invent new governing patterns or rewrite the corpus without review. Every run emits an evolution receipt.
+The evolution engine writes reversible confidence and ranking overlays under
+the external state directory. It never mutates the bundled corpus, autonomously
+invents governing patterns, or rewrites provenance. Every run emits an
+evolution receipt.
 
 ---
 
 ## Installation
 
+Install directly from Git after the OpenClaw branch is merged:
+
+```bash
+openclaw skills install git:scrimshawlife-ctrl/Kubrick --global
+python3 ~/.openclaw/skills/kubrick/scripts/doctor.py
+```
+
+For a checked-out development copy:
+
 ```bash
 git clone https://github.com/scrimshawlife-ctrl/Kubrick.git
 cd Kubrick
+python3 -m pip install -r requirements.txt
 ./install.sh
 ```
 
-Default installation path:
+The manual installer uses `~/.openclaw/skills/kubrick`, OpenClaw's shared
+managed-skill directory. OpenClaw discovers the skill from its `SKILL.md`
+frontmatter and loads the body only when the request matches.
 
-```text
-~/.hermes/skills/kubrick
-```
-
-Categorized Hermes installation:
+Hermes remains supported:
 
 ```bash
-./install.sh creative
+./install.sh --hermes
 ```
 
-Development symlink:
-
-```bash
-mkdir -p ~/.hermes/skills
-ln -s "$(pwd)" ~/.hermes/skills/kubrick
-```
-
-Restart Hermes after installation. No Continuity Forge installation is required for standalone use.
+Mutable receipts, outcomes, rankings, and evolution overlays default to
+`~/.openclaw/state/kubrick`. Override that location with
+`KUBRICK_STATE_DIR`. No Continuity Forge installation is required for
+standalone use.
 
 ---
 
 ## Quick Start
 
-### In Hermes
+### In OpenClaw
 
 ```text
 Develop this premise into a feature outline with a controlled motif lifecycle,
@@ -358,21 +369,22 @@ The strongest motifs cross channels without every channel stating the same thing
 
 ```text
 Kubrick/
-├── SKILL.md                         # Hermes behavior, routing, gates, and procedures
+├── SKILL.md                         # OpenClaw behavior, routing, gates, and procedures
 ├── QUICKSTART.md                    # Minimal installation and execution path
 ├── CHANGELOG.md                     # Version history
-├── install.sh                       # Hermes installer
+├── install.sh                       # OpenClaw installer; optional Hermes target
 ├── scripts/
 │   ├── retrieve_symbolic_patterns.py
-│   └── evolve_from_use.py
+│   ├── evolve_from_use.py
+│   ├── kubrick_paths.py
+│   └── doctor.py
 ├── references/
 │   ├── patterns/                    # Machine-readable pattern sidecars
 │   ├── corpus/                      # Genre and domain pattern packs
-│   ├── usage/                       # Retrieval receipts, outcomes, and ledgers
-│   ├── evolution/                   # Evolution receipts
+│   ├── usage/                       # Examples only; live state is external
 │   ├── symbolic-dramaturgy.md
 │   └── continuity-forge-integration.md
-├── evals/                           # Retrieval and behavior evaluation fixtures
+├── evals/                           # Retrieval, behavior, and portability tests
 └── examples/                        # Minimal working examples
 ```
 
@@ -402,7 +414,8 @@ Within the ecosystem:
 
 - **Kubrick** engineers narrative and symbolic form.
 - **Continuity Forge** governs canonical production state and revision integrity.
-- **Hermes** provides the agent execution surface.
+- **OpenClaw** provides the primary agent execution surface.
+- **Hermes** remains a compatible Agent Skills runtime.
 - **Zero State** provides the creative philosophy, design language, and ecosystem identity.
 
 > **Zero State — creativity and authenticity as primary resources during changing times.**
@@ -411,7 +424,7 @@ Within the ecosystem:
 
 ## Version
 
-**0.8.0 — Executable Retrieval + Self-Evolution**
+**0.9.0 — OpenClaw Portability + Immutable Package State**
 
 See [CHANGELOG.md](CHANGELOG.md) for release details.
 

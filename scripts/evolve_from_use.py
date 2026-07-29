@@ -1,241 +1,189 @@
 #!/usr/bin/env python3
-"""
-Kubrick Self-Evolution Engine
+"""Evidence-based Kubrick evolution using external, reversible overlays."""
 
-This script is self-contained. It works completely independently when the
-skill is installed in Hermes (cp -R skills/kubrick ~/.hermes/skills/).
-
-It does not require continuity-forge or any optional extras.
-
-Evolves the symbolic corpus according to actual use.
-
-Usage:
-  python scripts/evolve_from_use.py --receipts-dir references/usage/receipts --outcomes-dir references/usage/outcomes
-
-It:
-- Aggregates retrieval receipts
-- Incorporates project outcomes (success/failure signals from Forge/revision/ledger)
-- Adjusts confidence, adds usage_history to sidecars
-- Updates corpus-index with observed performance
-- Emits an evolution_receipt
-- Never mutates without producing a receipt and provenance note
-
-Run periodically or after significant project activity.
-"""
+from __future__ import annotations
 
 import argparse
 import json
-import os
-import glob
-from datetime import datetime
 from collections import defaultdict
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Dict
+
+from kubrick_paths import PATTERNS_DIR, ensure_state_dirs
 
 try:
     import yaml
 except ImportError:
     yaml = None
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-SKILL_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
-PATTERNS_DIR = os.path.join(SKILL_ROOT, "references", "patterns")
-USAGE_RECEIPTS = os.path.join(SKILL_ROOT, "references", "usage", "receipts")
-USAGE_OUTCOMES = os.path.join(SKILL_ROOT, "references", "usage", "outcomes")
-EVOLUTION_DIR = os.path.join(SKILL_ROOT, "references", "evolution")
+
+def load_json(path: Path) -> Dict[str, Any]:
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
-def load_json(path):
-    with open(path, "r") as f:
-        return json.load(f)
+def save_json(path: Path, data: Dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    temporary.replace(path)
 
 
-def save_json(path, data):
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w") as f:
-        json.dump(data, f, indent=2)
+def load_patterns(root: Path) -> Dict[str, Dict[str, Any]]:
+    patterns = {}
+    if not root.exists():
+        return patterns
+    for path in sorted(root.rglob("*.json")):
+        data = load_json(path)
+        if data.get("pattern_id"):
+            patterns[str(data["pattern_id"])] = data
+    return patterns
 
 
-def find_sidecar(pattern_id):
-    for root, _, files in os.walk(PATTERNS_DIR):
-        for f in files:
-            if f == f"{pattern_id}.json":
-                return os.path.join(root, f)
+def load_receipt(path: Path) -> Dict[str, Any] | None:
+    try:
+        if path.suffix == ".json":
+            return load_json(path)
+        if path.suffix in {".yaml", ".yml"} and yaml is not None:
+            data = yaml.safe_load(path.read_text(encoding="utf-8"))
+            return data if isinstance(data, dict) else None
+    except (OSError, ValueError, json.JSONDecodeError):
+        return None
     return None
 
 
-def load_all_sidecars():
-    sidecars = {}
-    for root, _, files in os.walk(PATTERNS_DIR):
-        for fname in files:
-            if fname.endswith(".json"):
-                path = os.path.join(root, fname)
-                data = load_json(path)
-                sidecars[data.get("pattern_id", fname)] = {"path": path, "data": data}
-    return sidecars
-
-
-def aggregate_usage(receipts_dir, outcomes_dir):
-    usage = defaultdict(lambda: {"uses": 0, "total_score": 0.0, "success_signals": 0, "failure_signals": 0, "projects": []})
-
-    for path in glob.glob(os.path.join(receipts_dir, "*.json")) + glob.glob(os.path.join(receipts_dir, "*.yaml")):
-        try:
-            if path.endswith(".json"):
-                receipt = load_json(path)
-            else:
-                if yaml is None:
-                    continue
-                receipt = yaml.safe_load(open(path))
-            rec = receipt.get("retrieval_receipt", receipt)
-            ranked = rec.get("ranked_patterns", [])
-            for item in ranked[:3]:
-                pid = item.get("pattern_id")
-                if pid:
-                    usage[pid]["uses"] += 1
-                    usage[pid]["total_score"] += item.get("total_score", 0.5)
-                    usage[pid]["projects"].append(rec.get("request_hash", "unknown"))
-        except Exception as e:
-            print(f"Warning: could not parse {path}: {e}")
-
-    for path in glob.glob(os.path.join(outcomes_dir, "*.json")):
+def aggregate_usage(receipts_dir: Path, outcomes_dir: Path) -> Dict[str, Dict[str, Any]]:
+    usage: Dict[str, Dict[str, Any]] = defaultdict(
+        lambda: {
+            "uses": 0,
+            "total_score": 0.0,
+            "success_signals": 0,
+            "failure_signals": 0,
+            "projects": [],
+        }
+    )
+    for path in sorted(receipts_dir.glob("*")):
+        receipt = load_receipt(path)
+        if not receipt:
+            continue
+        record = receipt.get("retrieval_receipt", receipt)
+        for item in record.get("ranked_patterns", [])[:3]:
+            pattern_id = item.get("pattern_id")
+            if pattern_id:
+                usage[pattern_id]["uses"] += 1
+                usage[pattern_id]["total_score"] += float(
+                    item.get("total_score", 0.5)
+                )
+                usage[pattern_id]["projects"].append(
+                    record.get("request_hash", "unknown")
+                )
+    for path in sorted(outcomes_dir.glob("*.json")):
         try:
             outcome = load_json(path)
-            pid = outcome.get("pattern_id")
-            if pid:
-                signal = outcome.get("outcome", "neutral")
-                if signal == "success":
-                    usage[pid]["success_signals"] += 1
-                elif signal in ("failure", "debt", "collision", "revision_broken"):
-                    usage[pid]["failure_signals"] += 1
-                usage[pid]["projects"].append(outcome.get("project", "unknown"))
-        except Exception as e:
-            print(f"Warning: could not parse outcome {path}: {e}")
-
+        except (OSError, ValueError, json.JSONDecodeError):
+            continue
+        pattern_id = outcome.get("pattern_id")
+        if not pattern_id:
+            continue
+        signal = outcome.get("outcome", "neutral")
+        if signal == "success":
+            usage[pattern_id]["success_signals"] += 1
+        elif signal in {"failure", "debt", "collision", "revision_broken"}:
+            usage[pattern_id]["failure_signals"] += 1
+        usage[pattern_id]["projects"].append(outcome.get("project", "unknown"))
     return usage
 
 
-def evolve_sidecar(sidecar_info, usage_stats):
-    data = sidecar_info["data"]
-    pid = data["pattern_id"]
-    stats = usage_stats.get(pid, {})
-    uses = stats.get("uses", 0)
+def evolve_pattern(
+    pattern: Dict[str, Any], stats: Dict[str, Any]
+) -> Dict[str, Any] | None:
+    uses = int(stats.get("uses", 0))
     if uses == 0:
         return None
-
-    avg_score = stats["total_score"] / uses if uses > 0 else 0.5
-    success = stats.get("success_signals", 0)
-    failure = stats.get("failure_signals", 0)
-    total_signals = success + failure or 1
-    success_rate = success / total_signals
-
-    current_conf = data.get("confidence", 0.7)
+    average = float(stats["total_score"]) / uses
+    success = int(stats.get("success_signals", 0))
+    failure = int(stats.get("failure_signals", 0))
+    signals = success + failure
+    success_rate = success / signals if signals else 0.5
+    before = float(pattern.get("confidence", 0.7))
     delta = 0.0
-
     if uses >= 3:
-        delta += (avg_score - 0.6) * 0.15
+        delta += (average - 0.6) * 0.15
         delta += (success_rate - 0.5) * 0.25
-
     if failure > success and uses >= 2:
         delta -= 0.1
-
-    new_conf = max(0.3, min(0.98, round(current_conf + delta, 4)))
-
-    if "usage_history" not in data:
-        data["usage_history"] = []
-    data["usage_history"].append({
-        "date": datetime.utcnow().isoformat() + "Z",
-        "uses_in_window": uses,
-        "avg_retrieval_score": round(avg_score, 4),
-        "success_rate": round(success_rate, 4),
-        "confidence_before": current_conf,
-        "confidence_after": new_conf,
-        "delta": round(delta, 4),
-        "source_projects": list(set(stats.get("projects", [])))[:5]
-    })
-
-    data["confidence"] = new_conf
-    data["version"] = data.get("version", "0.6.0")
-    parts = data["version"].split(".")
-    if len(parts) >= 3:
-        parts[2] = str(int(parts[2]) + 1)
-        data["version"] = ".".join(parts)
-
-    data["last_evolved"] = datetime.utcnow().isoformat() + "Z"
-    return data
-
-
-def update_index_from_usage(index_path, usage_stats, sidecars):
-    if yaml is None:
-        return None
-    try:
-        with open(index_path, "r") as f:
-            index = yaml.safe_load(f)
-    except Exception:
-        return None
-
-    changed = False
-    for problem, data in index.get("by_dramatic_problem", {}).items():
-        current_patterns = data.get("patterns", [])
-        scored = []
-        for pid in current_patterns:
-            if pid in usage_stats and pid in sidecars:
-                score = usage_stats[pid].get("success_signals", 0) + (sidecars[pid]["data"].get("confidence", 0.7) * 2)
-                scored.append((pid, score))
-        if scored:
-            scored.sort(key=lambda x: x[1], reverse=True)
-            new_order = [p[0] for p in scored]
-            if new_order != current_patterns:
-                data["patterns"] = new_order
-                changed = True
-
-    if changed:
-        with open(index_path, "w") as f:
-            yaml.safe_dump(index, f, sort_keys=False)
-        return "corpus-index.yaml updated with performance-based ordering"
-    return None
-
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--receipts-dir", default=USAGE_RECEIPTS)
-    parser.add_argument("--outcomes-dir", default=USAGE_OUTCOMES)
-    args = parser.parse_args()
-
-    sidecars = load_all_sidecars()
-    usage = aggregate_usage(args.receipts_dir, args.outcomes_dir)
-
-    evolved = []
-    for pid, info in sidecars.items():
-        updated = evolve_sidecar(info, usage)
-        if updated:
-            save_json(info["path"], updated)
-            evolved.append(pid)
-
-    index_msg = update_index_from_usage(
-        os.path.join(SKILL_ROOT, "references", "corpus-index.yaml"),
-        usage,
-        sidecars
-    )
-
-    evolution_receipt = {
-        "evolution_receipt": {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
-            "patterns_evolved": evolved,
-            "index_update": index_msg,
-            "usage_window": {
-                "receipts_scanned": len(glob.glob(os.path.join(args.receipts_dir, "*"))),
-                "outcomes_scanned": len(glob.glob(os.path.join(args.outcomes_dir, "*")))
-            }
+    after = max(0.3, min(0.98, round(before + delta, 4)))
+    history = list(pattern.get("usage_history") or [])
+    history.append(
+        {
+            "date": datetime.now(timezone.utc).isoformat(),
+            "uses_in_window": uses,
+            "average_retrieval_score": round(average, 4),
+            "success_rate": round(success_rate, 4),
+            "confidence_before": before,
+            "confidence_after": after,
+            "delta": round(delta, 4),
+            "source_projects": sorted(set(stats.get("projects", [])))[:5],
         }
+    )
+    return {
+        "pattern_id": pattern["pattern_id"],
+        "confidence": after,
+        "last_evolved": datetime.now(timezone.utc).isoformat(),
+        "usage_history": history,
     }
 
-    os.makedirs(EVOLUTION_DIR, exist_ok=True)
-    receipt_path = os.path.join(EVOLUTION_DIR, f"evolution-{datetime.utcnow().strftime('%Y%m%d-%H%M')}.json")
-    save_json(receipt_path, evolution_receipt)
 
-    print(json.dumps(evolution_receipt, indent=2))
-    if evolved:
-        print(f"\nEvolved {len(evolved)} patterns. Sidecars updated in place with usage_history.")
-    else:
-        print("\nNo patterns met evolution thresholds in this window.")
+def main() -> None:
+    paths = ensure_state_dirs()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--receipts-dir", type=Path, default=paths["receipts"])
+    parser.add_argument("--outcomes-dir", type=Path, default=paths["outcomes"])
+    parser.add_argument("--dry-run", action="store_true")
+    args = parser.parse_args()
+
+    base_patterns = load_patterns(PATTERNS_DIR)
+    existing_overlays = load_patterns(paths["patterns"])
+    usage = aggregate_usage(args.receipts_dir, args.outcomes_dir)
+    evolved = {}
+    scores = {}
+    for pattern_id, pattern in base_patterns.items():
+        if pattern_id in existing_overlays:
+            pattern = {**pattern, **existing_overlays[pattern_id]}
+        stats = usage.get(pattern_id, {})
+        overlay = evolve_pattern(pattern, stats)
+        if not overlay:
+            continue
+        evolved[pattern_id] = overlay
+        scores[pattern_id] = round(
+            stats.get("success_signals", 0)
+            - stats.get("failure_signals", 0)
+            + overlay["confidence"] * 2,
+            4,
+        )
+        if not args.dry_run:
+            save_json(paths["patterns"] / f"{pattern_id}.json", overlay)
+
+    receipt = {
+        "evolution_receipt": {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "dry_run": args.dry_run,
+            "patterns_evolved": sorted(evolved),
+            "bundled_corpus_mutated": False,
+            "usage_window": {
+                "receipts_scanned": len(list(args.receipts_dir.glob("*"))),
+                "outcomes_scanned": len(list(args.outcomes_dir.glob("*"))),
+            },
+        }
+    }
+    if not args.dry_run:
+        save_json(
+            paths["ranking"],
+            {"updated_at": receipt["evolution_receipt"]["timestamp"], "pattern_scores": scores},
+        )
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S-%f")
+        save_json(paths["evolution"] / f"evolution-{stamp}.json", receipt)
+    print(json.dumps(receipt, indent=2))
 
 
 if __name__ == "__main__":

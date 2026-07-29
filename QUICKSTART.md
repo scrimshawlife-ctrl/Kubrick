@@ -1,57 +1,120 @@
 # Kubrick Quickstart
 
-Kubrick is a **standalone Hermes skill** for precise symbolic narrative engineering. It works without Continuity Forge.
+Kubrick is a standalone OpenClaw Agent Skill for cinematic writing, symbolic
+dramaturgy, motif engineering, diagnosis, revision, and production handoff. It
+works without Continuity Forge and remains compatible with Hermes.
 
 ## 1. Install
 
-```bash
-# From inside this folder
-./install.sh                 # → ~/.hermes/skills/kubrick
-./install.sh creative        # → ~/.hermes/skills/creative/kubrick
-```
-
-Or manually:
-```bash
-cp -R . ~/.hermes/skills/kubrick
-```
-
-Restart Hermes after installing.
-
-## 2. Basic Usage (Retrieval)
-
-Give it a brief:
+Install the merged repository as a shared managed skill:
 
 ```bash
-python scripts/retrieve_symbolic_patterns.py --brief evals/retrieval/inputs/sample_melodrama_lowbudget.yaml
+openclaw skills install git:scrimshawlife-ctrl/Kubrick --global
 ```
 
-It outputs a `retrieval_receipt` with ranked symbolic patterns, scores, and provenance.
-
-## 3. Evolution (Self-improvement)
-
-After using the skill on real projects, drop receipts/outcomes into `references/usage/` and run:
+Or install a checkout manually:
 
 ```bash
-python scripts/evolve_from_use.py
+git clone https://github.com/scrimshawlife-ctrl/Kubrick.git
+cd Kubrick
+python3 -m pip install -r requirements.txt
+./install.sh
 ```
 
-This updates pattern confidence and ordering based on actual results.
+The manual installer targets `~/.openclaw/skills/kubrick`.
 
-## 4. Triggers (in Hermes)
+Hermes compatibility:
 
-- "develop screenplay"
-- "kubrick style"
-- "symbolic narrative"
-- "motif engineering"
-- "handoff to continuity forge"
-- "diagnose script"
+```bash
+./install.sh --hermes
+```
 
-See `SKILL.md` for the full list and detailed procedures.
+The manual installer moves an existing installation to a timestamped backup
+instead of deleting it. It deliberately does not create an external symlink,
+because OpenClaw skips symlinks that resolve outside an untrusted skill root.
 
-## Next Steps
+## 2. Verify
 
-- Read `README.md` for full capabilities and distribution notes.
-- Explore `references/patterns/` and `evals/` for examples.
-- See `examples/minimal-retrieval-example.zip` for a tiny input + expected pair.
+```bash
+python3 ~/.openclaw/skills/kubrick/scripts/doctor.py
+openclaw skills list
+```
 
-**This skill runs completely independently inside Hermes.**
+The doctor checks Python, the corpus, schemas, deterministic retrieval, and
+writable state without changing a project.
+
+## 3. Use in OpenClaw
+
+Try:
+
+```text
+Develop this short-film premise into a dramatic contract, motif lifecycle,
+sequence outline, and three scene contracts. Keep the production to two actors
+and one apartment.
+```
+
+```text
+Diagnose this scene for causality, exposition, motif repetition, and geometric
+drift. Quote the weak passages and propose the smallest repairs.
+```
+
+```text
+Rewrite this sequence while preserving the locked broken-circle motif, but
+mutate its function under the protagonist's new choice.
+```
+
+## 4. Deterministic retrieval
+
+JSON requires only Python:
+
+```bash
+python3 scripts/retrieve_symbolic_patterns.py \
+  --brief /absolute/path/brief.json \
+  --format json
+```
+
+YAML briefs and output require PyYAML from `requirements.txt`:
+
+```bash
+python3 scripts/retrieve_symbolic_patterns.py \
+  --brief evals/retrieval/inputs/sample_melodrama_lowbudget.yaml
+```
+
+Retrieval emits a receipt with ranked patterns, scores, exclusions, provenance,
+and a `SELECTED` or `NOT_COMPUTABLE` status.
+
+## 5. Runtime state and evolution
+
+Live data defaults to:
+
+```text
+~/.openclaw/state/kubrick/
+├── receipts/
+├── outcomes/
+├── patterns/
+├── evolution/
+└── ranking.json
+```
+
+Set `KUBRICK_STATE_DIR` to use another writable location.
+
+After recording explicit project outcomes, run:
+
+```bash
+python3 scripts/evolve_from_use.py
+```
+
+Evolution writes reversible overlays and receipts. It never modifies the
+installed corpus.
+
+## 6. Validate a checkout
+
+```bash
+python3 -m py_compile scripts/*.py evals/test_openclaw_portability.py
+python3 -m unittest -v evals/test_openclaw_portability.py
+python3 scripts/doctor.py
+bash -n install.sh
+```
+
+Read `SKILL.md` for the complete workflow and `README.md` for architecture,
+design boundaries, and artifact definitions.

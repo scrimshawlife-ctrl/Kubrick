@@ -1,3 +1,32 @@
+## [0.9.0] - 2026-07-28
+### Added — OpenClaw Agent Skill Portability
+- Canonical OpenClaw frontmatter with trigger-focused description, runtime
+  requirements, optional state configuration, and homepage metadata.
+- OpenClaw-first installer with timestamped backups and Hermes compatibility.
+- `scripts/doctor.py` for read-only installation, schema, corpus, and retrieval
+  checks.
+- Executable OpenClaw portability tests and GitHub Actions validation on Python
+  3.9 and 3.12.
+- ClawHub publish exclusions and explicit Python dependency declaration.
+
+### Changed
+- Retrieval receipts, outcomes, ranking data, and evolution artifacts now live
+  outside the installed skill under `KUBRICK_STATE_DIR` or
+  `~/.openclaw/state/kubrick`.
+- Evolution writes reversible overlays instead of mutating packaged pattern
+  sidecars or the bundled index.
+- Retrieval records prohibited-pattern exclusions and uses evidence-derived
+  ranking only as a tie-break.
+- Documentation now treats OpenClaw as the primary runtime while preserving
+  Hermes compatibility and optional Continuity Forge handoff.
+
+### Fixed
+- Removed contradictory mandatory Continuity Forge prerequisites from the
+  standalone skill workflow.
+- Removed undefined “same as base” workflow references and duplicate gate
+  numbering.
+- Added JSON-only operation when PyYAML is unavailable.
+
 ## [0.7.1] - 2026-07-29
 ### Added — Autonomous Evolution from Use
 - `scripts/evolve_from_use.py` — self-improvement engine
