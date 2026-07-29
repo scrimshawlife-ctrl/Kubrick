@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/hero.jpg" alt="Kubrick — Symbolic Cinematic Narrative Engineering" width="100%">
+  <img src="assets/kubrick-hero.svg" alt="Kubrick — Symbolic Cinematic Narrative Engineering" width="100%">
 </p>
 
 <h1 align="center">Kubrick</h1>
