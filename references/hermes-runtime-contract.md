@@ -55,18 +55,24 @@ Examples: PyYAML or jsonschema. A helper that needs one must:
 
 Continuity Forge, MCP servers, model APIs, and rendering providers are optional extensions. Their absence cannot block local creative work.
 
-## v0.13 operator surface
+## Operator surface (intent router)
 
-The unified CLI (`scripts/kubrick.py`) is the authoritative local operator surface. Key additive commands in 0.13:
+The unified CLI (`scripts/kubrick.py`) is the authoritative local operator surface.
 
-- `forge-signals` — multi-signal Forge observation extraction
-- `evolution-propose` — multi-signal proposal-only evolution with human review gates
-- `closed-loop-qa` — differential visual fidelity loop
-- `adapt-flux` / `adapt-sd3` / `adapt-midjourney` / `adapt-provider` — syntax-only provider packets
-- `operator` — saturation, counterpoint, convergence lock, surface-occult audit, architecture export
-- `mcp-server` — optional stdio MCP wrapper over the same CLI (never authoritative)
-- `design-build` — governed design-specification compilation
-- `ledger` subcommands — `rehydrate`, `apply-forge`, `export-retrieval`, `record-pattern`
+**Primary form (prefer for Hermes and docs):**
+
+```text
+python scripts/kubrick.py do <intent> [--action <action>] [flags]
+```
+
+**Intents:** `compile`, `retrieve`, `ledger`, `design`, `storyboard`, `adapt`, `visual`, `learn`, `check`, `operate`, `mcp`, `bundle`
+
+**MCP:** optional stdio server exposes a single tool, `kubrick_do`, over the same router. MCP is never authoritative.
+
+**Legacy aliases** (soft cutover): flat names such as `forge-signals`, `closed-loop-qa`, `adapt-flux`, `validate-skill`, `mcp-server`, `design-build` still resolve through the router.
+
+Registry and resolve logic: `scripts/intent_router.py`.  
+Design: `docs/superpowers/specs/2026-07-30-operator-intent-router-design.md`.
 
 See root `README.md`, `QUICKSTART.md`, and `docs/README.md` for workflows and the docs index.
 

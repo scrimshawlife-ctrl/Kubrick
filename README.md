@@ -27,6 +27,18 @@
 
 It converts dramatic pressure into observable geometry, behavior, rhythm, material state, light, sound, convergence, and residue. Esoteric and archetypal source systems remain latent by default: audience-facing packets expose enforceable cinematic constraints rather than named occult concepts.
 
+## Operator surface (quick start)
+
+```bash
+python scripts/kubrick.py do <intent> [--action <action>] [flags]
+# examples:
+python scripts/kubrick.py do check --action smoke
+python scripts/kubrick.py recipe storyboard-example
+python scripts/kubrick.py help adapt
+```
+
+Twelve intents replace a flat list of ~29 peer commands. Legacy names remain soft aliases. Full table: [Operator Commands](#operator-commands).
+
 ## 0.13.0 Highlights
 
 Wave 2 and Wave 3 of the production-hardening roadmap are **shipped on `main`** ([#3](https://github.com/scrimshawlife-ctrl/Kubrick/issues/3), [#4](https://github.com/scrimshawlife-ctrl/Kubrick/issues/4), [PR #24](https://github.com/scrimshawlife-ctrl/Kubrick/pull/24)).
@@ -38,7 +50,7 @@ Wave 2 and Wave 3 of the production-hardening roadmap are **shipped on `main`** 
 | **First-class project ledgers** | Persistent motif state, pattern history, rehydrate/apply-forge, retrieval snapshots; Forge remains canonical |
 | **Multi-provider adapters** | Grok Imagine, Flux, SD3, Midjourney share one latent graph; adapters change **syntax only** |
 | **Closed-loop visual QA** | Observe → normalize → differential score → correct; geometry / state / residue / convergence reported separately |
-| **CLI + optional MCP operators** | Saturation, counterpoint, convergence lock, surface-occult audit, motif mutation, symbolic-architecture export |
+| **CLI + optional MCP operators** | Intent router (`do <intent>`), soft aliases, recipes; MCP tool `kubrick_do`; saturation, counterpoint, lock, occult audit, export |
 | **Cultural-signal packs** | Time-sensitive contemporary memetic patterns with provenance and validity windows |
 | **Design specification compiler** | Heterogeneous evidence → schema-valid `design.md` candidate without silent authority promotion |
 | **Fail-closed governance** | Weak evidence → `NOT_COMPUTABLE`; no structural change applies automatically |
@@ -77,7 +89,7 @@ python -m pip install pyyaml jsonschema
 Validate the installed skill:
 
 ```bash
-python ~/.hermes/skills/kubrick/scripts/kubrick.py validate-skill
+python ~/.hermes/skills/kubrick/scripts/kubrick.py do check --action skill
 ```
 
 Continuity Forge, MCP servers, generation APIs, and vision APIs remain optional.
@@ -85,7 +97,7 @@ Continuity Forge, MCP servers, generation APIs, and vision APIs remain optional.
 ## Unified Pipeline
 
 ```bash
-python scripts/kubrick.py compile \
+python scripts/kubrick.py do compile \
   --brief examples/authority-transfer-storyboard/brief.yaml \
   --ledger examples/authority-transfer-storyboard/symbolic-ledger.yaml \
   --mode storyboard \
@@ -112,50 +124,45 @@ brief
 
 ## Operator Commands
 
-```text
-validate-skill          validate Hermes skill structure
-validate-corpus         validate executable pattern sidecars
-coverage                audit corpus and registry coverage
-compile                 run the unified symbolic compiler
-retrieve                registry-aware deterministic retrieval
-ledger                  init / audit / mutate / rehydrate / apply-forge
-design-build            compile a governed design specification
-storyboard-propagate    propagate graph state across frames
-storyboard-compare      inspect frame-to-frame continuity
-adapter-build           build a provider-neutral adapter packet
-adapt-grok              emit Grok Imagine prompt packets
-adapt-flux              emit Flux prompt packets
-adapt-sd3               emit SD3 prompt packets
-adapt-midjourney        emit Midjourney prompt packets
-adapt-provider          syntax-only translation for any supported provider
-visual-normalize        normalize human or optional vision observations
-visual-compare          compare expected and observed frame state
-visual-correct          build targeted regeneration instructions
-correction-govern       stop, continue, or escalate correction iterations
-closed-loop-qa          observe → score → correct with differential fidelity
-outcome-record          record production-use evidence (OBSERVATION)
-evolution-propose       multi-signal proposal-only corpus evolution
-forge-signals           extract multi-signal Forge observations
-operator                saturation, counterpoint, lock, audit, export, mutate
-mcp-server              optional stdio MCP wrapper (never authoritative)
-grok-review-bundle      package the complete Grok review workflow
-artifact-validate       validate YAML or JSON against a repository schema
-repeatability           compare stable hashes across two clean compiles
-eval                    run the standalone Hermes regression suite
+Primary surface:
+
+```bash
+python scripts/kubrick.py do <intent> [--action <action>] [flags]
 ```
+
+| Intent | Purpose |
+|---|---|
+| `compile` | Full brief-to-packet symbolic compile |
+| `retrieve` | Registry-aware deterministic retrieval |
+| `ledger` | Project symbolic ledger (init / audit / mutate / rehydrate / apply-forge) |
+| `design` | Governed design-specification compilation |
+| `storyboard` | Multi-frame state propagate / compare |
+| `adapt` | Neutral adapter packet and provider syntax translation |
+| `visual` | Visual QA loop (normalize / compare / correct / govern / closed-loop) |
+| `learn` | Outcome receipts, multi-signal evolution, Forge signal extraction |
+| `check` | Validation and regression (skill, corpus, coverage, eval, smoke, …) |
+| `operate` | Saturation, counterpoint, lock, surface-occult audit, architecture export |
+| `mcp` | Optional stdio MCP wrapper — single tool `kubrick_do` (never authoritative) |
+| `bundle` | Package the complete Grok review workflow |
+
+Sugar: `python scripts/kubrick.py help <intent>`, `recipe <name>`, `aliases`.
+
+Legacy peer names (`adapt-flux`, `closed-loop-qa`, `validate-skill`, …) remain soft aliases.
+
+Step-by-step recipes: [`QUICKSTART.md`](QUICKSTART.md).
 
 ## Common Workflows
 
 ### Multi-provider adaptation
 
 ```bash
-python scripts/kubrick.py adapter-build \
+python scripts/kubrick.py do adapt \
   --graph out/motif-graph.private.yaml \
   --storyboard out/storyboard-symbolic-state.yaml \
   --provider generic \
   --output out/model-adapter-packet.yaml
 
-python scripts/kubrick.py adapt-provider \
+python scripts/kubrick.py do adapt --action provider \
   --packet out/model-adapter-packet.yaml \
   --provider flux \
   --output out/flux-prompt-packet.yaml
@@ -166,16 +173,16 @@ Adapters preserve `source_graph_id` and never rewrite canonical symbolic intent.
 ### Forge feedback → evolution proposal
 
 ```bash
-python scripts/kubrick.py forge-signals \
+python scripts/kubrick.py do learn --action forge-signals \
   --project-id myfilm \
   --input references/examples/forge-signals/ledger-before-after.yaml \
   --output out/forge-bundle.yaml
 
-python scripts/kubrick.py ledger apply-forge \
+python scripts/kubrick.py do ledger apply-forge \
   --ledger project/symbolic-ledger.yaml \
   --forge-bundle out/forge-bundle.yaml
 
-python scripts/kubrick.py evolution-propose \
+python scripts/kubrick.py do learn --action evolve \
   --pattern-id interface_badge_authority_transfer \
   --forge-bundle out/forge-bundle.yaml \
   --output out/evolution-proposal.yaml
@@ -186,7 +193,7 @@ Every evolution event emits a multi-signal receipt. Structural changes and large
 ### Closed-loop visual QA
 
 ```bash
-python scripts/kubrick.py closed-loop-qa \
+python scripts/kubrick.py do visual --action closed-loop \
   --expected out/storyboard-symbolic-state.yaml \
   --observation-input observations/frame-001.json \
   --source-graph-id <graph-id> \
@@ -197,21 +204,21 @@ python scripts/kubrick.py closed-loop-qa \
 ### Operators and optional MCP
 
 ```bash
-python scripts/kubrick.py operator saturation-score --ledger project/symbolic-ledger.yaml
-python scripts/kubrick.py operator surface-occult-audit --input out/audience-constraints.yaml
-python scripts/kubrick.py operator symbolic-architecture-export \
+python scripts/kubrick.py do operate saturation-score --ledger project/symbolic-ledger.yaml
+python scripts/kubrick.py do operate surface-occult-audit --input out/audience-constraints.yaml
+python scripts/kubrick.py do operate symbolic-architecture-export \
   --graph out/motif-graph.private.yaml \
   --ledger project/symbolic-ledger.yaml \
   --output out/symbolic-architecture-export.yaml
 
-# Optional — tools wrap the same CLI; fail closed on weak evidence
-python scripts/kubrick.py mcp-server
+# Optional — single MCP tool kubrick_do; fail closed on weak evidence
+python scripts/kubrick.py do mcp
 ```
 
 ### Design specification
 
 ```bash
-python scripts/kubrick.py design-build --help
+python scripts/kubrick.py do design --help
 ```
 
 See `references/design-specification-compiler.md` and `templates/design-specification.yaml`.
@@ -219,14 +226,14 @@ See `references/design-specification-compiler.md` and `templates/design-specific
 ## Verification
 
 ```bash
-python scripts/kubrick.py validate-skill
-python scripts/kubrick.py validate-corpus
-python scripts/kubrick.py coverage
-python scripts/kubrick.py eval
+python scripts/kubrick.py do check --action skill
+python scripts/kubrick.py do check --action corpus
+python scripts/kubrick.py do check --action coverage
+python scripts/kubrick.py do check --action eval
 python scripts/test_outcome_governance.py
 python scripts/test_wave2_wave3.py
 python scripts/test_design_specification.py
-python scripts/kubrick.py repeatability --output out/kubrick/repeatability-report.json
+python scripts/kubrick.py do check --action repeatability --output out/kubrick/repeatability-report.json
 python scripts/audit_release_version.py --strict
 ```
 
@@ -242,7 +249,8 @@ CI (`.github/workflows/hermes-evals.yml`) runs Hermes evals, outcome governance,
 | [`docs/ROADMAP-v0.13.md`](docs/ROADMAP-v0.13.md) | Current roadmap and next priorities |
 | [`docs/RELEASE-NOTES-v0.13.md`](docs/RELEASE-NOTES-v0.13.md) | v0.13 release notes |
 | [`docs/RELEASE-CHECKLIST-v0.13.md`](docs/RELEASE-CHECKLIST-v0.13.md) | Release gates and procedure |
-| [`docs/README.md`](docs/README.md) | Docs index |
+| [`docs/README.md`](docs/README.md) | Docs index (incl. intent-router design/plan) |
+| [`docs/superpowers/specs/2026-07-30-operator-intent-router-design.md`](docs/superpowers/specs/2026-07-30-operator-intent-router-design.md) | Operator intent-router design |
 | [`references/hermes-runtime-contract.md`](references/hermes-runtime-contract.md) | Runtime, dependency, artifact, and canon policy |
 | [`references/hermes-model-adapters.md`](references/hermes-model-adapters.md) | Provider adapter contract |
 | [`references/hermes-visual-qa.md`](references/hermes-visual-qa.md) | Visual QA contract |

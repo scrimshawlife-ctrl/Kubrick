@@ -2,6 +2,17 @@
 
 Kubrick is the primary symbolic cinematic narrative engineering skill. It replaces the earlier scriptwriting skill as the recommended system for premise-to-production development with deep motif, geometric, cinematic, storyboard, and visual-fidelity encoding.
 
+## [Unreleased]
+
+### Changed — Operator intent router
+
+- Primary CLI surface is `kubrick do <intent> [--action …]` (12 intents) for Hermes and humans.
+- Soft aliases preserve all prior top-level command names (`adapt-flux`, `closed-loop-qa`, `validate-skill`, …).
+- Help lists intents only; sugar includes `help`, `recipe`, and `aliases`.
+- Recipes: `recipe storyboard-example`, `recipe verify`.
+- MCP: single tool `kubrick_do` over the same router (never authoritative).
+- Implementation: `scripts/intent_router.py`; design/plan under `docs/superpowers/`.
+
 ## [0.13.0] - 2026-07-30
 
 ### Added — Wave 2: Forge Feedback, Multi-Signal Evolution, Project Ledgers

@@ -15,7 +15,17 @@ Kubrick closes Wave 2 and Wave 3 from the production-hardening roadmap:
 
 Also on `main` (adjacent capability): deterministic **design specification compiler** (`design-build`).
 
+### Post-0.13 — Operator intent router (Unreleased)
+
+Simplifies the Hermes/human CLI from ~29 flat peers to **`kubrick do <intent>`** (12 intents) with soft aliases, recipes, and MCP tool `kubrick_do`.
+
 | Tracking | Status |
+|---|---|
+| Design | [`docs/superpowers/specs/2026-07-30-operator-intent-router-design.md`](../superpowers/specs/2026-07-30-operator-intent-router-design.md) |
+| Plan | [`docs/superpowers/plans/2026-07-30-operator-intent-router.md`](../superpowers/plans/2026-07-30-operator-intent-router.md) |
+| Implementation PR | [#28](https://github.com/scrimshawlife-ctrl/Kubrick/pull/28) |
+
+| Tracking (0.13) | Status |
 |---|---|
 | Issue [#3](https://github.com/scrimshawlife-ctrl/Kubrick/issues/3) Wave 2 | **Closed** |
 | Issue [#4](https://github.com/scrimshawlife-ctrl/Kubrick/issues/4) Wave 3 | **Closed** |
@@ -55,23 +65,34 @@ Also on `main` (adjacent capability): deterministic **design specification compi
 
 ## Operator surface (authoritative list)
 
-See root `README.md` and `QUICKSTART.md`. Summary:
+**Primary (prefer this):**
 
 ```text
-compile · retrieve · ledger · design-build
-adapter-build · adapt-grok · adapt-flux · adapt-sd3 · adapt-midjourney · adapt-provider
-closed-loop-qa · forge-signals · evolution-propose · outcome-record
-operator · mcp-server
-validate-skill · validate-corpus · coverage · eval · repeatability
+kubrick do <intent> [--action <action>] [flags]
+
+intents:
+  compile · retrieve · ledger · design · storyboard · adapt
+  visual · learn · check · operate · mcp · bundle
+
+sugar:
+  kubrick help <intent>
+  kubrick recipe storyboard-example | verify
+  kubrick aliases
 ```
+
+**Legacy aliases** (soft cutover; still work):  
+`compile`, `retrieve`, `ledger`, `design-build`, `adapt-*`, `visual-*`, `closed-loop-qa`, `forge-signals`, `evolution-propose`, `operator`, `mcp-server`, `validate-skill`, …
+
+See root `README.md`, `QUICKSTART.md`, and `scripts/intent_router.py`.
 
 ## Next priorities
 
-1. Optional vision-provider normalizers beyond generic JSON and Grok Vision.
-2. Video adapters as syntax-only translations over the neutral packet.
-3. Privacy-preserving cross-project analytics from **approved** outcome receipts only.
-4. Expand executable corpus only with provenance, misuse risks, mutation requirements, production-cost analysis, and regression coverage.
-5. Optional Node 24-ready GitHub Actions base images when deprecation pressure requires it.
+1. Optional hard removal of legacy CLI aliases after a deprecation window.
+2. Optional vision-provider normalizers beyond generic JSON and Grok Vision.
+3. Video adapters as syntax-only translations over the neutral packet.
+4. Privacy-preserving cross-project analytics from **approved** outcome receipts only.
+5. Expand executable corpus only with provenance, misuse risks, mutation requirements, production-cost analysis, and regression coverage.
+6. Optional Node 24-ready GitHub Actions base images when deprecation pressure requires it.
 
 ## Docs map
 

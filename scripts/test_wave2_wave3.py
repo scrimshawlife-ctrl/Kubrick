@@ -363,8 +363,9 @@ def main() -> None:
         assert mcp.returncode == 0
         listed = json.loads(mcp.stdout.strip().splitlines()[0])
         names = {t["name"] for t in listed["result"]["tools"]}
-        assert "kubrick_saturation_score" in names
-        assert "kubrick_extract_forge_signals" in names
+        assert "kubrick_do" in names
+        # Single primary tool over intent router (legacy multi-tool surface retired)
+        assert names == {"kubrick_do"}
 
     print("wave2/wave3 smoke test: PASS")
 
