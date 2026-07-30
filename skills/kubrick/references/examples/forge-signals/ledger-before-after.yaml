@@ -1,0 +1,73 @@
+before:
+  schema_version: "1.0.0"
+  project_id: forge-demo
+  governing_grammar: authority persists through spatial and material systems
+  supporting_grammars: []
+  active_motifs:
+    - motif_id: cracked-badge
+      observed_form: cracked access badge
+      current_state: held by supervisor
+      recurrence_count: 1
+      last_mutation: null
+      ownership: supervisor
+      pattern_links:
+        - interface_badge_authority_transfer
+      convergence_sites:
+        - primary
+  retired_motifs: []
+  prohibited_motifs: []
+  unresolved_payoffs:
+    - badge ownership must determine doorway access
+  completed_payoffs: []
+  collisions: []
+  cultural_boundaries: []
+  symbolic_debt: 0.1
+  saturation_score: 0.25
+  revision: 1
+after:
+  schema_version: "1.0.0"
+  project_id: forge-demo
+  governing_grammar: authority persists through spatial and material systems
+  supporting_grammars: []
+  active_motifs:
+    - motif_id: cracked-badge
+      observed_form: cracked access badge
+      current_state: held by junior operator
+      recurrence_count: 2
+      last_mutation: ownership transfer at doorway
+      ownership: junior-operator
+      pattern_links:
+        - interface_badge_authority_transfer
+      convergence_sites:
+        - primary
+    - motif_id: doorway-light
+      observed_form: dual light across threshold
+      current_state: junior side brighter
+      recurrence_count: 1
+      last_mutation: introduced
+      ownership: null
+      pattern_links:
+        - dual_light_conflicting_claims
+      convergence_sites:
+        - primary
+  retired_motifs: []
+  prohibited_motifs: []
+  unresolved_payoffs: []
+  completed_payoffs:
+    - badge ownership must determine doorway access
+  collisions:
+    - type: PAYOFF_COMPETITION
+      patterns:
+        - interface_badge_authority_transfer
+        - dual_light_conflicting_claims
+      rationale: both claim the doorway as primary authority site
+  cultural_boundaries: []
+  symbolic_debt: 0.25
+  saturation_score: 0.42
+  revision: 3
+ingestion:
+  status: COMMITTED
+  motif_identity_preserved: true
+  mutation_history_preserved: true
+  notes:
+    - forge committed ledger revision 3

@@ -34,6 +34,7 @@ rsync -a --delete \
   --exclude 'docs/RELEASE-NOTES-v0.12.md' \
   --exclude 'PR_BODY.md' \
   --exclude 'scripts/package_optional_skill.sh' \
+  --exclude 'skills/' \
   --exclude 'skills.sh.json' \
   "${ROOT}/" "${TARGET}/"
 

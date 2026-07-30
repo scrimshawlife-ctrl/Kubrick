@@ -1,0 +1,11 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "Cinematic Design",
+      "description": "Symbolic cinematic engineering for screenplays, storyboards, continuity, and production-safe generative prompts.",
+      "skills": ["kubrick"]
+    }
+  ]
+}
