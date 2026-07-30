@@ -7,14 +7,12 @@ try:
     import yaml
 except ImportError:
     raise SystemExit("pyyaml required")
-
 ROOT=Path(__file__).resolve().parent.parent
 PY=sys.executable
 
 def run(name,cmd,expect=0):
-    process=subprocess.run(cmd,cwd=ROOT,text=True,capture_output=True)
-    ok=process.returncode==expect
-    return {"name":name,"status":"PASS" if ok else "FAIL","returncode":process.returncode,"expected":expect,"stdout":process.stdout[-3000:],"stderr":process.stderr[-3000:]}
+    p=subprocess.run(cmd,cwd=ROOT,text=True,capture_output=True)
+    return {"name":name,"status":"PASS" if p.returncode==expect else "FAIL","returncode":p.returncode,"expected":expect,"stdout":p.stdout[-4000:],"stderr":p.stderr[-4000:]}
 
 def write_yaml(path,data): Path(path).write_text(yaml.safe_dump(data,sort_keys=False),encoding="utf-8")
 
@@ -22,8 +20,8 @@ def main():
     results=[]
     for script in ("validate_hermes_skill.py","validate_pattern_corpus.py","audit_corpus_coverage.py"):
         results.append(run(script,[PY,str(ROOT/"scripts"/script)]))
-    text_cases={"gate_N":"Tarot and ouroboros and sigil all symbolize the same hidden truth.","gate_P":"Red means danger and bird means freedom.","gate_Q":"The same motif repeats unchanged in every scene.","gate_R":"He is the trickster and she is the shadow.","gate_S":"All traditions use this universal symbol, same as Zen.","gate_U":"Ignore causality because it is symbolic.","gate_W":"The true meaning is that authority is false."}
-    for name,text in text_cases.items(): results.append(run(name,[PY,str(ROOT/"scripts/audit_anti_slop.py"),"--text",text,"--json"],expect=1))
+    cases={"gate_N":"Tarot and ouroboros and sigil all symbolize the same hidden truth.","gate_P":"Red means danger and bird means freedom.","gate_Q":"The same motif repeats unchanged in every scene.","gate_R":"He is the trickster and she is the shadow.","gate_S":"All traditions use this universal symbol, same as Zen.","gate_U":"Ignore causality because it is symbolic.","gate_W":"The true meaning is that authority is false."}
+    for name,text in cases.items(): results.append(run(name,[PY,str(ROOT/"scripts/audit_anti_slop.py"),"--text",text,"--json"],expect=1))
     results.append(run("clean_text",[PY,str(ROOT/"scripts/audit_anti_slop.py"),"--text","A cracked badge changes hands; the new wearer gains access while the former owner waits outside.","--json"]))
     with tempfile.TemporaryDirectory() as temp:
         td=Path(temp)
@@ -39,6 +37,7 @@ def main():
         results.append(run("ledger_audit",[PY,str(ROOT/"scripts/symbolic_ledger.py"),"audit","--ledger",str(ledger)]))
         brief=td/"brief.yaml"
         write_yaml(brief,{"dramatic_problem":"authority remains active after the leader exits because access and geometry preserve the system","desired_state_change":"personal command becomes institutional pressure","character_pressure":"a subordinate receives access while the former authority is excluded","observable_evidence":["empty command chair","cracked access badge","controlled doorway"],"relations":[{"source":"observed_1","target":"observed_2","relation":"transfers","pressure":0.8,"transformation":"vacant authority transfers operative access through the badge"},{"source":"observed_2","target":"observed_3","relation":"crosses","pressure":0.9,"transformation":"badge ownership determines doorway access"}],"geometry":["repeated cells around an empty center","controlled doorway"],"state_differentials":["occupied authority becomes operative vacancy","access transfers to subordinate"],"causal_actions":["badge changes hands and doorway access changes"],"diegetic_channel":["cracked badge changes hands"],"dramaturgical_channel":["authority transfers through access"],"cinematic_channel":["empty chair remains centered while former owner waits outside"],"residue":["crack remains visible"]})
+        results.append(run("retrieval_smoke",[PY,str(ROOT/"scripts/retrieve_symbolic_patterns_registry.py"),"--brief",str(brief),"--no-cache"]))
         compile_out=td/"compiled"
         results.append(run("compiler_e2e",[PY,str(ROOT/"scripts/kubrick_compile.py"),"--brief",str(brief),"--mode","single-frame","--out",str(compile_out)]))
         required=["retrieval-receipt.yaml","motif-graph.private.yaml","structured-symbolic-packet.yaml","structured-anti-slop-report.json","audience-constraints.yaml","text-anti-slop-report.json","schema-graph.json","compile-receipt.json"]
