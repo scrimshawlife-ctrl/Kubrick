@@ -103,6 +103,8 @@ References, schemas, pattern sidecars, and eval fixtures are immutable during or
 
 Every compile receipt records deterministic runtime identity fields: `kubrick_version`, `corpus_version`, `corpus_digest`, `schema_bundle_version`, `provider_adapter_version`, `command`, `command_digest`, and `normalized_input_digest`. Digests use relative paths and canonical semantic inputs. They exclude timestamps, absolute paths, file metadata, and environment details.
 
+Every provider packet includes a `preservation_report` conforming to `schemas/provider-preservation-report.schema.json`. Graph identity, required observable content, ownership, geometry, state change, residue, continuity, and negative constraints are critical invariants. Any loss marks the adapter output `INVALID`; provider syntax may change, semantic requirements may not.
+
 ## Canon policy
 
 Kubrick may preserve approved facts and generate proposals. It must not promote content to `LOCKED` on its own.

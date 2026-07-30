@@ -33,6 +33,7 @@ REQUIRED_PATHS = [
     "scripts/validate_manifest.py",
     "scripts/test_receipt_identity.py",
     "scripts/test_diagnostics.py",
+    "scripts/test_adapter_preservation.py",
     "scripts/build_motif_graph.py",
     "scripts/evolve_from_use.py",
     "evals",

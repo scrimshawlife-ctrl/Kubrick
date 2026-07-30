@@ -12,12 +12,14 @@ Kubrick is the primary symbolic cinematic narrative engineering skill. It replac
 - Added deterministic compile-receipt identities for the Kubrick release, corpus, schema bundle, provider adapter, command options, and normalized semantic input.
 - Added mutation-sensitive identity tests and compile-receipt repeatability coverage.
 - Added a canonical structured diagnostic schema and failure matrix for router errors, unavailable validation dependencies, and compiler `NOT_COMPUTABLE` paths.
+- Added provider semantic-preservation reports covering graph identity, required observable content, ownership, geometry, state change, residue, continuity, and negative constraints.
 
 ### Changed
 
 - The unified Hermes intent router now derives its registry, aliases, and recipes from the canonical manifest.
 - The smoke gate now validates the manifest before the skill and corpus.
 - The unified router now supports `KUBRICK_DIAGNOSTICS=json`; compiler `NOT_COMPUTABLE` consistently exits with manifest code `4`, while missing required optional tooling exits `3`.
+- Grok Imagine now uses the shared provider adaptation path; all adapters fail closed when a critical semantic invariant is lost.
 
 ### Changed — Operator intent router
 
