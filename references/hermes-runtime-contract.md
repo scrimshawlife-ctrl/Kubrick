@@ -12,6 +12,8 @@ Kubrick may assume:
 - A Python 3 interpreter may be available for deterministic helpers.
 - The skill directory may be read-only after installation.
 
+The Bash installer must validate a staged copy before activation, keep backups outside `skills/`, atomically swap the validated directory, restore the prior installation if activation fails, and write an install receipt. Dry-run performs no writes; rollback preserves the displaced installation as a backup.
+
 Kubrick must not assume:
 
 - the Git repository is present,

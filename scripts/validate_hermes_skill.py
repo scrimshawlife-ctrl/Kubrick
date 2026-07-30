@@ -34,6 +34,7 @@ REQUIRED_PATHS = [
     "scripts/test_receipt_identity.py",
     "scripts/test_diagnostics.py",
     "scripts/test_adapter_preservation.py",
+    "scripts/test_installer.py",
     "scripts/build_motif_graph.py",
     "scripts/evolve_from_use.py",
     "evals",

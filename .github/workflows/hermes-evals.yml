@@ -37,6 +37,7 @@ jobs:
       - run: python scripts/validate_manifest.py
       - run: python scripts/test_diagnostics.py
       - run: python scripts/test_adapter_preservation.py
+      - run: python scripts/test_installer.py
       - run: python scripts/test_receipt_identity.py
       - run: python scripts/run_hermes_evals.py
       - run: python scripts/test_outcome_governance.py
