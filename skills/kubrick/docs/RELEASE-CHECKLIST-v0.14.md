@@ -6,7 +6,7 @@
 |---|---|
 | Deterministic contract implementation | Complete |
 | Canonical and exported Hermes contract tests | Complete |
-| Cross-platform stdlib and validation CI | Pending final release commit |
+| Cross-platform stdlib and validation CI | Complete on release candidate |
 | `v0.14.0` git tag / GitHub Release | Pending green release commit |
 
 ## Required gates
@@ -28,7 +28,7 @@
 - [x] Official Hermes export contains all storyboard recipe fixtures.
 - [x] Repository-level Hermes contract tests pass in canonical and exported layouts.
 - [x] Release versions and current-document references align.
-- [ ] GitHub Actions is green on the release commit.
+- [x] GitHub Actions is green on the release commit.
 - [ ] Create and push the `v0.14.0` tag from that green commit.
 - [ ] Publish GitHub release notes from `docs/RELEASE-NOTES-v0.14.md`.
 
