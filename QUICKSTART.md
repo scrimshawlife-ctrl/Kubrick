@@ -1,6 +1,6 @@
 # Kubrick Quickstart
 
-Kubrick is a **standalone Hermes skill**. Continuity Forge, MCP servers, model APIs, and Python packaging are optional extensions.
+Kubrick is a **standalone Hermes skill**. Continuity Forge, MCP servers, model APIs, and external generation providers remain optional.
 
 ## 1. Install
 
@@ -9,57 +9,110 @@ Kubrick is a **standalone Hermes skill**. Continuity Forge, MCP servers, model A
 # or: cp -R . ~/.hermes/skills/kubrick
 ```
 
-Restart Hermes after installation.
-
-## 2. Validate
+Install runtime validation dependencies when working from the repository:
 
 ```bash
-python scripts/validate_hermes_skill.py
-python scripts/validate_pattern_corpus.py
-python scripts/audit_corpus_coverage.py
-python scripts/run_hermes_evals.py
+python -m pip install pyyaml jsonschema
 ```
 
-## 3. Compile a symbolic packet
+## 2. Unified CLI
 
-The default operator surface is the one-command compiler:
+The default operator surface is:
 
 ```bash
-python scripts/kubrick_compile.py \
+python scripts/kubrick.py <command> [arguments]
+```
+
+Core commands:
+
+```text
+validate-skill          validate Hermes skill structure
+validate-corpus         validate executable patterns
+coverage                audit corpus and registry coverage
+compile                 run the unified compiler
+retrieve                run registry-aware retrieval
+ledger                  initialize, audit, or mutate project state
+storyboard-propagate    propagate graph state across frames
+storyboard-compare      inspect adjacent-frame continuity
+adapter-build           build a neutral provider packet
+adapt-grok              emit Grok Imagine prompt packets
+visual-compare          compare expected and observed visual state
+visual-correct          build targeted regeneration instructions
+artifact-validate       validate YAML/JSON against a repository schema
+eval                    run the regression suite
+```
+
+## 3. Compile a single frame
+
+```bash
+python scripts/kubrick.py compile \
   --brief project/brief.yaml \
   --ledger project/symbolic-ledger.yaml \
   --mode single-frame \
   --out project/out/kubrick
 ```
 
-Modes: `single-frame`, `scene`, `storyboard`, `diagnostic`.
-
-A successful run writes:
-
-```text
-project/out/kubrick/
-├── brief.normalized.yaml
-├── retrieval-receipt.yaml
-├── graph-input.yaml
-├── motif-graph.private.yaml
-├── audience-constraints.yaml
-├── anti-slop-report.json
-└── compile-receipt.json
-```
-
-Weak retrieval, insufficient observed forms, invalid graphs, private-symbol leakage, or anti-slop failure returns `NOT_COMPUTABLE` and exits nonzero.
-
-## 4. Initialize and maintain a project ledger
+## 4. Compile a storyboard for Grok Imagine
 
 ```bash
-python scripts/symbolic_ledger.py init \
+python scripts/kubrick.py compile \
+  --brief project/brief.yaml \
+  --ledger project/symbolic-ledger.yaml \
+  --mode storyboard \
+  --storyboard-plan project/storyboard-plan.yaml \
+  --provider grok-imagine \
+  --out project/out/kubrick
+```
+
+This orchestrates:
+
+```text
+retrieval
+→ private graph
+→ schema validation
+→ structured symbolic audit
+→ audience translation
+→ storyboard propagation
+→ transition comparison
+→ neutral adapter packet
+→ Grok Imagine prompt packet
+→ compile receipt
+```
+
+A successful storyboard run emits:
+
+```text
+brief.normalized.yaml
+retrieval-receipt.yaml
+graph-input.yaml
+motif-graph.private.yaml
+structured-symbolic-packet.yaml
+structured-anti-slop-report.json
+audience-constraints.yaml
+text-anti-slop-report.json
+storyboard-symbolic-state.yaml
+storyboard-transition-report.json
+model-adapter-packet.yaml
+grok-imagine-prompt-packet.yaml
+schema-graph.json
+schema-storyboard.json
+schema-adapter.json
+compile-receipt.json
+```
+
+Weak retrieval, invalid graph state, schema drift, anti-slop failure, storyboard reset, residue loss, or adapter failure returns `NOT_COMPUTABLE` and exits nonzero.
+
+## 5. Project ledger
+
+```bash
+python scripts/kubrick.py ledger init \
   --project-id my-film \
   --out project/symbolic-ledger.yaml
 
-python scripts/symbolic_ledger.py audit \
+python scripts/kubrick.py ledger audit \
   --ledger project/symbolic-ledger.yaml
 
-python scripts/symbolic_ledger.py mutate \
+python scripts/kubrick.py ledger mutate \
   --ledger project/symbolic-ledger.yaml \
   --motif-id cracked-badge \
   --observed-form "a cracked access badge" \
@@ -67,60 +120,31 @@ python scripts/symbolic_ledger.py mutate \
   --mutation "ownership and access function transferred"
 ```
 
-The ledger remains local and `PROPOSED` unless an external canonical system explicitly ingests it.
+Local ledger state remains `PROPOSED` unless explicitly ingested by an external canonical system.
 
-## 5. Hermes prompts
-
-### Vague premise
-
-```text
-Load kubrick. Develop this premise using observed form, dramatic pressure,
-character transformation, and a restrained motif lifecycle.
-```
-
-### Existing scene
-
-```text
-Load kubrick. Diagnose this scene for causality, agency, motif mutation,
-symbolic overload, and Gates A–W. Preserve approved facts.
-```
-
-### Single frame
-
-```text
-Load kubrick. Build and validate a private motif graph, then emit only
-observable geometry, light, material, state differential, convergence, and residue.
-```
-
-### Ledger-aware revision
-
-```text
-Load kubrick. Revise this sequence against the supplied project symbolic ledger.
-Emit the state delta and flag contradictions rather than overwriting prior state.
-```
-
-## 6. Lower-level deterministic tools
-
-Registry-aware retrieval:
+## 6. Validate an artifact
 
 ```bash
-python scripts/retrieve_symbolic_patterns_registry.py --brief project/brief.yaml
+python scripts/kubrick.py artifact-validate \
+  --artifact out/kubrick/motif-graph.private.yaml \
+  --schema schemas/motif-structure-graph.schema.yaml
 ```
 
-Graph construction and translation:
+Validation errors include exact artifact paths.
+
+## 7. Canonical example
 
 ```bash
-python scripts/build_motif_graph.py --input graph-input.yaml --output motif-graph.private.yaml
-python scripts/translate_motif_graph.py --graph motif-graph.private.yaml --mode single-frame
+python scripts/kubrick.py compile \
+  --brief examples/authority-transfer-storyboard/brief.yaml \
+  --ledger examples/authority-transfer-storyboard/symbolic-ledger.yaml \
+  --mode storyboard \
+  --storyboard-plan examples/authority-transfer-storyboard/storyboard-plan.yaml \
+  --provider grok-imagine \
+  --out out/kubrick/authority-transfer
 ```
 
-Anti-slop audit:
-
-```bash
-python scripts/audit_anti_slop.py --input audience-constraints.yaml --json
-```
-
-## 7. Runtime rules
+## Runtime rules
 
 - observed form before interpretation,
 - dramatic function before symbolism,
@@ -128,15 +152,7 @@ python scripts/audit_anti_slop.py --input audience-constraints.yaml --json
 - one governing grammar and at most two supporting patterns,
 - one or two convergence sites,
 - private pattern and lexicon links never enter audience output,
+- adapters may translate syntax but may not rewrite graph identity,
 - local output is `PROPOSED`,
 - weak evidence returns `NOT_COMPUTABLE`,
 - Continuity Forge remains optional.
-
-## References
-
-- `SKILL.md` — Hermes operating contract
-- `schemas/project-symbolic-ledger.schema.yaml` — project persistence contract
-- `schemas/motif-structure-graph.schema.yaml` — private graph IR
-- `references/executable-corpus-registry.yaml` — default routes and guards
-- `references/hermes-graph-operators.md` — graph operator contracts
-- `evals/` — regression and adversarial fixtures
