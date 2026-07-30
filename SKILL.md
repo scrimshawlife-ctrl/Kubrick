@@ -224,3 +224,6 @@ python3 "$HERMES_SKILL_DIR/scripts/kubrick.py" do check --action eval
 
 A valid delivery states what was produced, what was preserved, what was not
 computable, and which optional integration or human authority is required next.
+
+Current release context: `docs/ROADMAP-v0.13.md` and
+`docs/RELEASE-NOTES-v0.13.md`.

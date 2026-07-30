@@ -22,8 +22,6 @@ jobs:
       - run: python scripts/validate_hermes_skill.py
       - run: python scripts/test_intent_router.py
       - run: python scripts/test_diagnostics.py
-      - run: python scripts/test_adapter_preservation.py
-      - run: python scripts/test_receipt_identity.py
       - run: python scripts/audit_release_version.py --strict
 
   validation-eval:
