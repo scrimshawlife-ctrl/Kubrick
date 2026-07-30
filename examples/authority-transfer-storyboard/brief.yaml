@@ -6,6 +6,17 @@ observable_evidence:
   - empty command chair
   - cracked access badge
   - controlled doorway
+relations:
+  - source: observed_1
+    target: observed_2
+    relation: transfers
+    pressure: 0.8
+    transformation: the empty authority position transfers operative access through the badge
+  - source: observed_2
+    target: observed_3
+    relation: crosses
+    pressure: 0.9
+    transformation: badge ownership determines who may cross the doorway
 geometry:
   - repeated work cells organized around an empty center
   - one controlled doorway at the edge of the frame
