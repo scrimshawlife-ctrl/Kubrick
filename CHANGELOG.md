@@ -1,3 +1,57 @@
+# Changelog — Kubrick
+
+Kubrick is the primary symbolic cinematic narrative engineering skill. It replaces the earlier scriptwriting skill as the recommended system for premise-to-production development with deep motif, geometric, cinematic, storyboard, and visual-fidelity encoding.
+
+## [0.12.0] - 2026-07-29
+
+### Added — Unified Symbolic Storyboard Compiler
+
+- Unified `scripts/kubrick.py` operator CLI.
+- Compiler `0.3.0` orchestration from brief through retrieval, private graph, structured audit, audience translation, storyboard propagation, provider adaptation, and compile receipt.
+- Draft 2020-12 artifact validation with exact failing paths.
+- Canonical authority-transfer storyboard example and CI compilation.
+- Storyboard state propagation for ownership, node, object, light, material, residue, and convergence continuity.
+- Frame-transition comparison and prohibited-reset enforcement.
+- Provider-neutral model-adapter packet contract.
+- First Grok Imagine prompt adapter without mandatory credentials, network access, or model invocation.
+
+### Added — Closed-Loop Visual QA
+
+- Structured visual-observation schema and normalization for human, generic JSON, and optional Grok Vision outputs.
+- Dimension-specific visual-fidelity reports for geometry, state, ownership, object, light, material, residue, convergence, and continuity.
+- Targeted correction packets that preserve passing dimensions and change only observed mismatches.
+- Bounded correction-loop governance with progress, regression, iteration-limit, and human-review decisions.
+- Complete Grok generation/review bundle manifests and observation templates.
+
+### Added — Governed Outcome Learning
+
+- Pattern-use receipts recording retrieval confidence, compile validity, production feasibility, visual fidelity, correction count, payoff realization, cultural-boundary compliance, and operator outcome.
+- Proposal-only pattern-evolution packets with bounded confidence deltas, misuse-risk additions, mutation-variable additions, and lifecycle review actions.
+- Explicit prohibition on automatic corpus mutation or autonomous authority promotion.
+
+### Added — Release and Runtime Hardening
+
+- Deterministic repeatability check across two clean canonical compiles.
+- Stable hashes for private graph, structured packet, storyboard state, transition report, neutral adapter packet, and Grok Imagine packet.
+- Release checklist, release notes, current roadmap, authoritative `VERSION` manifest, and strict release-version audit.
+- CI coverage for Hermes evals, outcome governance, canonical storyboard compilation, schema validation, and repeatability.
+- Legacy sidecar normalization, qualitative production-cost support, structured ledger motif support, timestamp-safe deterministic hashing, and underscore-delimited route matching.
+
+### Changed
+
+- Skill version advanced from `0.11.0` to `0.12.0`.
+- README and SKILL contract now describe the unified storyboard, adapter, visual-QA, and outcome-governance workflow.
+- Outcome learning is observation- and proposal-based; ordinary execution never rewrites corpus confidence or lifecycle state.
+- Continuity Forge, MCP, model APIs, and vision APIs remain optional extensions.
+
+### Governance
+
+- Local creative output remains `PROPOSED`.
+- Production-use evidence remains `OBSERVATION`.
+- Weak or invalid evidence returns `NOT_COMPUTABLE`.
+- Pattern evolution cannot be applied automatically.
+- Private pattern and lexicon semantics remain excluded from audience-facing packets.
+
 ## [0.10.0] - 2026-07-29
 
 ### Added — Neuro-Symbolic & Compositional Upgrades
@@ -42,11 +96,8 @@ See `examples/beach-threshold.md` for baseline; 0.9.0+ runs will be denser.
   - New "Core Translation Principles", "Rules for Profound Esoteric Work", and "Single-Frame Esoteric Mappings".
 
 - Expanded **Cinematic Systems** in corpus: Light Systems, Geometry & Negative Space, Material & Trace, Inversion & Reflection, Perceptual Layering & Residue (with profound interlocking requirements).
-
 - **Single-Frame & Generative Image Translation** section with concrete mappings, test criteria, and enforcement via Corpus Integration Rules.
-
 - Integration points added across symbolic-dramaturgy.md, SKILL.md, and templates/production-handoff.md for esoteric and profound single-frame work.
-
 - Stronger requirement for image prompts: interlocking from Light + Geometry + Material/Trace + Inversion at convergence point with state differentials.
 
 ## [0.7.1] - 2026-07-29
@@ -64,6 +115,8 @@ See `examples/beach-threshold.md` for baseline; 0.9.0+ runs will be denser.
 - Sidecars now carry usage-driven metadata
 
 The corpus now improves from real application in projects and Forge workflows without manual curation for every pattern.
+
+> **Superseded in 0.12.0:** automatic corpus changes are no longer part of the supported workflow. Outcome evidence now produces human-reviewed proposals only.
 
 ## [0.7.0] - 2026-07-29
 ### Added — Executable Retrieval (P0 of next campaign)
@@ -155,41 +208,22 @@ This sprint converts the rich corpus into a reliable, auditable retrieval-and-co
 - Enhanced documentation across README, hermes docs, and internal references
 - Updated retrieval discipline to prioritize dramatic problem → one primary grammar → at most two secondary → cinematic form → provenance
 
-kubrick now provides a rigorous, auditable bridge from historically grounded symbolic systems to subtle scene, character, blocking, composition, editing, and sound structures.
+Kubrick now provides a rigorous, auditable bridge from historically grounded symbolic systems to subtle scene, character, blocking, composition, editing, and sound structures.
 
-# Changelog — kubrick
+## [0.4.0] - 2026-07-28
 
-kubrick is the primary symbolic cinematic narrative engineering skill. It replaces the earlier scriptwriting skill as the recommended system for premise-to-production development with deep motif, geometric, and cinematic encoding.
+### Added — Public-Ready Improvements
 
-## 0.4.0 — 2026-07-28 (Public-Ready Improvements)
-
-### Major Polish & Completeness
-- Fixed frontmatter to Hermes standards (description under 60 chars, author: Hermes only).
-- Bumped version to 0.4.0.
-- Added full evals/rubric.md with symbolic-specific scoring dimensions.
-- Added strong symbolic regression cases:
-  - test-motif-mutation.md + expected output
-  - test-symbolic-slop.md (Gates M-W detection)
-  - test-geometric-blocking.md
-- Added corresponding expected outputs demonstrating observed-form-first, mandatory mutation, relational geometry, and anti-slop enforcement.
-- Added Quick Reference section to SKILL.md.
+- Fixed frontmatter to Hermes standards.
+- Added symbolic-specific eval rubric and regression cases.
+- Strengthened observed-form-first, mutation, relational geometry, and anti-slop enforcement.
 - Restructured SKILL.md closer to canonical Hermes skill format.
-- Added concrete YAML examples of symbolic_intent + motif_lifecycle + cinematic_encoding.
-- Strengthened README with clearer value proposition and usage examples.
-- Removed formerly scriptwriting language; positioned as the evolved replacement.
-- Updated tags and triggers for clarity.
-- Ensured all anti-slop gates M-W are documented and enforced.
+- Added concrete YAML examples of symbolic intent, motif lifecycle, and cinematic encoding.
 
-### Retained Strengths
-- Governing Law and three symbolic channels (Diegetic / Dramaturgical / Cinematic).
-- observed_form-first discipline.
-- Mandatory motif mutation on recurrence.
-- Full Module 5B schemas (symbolic_intent, motif_lifecycle, shot_motif_ledger, cinematic_encoding, sonic_motif, correspondence_map).
-- Continuity Forge handoff discipline.
-- Anti-slop gates A-W.
+## [0.3.0] - 2026-07-28
 
-## 0.3.0 — 2026-07-28
-Initial public packaging of symbolic upgrade (Module 5B, M-W gates, Forge integration).
+Initial public packaging of symbolic upgrade, Module 5B, Gates M–W, and Forge integration.
 
 ## Earlier
-See scriptwriting history for base narrative engineering foundations (0.1.0-0.2.0). kubrick now supersedes that base for projects requiring cinematic symbolic precision.
+
+See scriptwriting history for base narrative engineering foundations. Kubrick supersedes that base for projects requiring cinematic symbolic precision.

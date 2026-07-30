@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Hermes-Native Symbolic Cinematic Engineering</strong><br>
-  <em>0.11.0 — Executable Retrieval • Latent Motif Graph • Portable Skill Runtime</em>
+  <em>0.12.0 — Unified Compiler • Storyboard Continuity • Governed Outcome Learning</em>
 </p>
 
 <p align="center">
@@ -23,19 +23,20 @@
 
 ---
 
-**Kubrick** is a self-contained Hermes skill for screenplay development, scene diagnosis, motif engineering, cinematic encoding, continuity-aware revision, and single-frame generative prompt construction.
+**Kubrick** is a self-contained Hermes skill for screenplay development, scene diagnosis, motif engineering, cinematic encoding, storyboard continuity, generative prompt construction, and closed-loop visual QA.
 
-It builds symbolic force through recurrence, mutation, relational geometry, rhythm, material state, light, sound, convergence, and residue. Esoteric and archetypal source systems remain latent by default: final work exposes observable constraints rather than named occult concepts.
+It converts dramatic pressure into observable geometry, behavior, rhythm, material state, light, sound, convergence, and residue. Esoteric and archetypal source systems remain latent by default: audience-facing packets expose enforceable cinematic constraints rather than named occult concepts.
 
-## 0.11.0 Highlights
+## 0.12.0 Highlights
 
-- **Hermes-first runtime contract** — no required package install, repository checkout, MCP server, or Continuity Forge dependency.
-- **Ledger-aware deterministic retrieval** — saturation, symbolic debt, unresolved payoffs, exclusions, collision classes, production cost, stable tie-breaking, and `NOT_COMPUTABLE` diagnostics.
-- **Executable motif-structure graph** — observed-state nodes, pressure edges, disentangled layers, one or two convergence sites, residue, and provenance labels.
-- **Graph validation** — detects weak convergence, unknown references, layer leakage, excessive density, and audience-facing named esoterica.
-- **Portable install validator** — standard-library validation for Hermes frontmatter, paths, schemas, scripts, and optional companion status.
-- **Initial normalized sidecar expansion** — Kubrick-native symmetry/empty-center, red culmination, and one-point control/void patterns.
-- **Adversarial eval specification** — collision, saturation, cultural-boundary, convergence, and Gates N/O/P/Q/R/S/U/W cases.
+- **Unified CLI and compiler** — one operator surface for retrieval, graph compilation, storyboard propagation, provider adaptation, visual QA, correction governance, and outcome recording.
+- **Validated storyboard continuity** — ownership, object state, light, material, residue, convergence, and prohibited resets propagate across frames.
+- **Provider-neutral model packets** — Grok Imagine is supported without making any external model API mandatory.
+- **Closed-loop visual QA** — structured observations, dimension-specific fidelity reports, targeted correction packets, and bounded iteration governance.
+- **Proposal-only outcome learning** — production-use receipts may generate evolution proposals, but corpus authority never changes automatically.
+- **Schema-first artifacts** — graph, storyboard, adapter, observation, fidelity, correction, outcome, and evolution artifacts are machine validated.
+- **Deterministic repeatability** — CI compiles the canonical storyboard twice and compares stable hashes for all critical artifacts.
+- **Fail-closed operation** — weak retrieval, invalid structure, continuity drift, schema mismatch, privacy leakage, or stalled correction returns an explicit failure state.
 
 ## Core Philosophy
 
@@ -45,7 +46,7 @@ It builds symbolic force through recurrence, mutation, relational geometry, rhyt
 - **Three-channel symbolism** — diegetic, dramaturgical, and cinematic channels cross without explanatory dialogue.
 - **Constraint over citation** — source traditions become geometry, rhythm, threshold, role persistence, transformation, and residue.
 - **Fail closed** — weak evidence or unresolved boundaries return `NOT_COMPUTABLE`.
-- **Canonical restraint** — local outputs are `PROPOSED`; external canonical systems are optional and must return receipts.
+- **Human-governed evolution** — local outputs remain observations or proposals until explicitly approved.
 
 ## Installation
 
@@ -61,97 +62,102 @@ Default destination:
 ~/.hermes/skills/kubrick
 ```
 
-Restart Hermes, then validate:
+Install repository validation dependencies when developing locally:
 
 ```bash
-python ~/.hermes/skills/kubrick/scripts/validate_hermes_skill.py
+python -m pip install pyyaml jsonschema
 ```
 
-No Continuity Forge installation is required.
-
-## Hermes Entry Points
-
-### Develop a premise
-
-```text
-Load kubrick. Develop this premise using observed form, dramatic pressure,
-character transformation, and a restrained motif lifecycle.
-```
-
-### Diagnose a scene
-
-```text
-Load kubrick. Audit this scene for causality, agency, motif mutation,
-symbolic overload, production feasibility, and Gates A–W.
-```
-
-### Build a single-frame prompt
-
-```text
-Load kubrick. Construct a latent motif graph, keep the source architecture
-private, and output observable geometry, light, material, state differential,
-convergence, and residue constraints.
-```
-
-### Mutate a motif
-
-```text
-Load kubrick. Apply RUNE.MUTATE to this motif under the new pressure.
-Preserve lineage and alter at least one observable variable.
-```
-
-## Deterministic Helpers
+Validate the installed skill:
 
 ```bash
-# Ledger-aware pattern retrieval
-python scripts/retrieve_symbolic_patterns.py --brief path/to/brief.yaml
-
-# Motif graph construction and validation
-python scripts/build_motif_graph.py \
-  --input path/to/graph-input.yaml \
-  --out out/kubrick/motif-graph.yaml
-
-# Explicit maintenance only
-python scripts/evolve_from_use.py --dry-run
+python ~/.hermes/skills/kubrick/scripts/kubrick.py validate-skill
 ```
 
-Bundled helpers resolve resources relative to the skill root. Runtime artifacts should be written to the user's project or `out/kubrick/`, not into the installed reference corpus.
+Continuity Forge, MCP servers, generation APIs, and vision APIs remain optional.
 
-## Core Artifacts
+## Unified Pipeline
 
-- `symbolic_intent`
-- `motif_registry`
-- `motif_lifecycle`
-- `motif_structure_graph`
-- `cinematic_encoding`
-- `symbolic_architecture`
-- `project_symbolic_ledger`
-- `retrieval_receipt`
-- `revision_delta`
-- `production_handoff`
+```bash
+python scripts/kubrick.py compile \
+  --brief examples/authority-transfer-storyboard/brief.yaml \
+  --ledger examples/authority-transfer-storyboard/symbolic-ledger.yaml \
+  --mode storyboard \
+  --storyboard-plan examples/authority-transfer-storyboard/storyboard-plan.yaml \
+  --provider grok-imagine \
+  --out out/kubrick/authority-transfer
+```
+
+The compiler performs:
+
+```text
+brief
+→ registry-aware retrieval
+→ private motif graph
+→ structural and anti-slop audit
+→ audience constraints
+→ storyboard state propagation
+→ transition comparison
+→ neutral model-adapter packet
+→ Grok Imagine prompt packet
+→ schema receipts
+→ compile receipt
+```
+
+## Operator Commands
+
+```text
+validate-skill          validate Hermes skill structure
+validate-corpus         validate executable pattern sidecars
+coverage                audit corpus and registry coverage
+compile                 run the unified compiler
+retrieve                run registry-aware deterministic retrieval
+ledger                  initialize, audit, or mutate local project state
+storyboard-propagate    propagate graph state across frames
+storyboard-compare      inspect frame-to-frame continuity
+adapter-build           build a provider-neutral adapter packet
+adapt-grok              emit Grok Imagine prompt packets
+visual-normalize        normalize human or optional vision observations
+visual-compare          compare expected and observed frame state
+visual-correct          build targeted regeneration instructions
+correction-govern       stop, continue, or escalate correction iterations
+outcome-record          record production-use evidence
+ evolution-propose      create proposal-only corpus evolution
+ grok-review-bundle     package the complete Grok review workflow
+artifact-validate       validate YAML or JSON against a repository schema
+repeatability           compare stable hashes across two clean compiles
+eval                    run the standalone Hermes regression suite
+```
+
+## Verification
+
+```bash
+python scripts/kubrick.py validate-skill
+python scripts/kubrick.py validate-corpus
+python scripts/kubrick.py coverage
+python scripts/kubrick.py eval
+python scripts/test_outcome_governance.py
+python scripts/kubrick.py repeatability --output out/kubrick/repeatability-report.json
+python scripts/audit_release_version.py --strict
+```
 
 ## Documentation
 
 | File | Purpose |
 |---|---|
 | `SKILL.md` | Canonical Hermes operating contract |
-| `QUICKSTART.md` | Installation and entry-point routing |
-| `references/hermes-runtime-contract.md` | Dependency, path, artifact, and canon policy |
-| `references/symbolic-dramaturgy.md` | Core symbolic laws and schemas |
-| `references/cinematic-symbolism-corpus.md` | Cinematic translation systems |
-| `references/esoteric-alchemical-lexicon.md` | Latent structural lexicon |
+| `QUICKSTART.md` | Installation and command routing |
+| `docs/ROADMAP-v0.12.md` | Current roadmap and post-release priorities |
+| `docs/RELEASE-NOTES-v0.12.md` | v0.12 release notes |
+| `docs/RELEASE-CHECKLIST-v0.12.md` | Release gates and procedure |
+| `references/hermes-runtime-contract.md` | Runtime, dependency, artifact, and canon policy |
 | `references/patterns/` | Executable pattern sidecars |
-| `schemas/motif-structure-graph.schema.yaml` | Neuro-symbolic graph IR |
-| `evals/` | Regression and adversarial cases |
-| `docs/ROADMAP-v0.11.md` | Production-hardening roadmap |
-
-## Optional Continuity Forge Integration
-
-Kubrick works independently. When `hermes-continuity-forge` is installed and explicitly invoked, Kubrick may hand off approved symbolic architecture, scene contracts, and mutation rationale for canonical ingestion. Forge owns authorization and canonical receipts; its absence never blocks local Hermes work.
+| `schemas/` | Machine-readable artifact contracts |
+| `evals/` | Regression and adversarial specifications |
 
 ## Version
 
-**0.11.0 — Hermes Runtime and Executable Symbolic Compiler Foundation**
+**0.12.0 — Unified Symbolic Storyboard Compiler and Governed Visual QA**
 
 See [CHANGELOG.md](CHANGELOG.md) for release history.
 

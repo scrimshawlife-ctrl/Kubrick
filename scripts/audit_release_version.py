@@ -8,9 +8,18 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+
 TARGETS = {
     "SKILL.md": re.compile(r"^version:\s*([^\s]+)", re.MULTILINE),
-    "README.md": re.compile(r"\b(0\.\d+\.\d+)\b"),
+    "README.md": re.compile(r"<em>(0\.\d+\.\d+)\s+—"),
+    "CHANGELOG.md": re.compile(r"^## \[(0\.\d+\.\d+)\]", re.MULTILINE),
+    "docs/RELEASE-NOTES-v0.12.md": re.compile(r"^# Kubrick v(0\.\d+\.\d+) Release Notes", re.MULTILINE),
+}
+
+REQUIRED_CURRENT_REFERENCES = {
+    "README.md": ["docs/ROADMAP-v0.12.md", "docs/RELEASE-NOTES-v0.12.md"],
+    "SKILL.md": ["docs/ROADMAP-v0.12.md", "docs/RELEASE-NOTES-v0.12.md"],
+    "docs/RELEASE-CHECKLIST-v0.12.md": ["v0.12.0"],
 }
 
 
@@ -21,20 +30,37 @@ def main() -> None:
     args = parser.parse_args()
 
     expected = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
-    declarations = {}
-    mismatches = []
+    declarations: dict[str, str | None] = {}
+    mismatches: list[dict[str, object]] = []
+
     for relative, pattern in TARGETS.items():
-        text = (ROOT / relative).read_text(encoding="utf-8")
+        path = ROOT / relative
+        if not path.exists():
+            declarations[relative] = None
+            mismatches.append({"file": relative, "expected": expected, "observed": None, "reason": "missing file"})
+            continue
+        text = path.read_text(encoding="utf-8")
         match = pattern.search(text)
         observed = match.group(1) if match else None
         declarations[relative] = observed
         if observed != expected:
-            mismatches.append({"file": relative, "expected": expected, "observed": observed})
+            mismatches.append({"file": relative, "expected": expected, "observed": observed, "reason": "version mismatch"})
+
+    reference_checks: dict[str, dict[str, bool]] = {}
+    for relative, required_values in REQUIRED_CURRENT_REFERENCES.items():
+        path = ROOT / relative
+        text = path.read_text(encoding="utf-8") if path.exists() else ""
+        checks = {value: value in text for value in required_values}
+        reference_checks[relative] = checks
+        for value, present in checks.items():
+            if not present:
+                mismatches.append({"file": relative, "expected": value, "observed": None, "reason": "missing current release reference"})
 
     report = {
         "status": "READY" if not mismatches else "NOT_READY",
         "expected_version": expected,
         "declarations": declarations,
+        "reference_checks": reference_checks,
         "mismatches": mismatches,
         "tag_allowed": not mismatches,
     }
