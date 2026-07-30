@@ -27,17 +27,118 @@
 
 It converts dramatic pressure into observable geometry, behavior, rhythm, material state, light, sound, convergence, and residue. Esoteric and archetypal source systems remain latent by default: audience-facing packets expose enforceable cinematic constraints rather than named occult concepts.
 
-## Operator surface (quick start)
+## How to use
+
+### What Kubrick is for
+
+Use Kubrick when you are building a story or image sequence and care about **what the audience can see and feel** — objects, light, geometry, ownership, recurrence, residue — not about dumping named symbols or occult labels into the frame.
+
+Typical jobs:
+
+- develop a premise, scene, or storyboard with consistent motifs  
+- turn a brief into a structured symbolic plan and image prompts  
+- check that a generated frame still matches the intended state  
+- keep a project’s motif ledger as you revise  
+
+You do **not** need Continuity Forge, an image API, or an MCP server to start. Those are optional add-ons.
+
+### Option A — Talk to Hermes (normal creative use)
+
+1. Install Kubrick as a Hermes skill (see [Installation](#installation)).
+2. In Hermes, load the **kubrick** skill (or ask in a way that triggers it: screenplay, motif, storyboard, image prompt, continuity).
+3. Describe the project in plain language: format, pressure, what must change, what is on screen.
+4. Hermes uses Kubrick’s rules and, when useful, the deterministic tools under the hood.
+5. Treat local output as **draft / proposal** until you explicitly approve it or hand it to a canonical system (e.g. Continuity Forge).
+
+You mostly work in conversation. You only need the CLI when you want scripts, CI, or batch pipelines.
+
+### Option B — Command line (tools and pipelines)
+
+From a clone of this repo (or the installed skill directory):
 
 ```bash
-python scripts/kubrick.py do <intent> [--action <action>] [flags]
-# examples:
+# See the short list of jobs Kubrick can run
+python scripts/kubrick.py --help
+
+# Sanity-check the skill install
 python scripts/kubrick.py do check --action smoke
+
+# Run the built-in storyboard example end-to-end
 python scripts/kubrick.py recipe storyboard-example
+```
+
+The pattern is always:
+
+```text
+python scripts/kubrick.py do <job> [options…]
+```
+
+Think of `<job>` as *what you want done*, not a pile of script names:
+
+| Job | In plain English |
+|---|---|
+| `compile` | Turn a brief (+ optional ledger) into graph, storyboard, and image-ready packets |
+| `retrieve` | Find matching cinematic patterns for a dramatic problem |
+| `ledger` | Start or update the project’s motif checklist |
+| `adapt` | Reword a neutral packet for Grok Imagine, Flux, SD3, or Midjourney |
+| `visual` | Compare what you expected in a frame to what you observed; suggest fixes |
+| `learn` | Record outcomes or propose (never auto-apply) pattern improvements |
+| `check` | Validate the skill, corpus, or run smoke tests |
+| `operate` | Score saturation, lock convergence, audit for named esoterica, export architecture |
+| `design` | Compile a governed design specification from project evidence |
+| `storyboard` | Propagate or compare multi-frame state |
+| `bundle` | Package a Grok-oriented review workflow |
+| `mcp` | Optional machine interface over the same tools |
+
+Ask for help on one job:
+
+```bash
 python scripts/kubrick.py help adapt
 ```
 
-Twelve intents replace a flat list of ~29 peer commands. Legacy names remain soft aliases. Full table: [Operator Commands](#operator-commands).
+### A simple path: idea → storyboard → image prompt
+
+1. **Write a short brief** (dramatic problem, what changes, what is visible).  
+   Example layout: `examples/authority-transfer-storyboard/brief.yaml`
+2. **Optionally keep a ledger** of active motifs for the project.  
+   Example: `examples/authority-transfer-storyboard/symbolic-ledger.yaml`
+3. **Compile** (this is the main pipeline):
+
+```bash
+python scripts/kubrick.py do compile \
+  --brief examples/authority-transfer-storyboard/brief.yaml \
+  --ledger examples/authority-transfer-storyboard/symbolic-ledger.yaml \
+  --mode storyboard \
+  --storyboard-plan examples/authority-transfer-storyboard/storyboard-plan.yaml \
+  --provider grok-imagine \
+  --out out/kubrick/authority-transfer
+```
+
+4. **Open the output folder.** You get a private motif graph, storyboard state, and a provider prompt packet ready for your image tool.  
+5. **After you generate images**, you can feed an observation back through `do visual` to see what drifted (geometry, ownership, residue, etc.) and what to regenerate.  
+6. **Do not expect the corpus to rewrite itself.** Outcomes can create *proposals*; a human still decides.
+
+Or skip the long form and run:
+
+```bash
+python scripts/kubrick.py recipe storyboard-example
+```
+
+### Things that stay true no matter how you use it
+
+- **Show, don’t name** — audience-facing prompts avoid named esoterica unless you explicitly ask.  
+- **If the evidence is weak, Kubrick stops** — it returns a clear failure rather than inventing structure.  
+- **Local work is not “locked canon”** — proposals and observations stay local until you promote them.  
+- **Old command names still work** if you used them before; the preferred form is `do <job>`.
+
+### Where to go next
+
+| Need | Go here |
+|---|---|
+| Copy-paste workflows | [`QUICKSTART.md`](QUICKSTART.md) |
+| Hermes operating rules | [`SKILL.md`](SKILL.md) |
+| Full command table | [Operator Commands](#operator-commands) |
+| Design of the command surface | [`docs/superpowers/specs/2026-07-30-operator-intent-router-design.md`](docs/superpowers/specs/2026-07-30-operator-intent-router-design.md) |
 
 ## 0.13.0 Highlights
 
