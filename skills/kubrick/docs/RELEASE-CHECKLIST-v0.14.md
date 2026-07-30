@@ -7,7 +7,7 @@
 | Deterministic contract implementation | Complete |
 | Canonical and exported Hermes contract tests | Complete |
 | Cross-platform stdlib and validation CI | Complete on release candidate |
-| `v0.14.0` git tag / GitHub Release | Pending green release commit |
+| `v0.14.0` git tag / GitHub Release | **Published**: https://github.com/scrimshawlife-ctrl/Kubrick/releases/tag/v0.14.0 |
 
 ## Required gates
 
@@ -29,8 +29,8 @@
 - [x] Repository-level Hermes contract tests pass in canonical and exported layouts.
 - [x] Release versions and current-document references align.
 - [x] GitHub Actions is green on the release commit.
-- [ ] Create and push the `v0.14.0` tag from that green commit.
-- [ ] Publish GitHub release notes from `docs/RELEASE-NOTES-v0.14.md`.
+- [x] Create and push the `v0.14.0` tag from that green commit.
+- [x] Publish GitHub release notes from `docs/RELEASE-NOTES-v0.14.md`.
 
 ## Release procedure
 
