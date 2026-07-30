@@ -24,6 +24,7 @@ COMMANDS={
     "evolution-propose":"propose_pattern_evolution.py",
     "grok-review-bundle":"build_grok_review_bundle.py",
     "artifact-validate":"validate_artifact.py",
+    "repeatability":"check_repeatability.py",
     "eval":"run_hermes_evals.py",
 }
 def main()->None:

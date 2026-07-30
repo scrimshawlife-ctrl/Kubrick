@@ -19,6 +19,8 @@ jobs:
       - name: Compile canonical storyboard example
         run: |
           python scripts/kubrick.py compile --brief examples/authority-transfer-storyboard/brief.yaml --ledger examples/authority-transfer-storyboard/symbolic-ledger.yaml --mode storyboard --storyboard-plan examples/authority-transfer-storyboard/storyboard-plan.yaml --provider grok-imagine --out out/kubrick/example
+      - name: Verify deterministic repeatability
+        run: python scripts/kubrick.py repeatability --output out/kubrick/repeatability-report.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
