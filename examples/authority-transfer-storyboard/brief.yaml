@@ -1,0 +1,30 @@
+dramatic_problem: authority remains active after the leader exits because access and geometry preserve the system
+desired_state_change: personal command becomes institutional pressure
+character_pressure: a former subordinate receives access while the former authority is excluded
+format: storyboard
+observable_evidence:
+  - empty command chair
+  - cracked access badge
+  - controlled doorway
+geometry:
+  - repeated work cells organized around an empty center
+  - one controlled doorway at the edge of the frame
+state_differentials:
+  - occupied authority becomes operative vacancy
+  - access transfers from supervisor to subordinate
+residue:
+  - workers continue orienting toward the empty position
+  - the crack in the badge remains visible after transfer
+causal_actions:
+  - the badge changes hands and the doorway grants access to the subordinate
+symbolic_channels:
+  diegetic:
+    - cracked badge changes hands
+  dramaturgical:
+    - access transfers while institutional pressure persists
+  cinematic:
+    - the empty chair remains centered while the former supervisor waits outside
+convergence_effect: badge transfer and doorway access become visible in the same frame
+production_constraints:
+  - practical office location
+  - one badge prop
