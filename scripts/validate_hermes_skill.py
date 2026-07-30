@@ -16,10 +16,11 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 SKILL_ROOT = SCRIPT_DIR.parent
 SKILL_FILE = SKILL_ROOT / "SKILL.md"
 
-REQUIRED_FRONTMATTER = {"name", "description", "version", "author"}
+REQUIRED_FRONTMATTER = {"name", "description", "version", "author", "license"}
 REQUIRED_PATHS = [
     "SKILL.md",
     "QUICKSTART.md",
+    "LICENSE",
     "references/hermes-runtime-contract.md",
     "references/corpus-index.yaml",
     "references/patterns",
@@ -29,6 +30,9 @@ REQUIRED_PATHS = [
     "scripts/evolve_from_use.py",
     "evals",
 ]
+
+# Author must be a real contributor attribution (not the runtime host name).
+FORBIDDEN_AUTHORS = {"hermes", "nous", "nousresearch", "unknown", "todo"}
 
 FORBIDDEN_REPOSITORY_ASSUMPTIONS = [
     re.compile(r"pip install -e"),
@@ -92,8 +96,23 @@ def main() -> int:
         errors.append(f"Missing frontmatter fields: {', '.join(missing_fields)}")
     if frontmatter.get("name") != "kubrick":
         errors.append("Frontmatter name must be 'kubrick'")
-    if frontmatter.get("author") != "Hermes":
-        errors.append("Frontmatter author must be 'Hermes'")
+    author = (frontmatter.get("author") or "").strip()
+    if not author:
+        errors.append("Frontmatter author must be set to the skill author")
+    elif author.lower() in FORBIDDEN_AUTHORS:
+        errors.append(
+            "Frontmatter author must identify the real contributor "
+            f"(got {author!r}; use e.g. 'Daniel Meyer / Applied Alchemy Labs')"
+        )
+    license_value = (frontmatter.get("license") or "").strip().upper()
+    if license_value and license_value not in {"MIT", "APACHE-2.0", "BSD-2-CLAUSE", "BSD-3-CLAUSE", "ISC"}:
+        warnings.append(f"Unusual license value in frontmatter: {frontmatter.get('license')}")
+    if "When to Use" not in skill_text and "When to use" not in skill_text:
+        errors.append("SKILL.md must include a When to Use section for skill selection")
+    if "When Not to Use" not in skill_text and "When not to use" not in skill_text:
+        warnings.append("SKILL.md should include a When Not to Use section for negative activation tests")
+    if "${HERMES_SKILL_DIR}" not in skill_text:
+        warnings.append("SKILL.md should reference ${HERMES_SKILL_DIR} for installed-path script invocations")
 
     for relative in REQUIRED_PATHS:
         path = SKILL_ROOT / relative

@@ -10,6 +10,7 @@ Current release: **0.13.0** (see root `VERSION`).
 | [`../README.md`](../README.md) | Everyone | Public overview, install, architecture |
 | [`../QUICKSTART.md`](../QUICKSTART.md) | Operators | Intent-first command workflows + recipes |
 | [`../SKILL.md`](../SKILL.md) | Hermes runtime | Canonical skill operating contract |
+| [`HERMES-OFFICIAL-SUBMISSION.md`](HERMES-OFFICIAL-SUBMISSION.md) | Maintainers | Official optional-skills PR + community publish checklist |
 | [`OPENCLAW.md`](OPENCLAW.md) | OpenClaw users | OpenClaw Agent Skill edition (Prabu; branch `openclaw`) |
 | [`../CHANGELOG.md`](../CHANGELOG.md) | Maintainers | Release history |
 

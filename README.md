@@ -151,6 +151,7 @@ Upstream PR (history): https://github.com/scrimshawlife-ctrl/Kubrick/pull/1
 |---|---|
 | Copy-paste workflows | [`QUICKSTART.md`](QUICKSTART.md) |
 | Hermes operating rules | [`SKILL.md`](SKILL.md) |
+| Official / community Hermes publication | [`docs/HERMES-OFFICIAL-SUBMISSION.md`](docs/HERMES-OFFICIAL-SUBMISSION.md) |
 | OpenClaw edition (Prabu) | [`docs/OPENCLAW.md`](docs/OPENCLAW.md) |
 | Full command table | [Operator Commands](#operator-commands) |
 | Design of the command surface | [`docs/superpowers/specs/2026-07-30-operator-intent-router-design.md`](docs/superpowers/specs/2026-07-30-operator-intent-router-design.md) |

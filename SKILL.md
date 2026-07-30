@@ -1,38 +1,56 @@
 ---
 name: kubrick
-description: "Symbolic cinematic narrative engineering with deterministic retrieval, motif mutation, latent structural encoding, and production-safe outputs."
+description: >
+  Plans, drafts, diagnoses, and revises screenplays, storyboards, and cinematic
+  image prompts using motif continuity, symbolic encoding, anti-slop gates, and
+  production-safe handoffs. Use for film/TV visual systems, scene contracts,
+  continuity audits, and generative frame prompts — not for unrelated code,
+  checksums, devops, or generic prose without cinematic intent.
 version: 0.13.0
-author: Hermes
+author: Daniel Meyer / Applied Alchemy Labs
+license: MIT
 platforms: [linux, macos, windows]
-tags: [Kubrick, HermesSkill, NarrativeEngineering, SymbolicDramaturgy, CinematicEncoding, MotifMutation, NeuroSymbolicGraph, ImagePromptEngineering, Screenplay, Ledger, AntiSlop, ProductionHandoff]
-triggers:
-  - develop screenplay
-  - write script
-  - kubrick style
-  - symbolic narrative
-  - cinematic dramaturgy
-  - motif engineering
-  - geometric composition
-  - single frame prompt
-  - image prompt engineering
-  - diagnose script
-  - continuity audit
-  - rewrite scene
-  - dialogue polish
-  - production packet
-  - scene contract
-  - logline
-  - beat sheet
-  - character bible
-  - premise engineering
-  - mutate motif
-  - symbolic counterpoint
-  - saturation audit
-  - build motif graph
-  - handoff to continuity forge
+dependencies: []
+metadata:
+  hermes:
+    tags:
+      - Creative
+      - Cinematography
+      - Screenplay
+      - Storyboard
+      - Continuity
+      - ImagePrompt
+      - SymbolicDesign
+      - ProductionHandoff
+    category: creative
+    related_skills: []
 ---
 
 # Kubrick — Hermes Symbolic Cinematic Engineering Skill
+
+## When to Use
+
+Load this skill when the user is doing **cinematic creative-production work**, including:
+
+- developing a premise, logline, beat sheet, character pressure map, or screenplay
+- writing or rewriting a scene with continuity, motif, or production constraints
+- diagnosing weak scripts, motif drift, symbolic overload, or anti-slop failures
+- building a visual design system, scene contract, shot recurrence, or production packet
+- constructing single-frame or multi-frame generative image prompts with continuity
+- auditing storyboard state, ownership, residue, light, or material memory
+- translating a neutral cinematic packet for Flux, SD3, Midjourney, or Grok Imagine
+- closed-loop visual QA against expected frame state
+
+## When Not to Use
+
+Do **not** load Kubrick for:
+
+- ordinary software engineering, git, CI, checksums, packaging, or devops tasks
+- generic essay/blog writing with no cinematic or visual-production intent
+- pure research lookup that does not produce dramatic or visual material
+- tasks that only need a different creative skill (meme templates, pixel art, SVG diagrams)
+
+If the request is ambiguous, prefer asking one clarifying question rather than forcing cinematic machinery onto unrelated work.
 
 ## Identity
 
@@ -41,6 +59,8 @@ Kubrick is a **standalone Hermes skill**. Hermes loads this directory directly a
 Kubrick acts as a disciplined writers' room, script editor, cinematic symbolic engineer, storyboard continuity compiler, generative prompt adapter, and visual-fidelity governor. It develops material from premise through production handoff while resisting generic writing, continuity drift, character flattening, exposition dumping, occult collage, one-to-one symbolism, decorative archetype use, and unbounded generation loops.
 
 **Optional companions:** Continuity Forge, model APIs, vision APIs, and MCP operators. Their absence never blocks local Kubrick work.
+
+**Dependencies:** Python 3 stdlib for core helpers. Optional `pyyaml` / `jsonschema` improve validation; missing optional packages must produce an explicit degraded path, never a silent total failure. No API keys are required for local creative work.
 
 **OpenClaw:** this `SKILL.md` is the Hermes edition on `main`. For OpenClaw Agent Skill packaging (install under `~/.openclaw/skills/kubrick`, external state directory, doctor), use the permanent git branch `openclaw` maintained with work by Prabu ([@prabu-openclaw](https://github.com/prabu-openclaw)). See `docs/OPENCLAW.md` and https://github.com/scrimshawlife-ctrl/Kubrick/tree/openclaw .
 
@@ -152,11 +172,13 @@ When Continuity Forge outcomes are available, extract multi-signal observations 
 
 ## Unified CLI
 
-Primary operator surface:
+Primary operator surface. Prefer `${HERMES_SKILL_DIR}` so commands resolve after install:
 
 ```bash
-python scripts/kubrick.py do <intent> [--action <action>] [flags]
+python3 ${HERMES_SKILL_DIR}/scripts/kubrick.py do <intent> [--action <action>] [flags]
 ```
+
+If the skill directory is already the working directory (repo checkout or local symlink), relative `python3 scripts/kubrick.py …` is equivalent.
 
 Intents: `compile`, `retrieve`, `ledger`, `design`, `storyboard`, `adapt`,
 `visual`, `learn`, `check`, `operate`, `mcp`, `bundle`
@@ -164,14 +186,14 @@ Intents: `compile`, `retrieve`, `ledger`, `design`, `storyboard`, `adapt`,
 Examples:
 
 ```text
-kubrick do compile --brief … --ledger … --mode storyboard --provider flux --out …
-kubrick do adapt --action provider --provider flux --packet … --output …
-kubrick do visual --action closed-loop --expected … --observation-input … --out …
-kubrick do learn --action forge-signals --project-id … --input … --output …
-kubrick do check --action smoke
+python3 ${HERMES_SKILL_DIR}/scripts/kubrick.py do compile --brief … --ledger … --mode storyboard --provider flux --out …
+python3 ${HERMES_SKILL_DIR}/scripts/kubrick.py do adapt --action provider --provider flux --packet … --output …
+python3 ${HERMES_SKILL_DIR}/scripts/kubrick.py do visual --action closed-loop --expected … --observation-input … --out …
+python3 ${HERMES_SKILL_DIR}/scripts/kubrick.py do learn --action forge-signals --project-id … --input … --output …
+python3 ${HERMES_SKILL_DIR}/scripts/kubrick.py do check --action smoke
 ```
 
-Sugar: `kubrick help <intent>`, `kubrick recipe <name>`, `kubrick aliases`.
+Sugar: `help <intent>`, `recipe <name>`, `aliases` via the same entrypoint.
 
 Legacy names (`adapt-flux`, `closed-loop-qa`, `validate-skill`, …) remain soft aliases.
 
@@ -267,7 +289,7 @@ Default density:
 If no candidate clears the threshold, return `NOT_COMPUTABLE` with a reason vector and pattern-gap report.
 
 ```bash
-python scripts/kubrick.py do retrieve --brief path/to/brief.yaml
+python3 ${HERMES_SKILL_DIR}/scripts/kubrick.py do retrieve --brief path/to/brief.yaml
 ```
 
 ## Neuro-Symbolic Graph Discipline
@@ -315,9 +337,9 @@ Kubrick must never fail merely because Continuity Forge or another external syst
 Outcome learning is explicit, evidence-backed, and proposal-only.
 
 ```bash
-python scripts/kubrick.py do learn --action outcome --help
-python scripts/kubrick.py do learn --action evolve --help
-python scripts/kubrick.py do learn --action forge-signals --help
+python3 ${HERMES_SKILL_DIR}/scripts/kubrick.py do learn --action outcome --help
+python3 ${HERMES_SKILL_DIR}/scripts/kubrick.py do learn --action evolve --help
+python3 ${HERMES_SKILL_DIR}/scripts/kubrick.py do learn --action forge-signals --help
 ```
 
 Rules:
@@ -333,15 +355,15 @@ Rules:
 ## Validation and Release
 
 ```bash
-python scripts/kubrick.py do check --action skill
-python scripts/kubrick.py do check --action corpus
-python scripts/kubrick.py do check --action coverage
-python scripts/kubrick.py do check --action eval
-python scripts/test_outcome_governance.py
-python scripts/test_wave2_wave3.py
-python scripts/test_design_specification.py
-python scripts/kubrick.py do check --action repeatability --output out/kubrick/repeatability-report.json
-python scripts/audit_release_version.py --strict
+python3 ${HERMES_SKILL_DIR}/scripts/kubrick.py do check --action skill
+python3 ${HERMES_SKILL_DIR}/scripts/kubrick.py do check --action corpus
+python3 ${HERMES_SKILL_DIR}/scripts/kubrick.py do check --action coverage
+python3 ${HERMES_SKILL_DIR}/scripts/kubrick.py do check --action eval
+python3 ${HERMES_SKILL_DIR}/scripts/test_outcome_governance.py
+python3 ${HERMES_SKILL_DIR}/scripts/test_wave2_wave3.py
+python3 ${HERMES_SKILL_DIR}/scripts/test_design_specification.py
+python3 ${HERMES_SKILL_DIR}/scripts/kubrick.py do check --action repeatability --output out/kubrick/repeatability-report.json
+python3 ${HERMES_SKILL_DIR}/scripts/audit_release_version.py --strict
 ```
 
 Minimum pass conditions:
@@ -378,6 +400,24 @@ Minimum pass conditions:
 - `references/patterns/` — executable pattern sidecars
 - `schemas/` — machine-readable artifact contracts
 - `evals/` — regression and adversarial cases
+
+## Safe Failure Behavior
+
+| Condition | Required behavior |
+|---|---|
+| Continuity Forge absent | Continue local creative work; mark handoff optional |
+| Model / vision API absent | Emit provider-neutral packets; do not invent API results |
+| Optional Python deps missing | Print missing package; use degraded path or fail that helper only |
+| Weak / contradictory evidence | Return `NOT_COMPUTABLE` with reason; do not invent correspondence |
+| Unknown storyboard node / prohibited reset | Reject transition; preserve prior state |
+| User asks non-cinematic task while skill is loaded | Stay out of mode machinery; answer normally or defer to another skill |
+
+## License and Provenance
+
+- License: MIT (see `LICENSE`) — Copyright (c) 2026 Daniel Meyer / Applied Alchemy Labs
+- Cinematic pattern sidecars in `references/patterns/` are original operational encodings inspired by publicly discussed film grammar; they are not film clips or copyrighted scripts
+- Esoteric lexicon material is used as **latent structural vocabulary** only; audience-facing output must not dump named occult terms by default
+- OpenClaw packaging on branch `openclaw` credits packaging work by Prabu ([@prabu-openclaw](https://github.com/prabu-openclaw))
 
 ## Final Constraint
 
