@@ -31,10 +31,16 @@ Kubrick is the primary symbolic cinematic narrative engineering skill. It replac
 - Operators fail closed on weak evidence and emit auditable receipts.
 - Audience-facing prompts remain free of named esoterica unless explicitly requested.
 
+### Added — Design Specification Compiler
+
+- `design-build` compiles heterogeneous creative and technical evidence into a schema-valid design specification.
+- Schema `schemas/design-specification.schema.yaml`, template `templates/design-specification.yaml`, and contract `references/design-specification-compiler.md`.
+
 ### Changed
 
 - Skill version advanced from `0.12.0` to `0.13.0`.
-- Unified CLI exposes forge-signals, multi-provider adapt, closed-loop-qa, operator, and mcp-server commands.
+- Unified CLI exposes forge-signals, multi-provider adapt, closed-loop-qa, operator, mcp-server, and design-build commands.
+- README, QUICKSTART, SKILL, and `docs/` fully document the Wave 2/3 operator surface and shipped issue status.
 
 ## [0.12.0] - 2026-07-29
 
