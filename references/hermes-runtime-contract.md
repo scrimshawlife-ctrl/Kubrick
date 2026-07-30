@@ -34,6 +34,8 @@ User inputs and outputs must accept explicit paths. Runtime artifacts should def
 
 ## Dependency tiers
 
+The canonical manifest names four runtime profiles: `prose`, `stdlib`, `validation`, and `dev`. The tiers below define their guarantees. Kubrick remains a Hermes skill directory in every profile and is never required to install as a Python package.
+
 ### Tier 0 — Hermes prose runtime
 
 No external dependencies. All creative routing, diagnosis, drafting, revision, and symbolic translation must remain possible through `SKILL.md` and bundled references.
@@ -55,6 +57,10 @@ Examples: PyYAML or jsonschema. A helper that needs one must:
 
 Continuity Forge, MCP servers, model APIs, and rendering providers are optional extensions. Their absence cannot block local creative work.
 
+### Development profile
+
+The `dev` profile adds test and static-analysis tools. It exists for repository maintenance only and is not an installed-skill runtime requirement.
+
 ## Operator surface (intent router)
 
 The unified CLI (`scripts/kubrick.py`) is the authoritative local operator surface.
@@ -72,6 +78,7 @@ python scripts/kubrick.py do <intent> [--action <action>] [flags]
 **Legacy aliases** (soft cutover): flat names such as `forge-signals`, `closed-loop-qa`, `adapt-flux`, `validate-skill`, `mcp-server`, `design-build` still resolve through the router.
 
 Registry and resolve logic: `scripts/intent_router.py`.  
+Canonical registry: `kubrick.manifest.yaml`. The router loads this file with the Python standard library, so routing does not depend on PyYAML.
 Design: `docs/superpowers/specs/2026-07-30-operator-intent-router-design.md`.
 
 See root `README.md`, `QUICKSTART.md`, and `docs/README.md` for workflows and the docs index.

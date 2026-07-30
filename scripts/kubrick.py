@@ -31,8 +31,12 @@ def _is_agent() -> bool:
 
 
 def _dispatch_smoke(call: ir.IntentCall) -> None:
-    """check smoke: validate skill then pattern corpus (composite)."""
-    for script in ("validate_hermes_skill.py", "validate_pattern_corpus.py"):
+    """check smoke: validate manifest, skill, then pattern corpus (composite)."""
+    for script in (
+        "validate_manifest.py",
+        "validate_hermes_skill.py",
+        "validate_pattern_corpus.py",
+    ):
         r = subprocess.run([PY, str(SCRIPTS / script), *call.argv], cwd=ROOT)
         if r.returncode != 0:
             raise SystemExit(r.returncode)

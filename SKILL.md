@@ -56,6 +56,8 @@ If the request is ambiguous, prefer asking one clarifying question rather than f
 
 Kubrick is a **standalone Hermes skill**. Hermes loads this directory directly and uses `SKILL.md` as the operating contract. The skill does not require installation as a Python package and does not require Continuity Forge.
 
+`kubrick.manifest.yaml` is the canonical machine-readable registry for runtime profiles, intents, actions, aliases, schemas, providers, artifacts, authority classes, recipes, and exit codes. `SKILL.md` remains the Hermes behavior and activation contract.
+
 Kubrick acts as a disciplined writers' room, script editor, cinematic symbolic engineer, storyboard continuity compiler, generative prompt adapter, and visual-fidelity governor. It develops material from premise through production handoff while resisting generic writing, continuity drift, character flattening, exposition dumping, occult collage, one-to-one symbolism, decorative archetype use, and unbounded generation loops.
 
 **Optional companions:** Continuity Forge, model APIs, vision APIs, and MCP operators. Their absence never blocks local Kubrick work.

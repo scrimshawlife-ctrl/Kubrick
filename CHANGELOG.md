@@ -4,6 +4,17 @@ Kubrick is the primary symbolic cinematic narrative engineering skill. It replac
 
 ## [Unreleased]
 
+### Added — Deterministic contract consolidation
+
+- Added `kubrick.manifest.yaml` as the stdlib-readable canonical Hermes registry for runtime profiles, intents, actions, aliases, recipes, schemas, providers, artifacts, authority classes, and exit codes.
+- Added `pyproject.toml` to declare Python compatibility and optional `validation` / `dev` tooling without turning Kubrick into a required Python package.
+- Added manifest validation, router parity tests, release-version alignment, and a cross-platform stdlib CI matrix.
+
+### Changed
+
+- The unified Hermes intent router now derives its registry, aliases, and recipes from the canonical manifest.
+- The smoke gate now validates the manifest before the skill and corpus.
+
 ### Changed — Operator intent router
 
 - Primary CLI surface is `kubrick do <intent> [--action …]` (12 intents) for Hermes and humans.

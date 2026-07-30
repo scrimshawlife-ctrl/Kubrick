@@ -6,7 +6,24 @@ on:
 permissions:
   contents: read
 jobs:
-  eval:
+  stdlib-contract:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python scripts/validate_manifest.py
+      - run: python scripts/validate_hermes_skill.py
+      - run: python scripts/test_intent_router.py
+      - run: python scripts/audit_release_version.py --strict
+
+  validation-eval:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,6 +31,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install pyyaml jsonschema
+      - run: python scripts/validate_manifest.py
       - run: python scripts/run_hermes_evals.py
       - run: python scripts/test_outcome_governance.py
       - run: python scripts/test_wave2_wave3.py
