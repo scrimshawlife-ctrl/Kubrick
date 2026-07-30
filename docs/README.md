@@ -1,15 +1,35 @@
 # Kubrick Documentation
 
-Current release: **0.13.0** (see root `VERSION`).
+Current release: **0.13.0** (see root `VERSION`).  
+**Unreleased on main (pending merge):** operator intent router — `kubrick do <intent>`.
 
 ## Start here
 
 | Doc | Audience | Purpose |
 |---|---|---|
 | [`../README.md`](../README.md) | Everyone | Public overview, install, architecture |
-| [`../QUICKSTART.md`](../QUICKSTART.md) | Operators | Command-by-command workflows |
+| [`../QUICKSTART.md`](../QUICKSTART.md) | Operators | Intent-first command workflows + recipes |
 | [`../SKILL.md`](../SKILL.md) | Hermes runtime | Canonical skill operating contract |
 | [`../CHANGELOG.md`](../CHANGELOG.md) | Maintainers | Release history |
+
+## Operator surface (intent router)
+
+Primary CLI (Hermes + humans):
+
+```bash
+python scripts/kubrick.py do <intent> [--action <action>] [flags]
+```
+
+**12 intents:** `compile` · `retrieve` · `ledger` · `design` · `storyboard` · `adapt` · `visual` · `learn` · `check` · `operate` · `mcp` · `bundle`
+
+| Doc | Purpose |
+|---|---|
+| [`superpowers/specs/2026-07-30-operator-intent-router-design.md`](superpowers/specs/2026-07-30-operator-intent-router-design.md) | Design: intents, aliases, UX, MCP |
+| [`superpowers/plans/2026-07-30-operator-intent-router.md`](superpowers/plans/2026-07-30-operator-intent-router.md) | Implementation plan |
+| [`../scripts/intent_router.py`](../scripts/intent_router.py) | Registry + resolve + help |
+| [`../QUICKSTART.md`](../QUICKSTART.md) | Human recipes and examples |
+
+Legacy flat command names remain soft aliases. MCP exposes a single tool: `kubrick_do`.
 
 ## Current release (v0.13)
 

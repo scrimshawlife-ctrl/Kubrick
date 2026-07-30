@@ -4,9 +4,14 @@ Kubrick is the primary symbolic cinematic narrative engineering skill. It replac
 
 ## [Unreleased]
 
-### Changed
-- Operator CLI: primary surface is `kubrick do <intent>`; legacy command names remain soft aliases.
-- MCP: single `kubrick_do` tool.
+### Changed — Operator intent router
+
+- Primary CLI surface is `kubrick do <intent> [--action …]` (12 intents) for Hermes and humans.
+- Soft aliases preserve all prior top-level command names (`adapt-flux`, `closed-loop-qa`, `validate-skill`, …).
+- Help lists intents only; sugar includes `help`, `recipe`, and `aliases`.
+- Recipes: `recipe storyboard-example`, `recipe verify`.
+- MCP: single tool `kubrick_do` over the same router (never authoritative).
+- Implementation: `scripts/intent_router.py`; design/plan under `docs/superpowers/`.
 
 ## [0.13.0] - 2026-07-30
 

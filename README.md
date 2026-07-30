@@ -27,6 +27,18 @@
 
 It converts dramatic pressure into observable geometry, behavior, rhythm, material state, light, sound, convergence, and residue. Esoteric and archetypal source systems remain latent by default: audience-facing packets expose enforceable cinematic constraints rather than named occult concepts.
 
+## Operator surface (quick start)
+
+```bash
+python scripts/kubrick.py do <intent> [--action <action>] [flags]
+# examples:
+python scripts/kubrick.py do check --action smoke
+python scripts/kubrick.py recipe storyboard-example
+python scripts/kubrick.py help adapt
+```
+
+Twelve intents replace a flat list of ~29 peer commands. Legacy names remain soft aliases. Full table: [Operator Commands](#operator-commands).
+
 ## 0.13.0 Highlights
 
 Wave 2 and Wave 3 of the production-hardening roadmap are **shipped on `main`** ([#3](https://github.com/scrimshawlife-ctrl/Kubrick/issues/3), [#4](https://github.com/scrimshawlife-ctrl/Kubrick/issues/4), [PR #24](https://github.com/scrimshawlife-ctrl/Kubrick/pull/24)).
@@ -38,7 +50,7 @@ Wave 2 and Wave 3 of the production-hardening roadmap are **shipped on `main`** 
 | **First-class project ledgers** | Persistent motif state, pattern history, rehydrate/apply-forge, retrieval snapshots; Forge remains canonical |
 | **Multi-provider adapters** | Grok Imagine, Flux, SD3, Midjourney share one latent graph; adapters change **syntax only** |
 | **Closed-loop visual QA** | Observe → normalize → differential score → correct; geometry / state / residue / convergence reported separately |
-| **CLI + optional MCP operators** | Saturation, counterpoint, convergence lock, surface-occult audit, motif mutation, symbolic-architecture export |
+| **CLI + optional MCP operators** | Intent router (`do <intent>`), soft aliases, recipes; MCP tool `kubrick_do`; saturation, counterpoint, lock, occult audit, export |
 | **Cultural-signal packs** | Time-sensitive contemporary memetic patterns with provenance and validity windows |
 | **Design specification compiler** | Heterogeneous evidence → schema-valid `design.md` candidate without silent authority promotion |
 | **Fail-closed governance** | Weak evidence → `NOT_COMPUTABLE`; no structural change applies automatically |
@@ -237,7 +249,8 @@ CI (`.github/workflows/hermes-evals.yml`) runs Hermes evals, outcome governance,
 | [`docs/ROADMAP-v0.13.md`](docs/ROADMAP-v0.13.md) | Current roadmap and next priorities |
 | [`docs/RELEASE-NOTES-v0.13.md`](docs/RELEASE-NOTES-v0.13.md) | v0.13 release notes |
 | [`docs/RELEASE-CHECKLIST-v0.13.md`](docs/RELEASE-CHECKLIST-v0.13.md) | Release gates and procedure |
-| [`docs/README.md`](docs/README.md) | Docs index |
+| [`docs/README.md`](docs/README.md) | Docs index (incl. intent-router design/plan) |
+| [`docs/superpowers/specs/2026-07-30-operator-intent-router-design.md`](docs/superpowers/specs/2026-07-30-operator-intent-router-design.md) | Operator intent-router design |
 | [`references/hermes-runtime-contract.md`](references/hermes-runtime-contract.md) | Runtime, dependency, artifact, and canon policy |
 | [`references/hermes-model-adapters.md`](references/hermes-model-adapters.md) | Provider adapter contract |
 | [`references/hermes-visual-qa.md`](references/hermes-visual-qa.md) | Visual QA contract |
