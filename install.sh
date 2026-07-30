@@ -19,8 +19,10 @@ echo "Installing Kubrick to: ${DEST}"
 mkdir -p "$(dirname "${DEST}")"
 
 if [[ -d "${DEST}" ]]; then
-  # Keep backups outside the skills tree so Hermes does not discover "kubrick.bak".
-  BAK_DIR="${TARGET_BASE}/.install-backups"
+  # Keep backups completely outside the skills tree. Anything under
+  # ~/.hermes/skills/ can be discovered as a skill (including ".install-backups").
+  HERMES_ROOT="$(cd "${TARGET_BASE}/.." && pwd)"
+  BAK_DIR="${HERMES_ROOT}/backups/skills"
   mkdir -p "${BAK_DIR}"
   BAK_PATH="${BAK_DIR}/kubrick-$(date +%Y%m%d%H%M%S)"
   echo "Existing installation found. Backing up to ${BAK_PATH}"
