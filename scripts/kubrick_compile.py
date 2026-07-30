@@ -52,7 +52,7 @@ def build_structured_packet(brief,graph,selected):
     return {"dramatic_function":brief.get("dramatic_problem","transform pressure"),"causal_actions":brief.get("causal_actions") or [e.get("transformation","") for e in graph.get("edges",[]) if e.get("transformation")],"motifs":motifs,"channels":channels,"convergence_sites":[{"site_id":s.get("site_id"),"functions":s.get("functions") or [s.get("observable_effect",""),brief.get("desired_state_change","transformed")]} for s in graph.get("convergence_sites",[])],"cultural_sources":cultural,"interpretation_claims":brief.get("interpretation_claims",[]),"production_constraints":brief.get("production_constraints",[])}
 
 def main():
-    p=argparse.ArgumentParser(); p.add_argument("--brief",required=True); p.add_argument("--ledger"); p.add_argument("--mode",choices=["single-frame","scene","storyboard","diagnostic"],default="single-frame"); p.add_argument("--storyboard-plan"); p.add_argument("--provider",choices=["none","generic","grok-imagine"],default="none"); p.add_argument("--out",required=True); a=p.parse_args()
+    p=argparse.ArgumentParser(); p.add_argument("--brief",required=True); p.add_argument("--ledger"); p.add_argument("--mode",choices=["single-frame","scene","storyboard","diagnostic"],default="single-frame"); p.add_argument("--storyboard-plan"); p.add_argument("--provider",choices=["none","generic","grok-imagine","flux","sd3","midjourney"],default="none"); p.add_argument("--out",required=True); a=p.parse_args()
     out=Path(a.out); out.mkdir(parents=True,exist_ok=True); brief=read(a.brief)
     if a.ledger: brief["symbolic_ledger"]=read(a.ledger)
     normalized=out/"brief.normalized.yaml"; write(normalized,brief)
@@ -95,10 +95,14 @@ def main():
         adapter=run(cmd)
         if adapter.returncode!=0: fail(out,"adapter",["MODEL_ADAPTER_BUILD_FAILED"],adapter.stdout or adapter.stderr)
         schema_reports["adapter"]=validate(out,adapter_path,"schemas/model-adapter-packet.schema.yaml","adapter"); artifacts["model_adapter"]=adapter_path.name
-        if a.provider=="grok-imagine":
-            grok_path=out/"grok-imagine-prompt-packet.yaml"; grok=run([PY,str(ROOT/"scripts/adapt_grok_imagine.py"),"--packet",str(adapter_path),"--output",str(grok_path)])
-            if grok.returncode!=0: fail(out,"adapter",["GROK_ADAPTER_FAILED"],grok.stdout or grok.stderr)
-            artifacts["provider_packet"]=grok_path.name
+        if a.provider in {"grok-imagine","flux","sd3","midjourney"}:
+            provider_path=out/f"{a.provider}-prompt-packet.yaml"
+            if a.provider=="grok-imagine":
+                provider=run([PY,str(ROOT/"scripts/adapt_grok_imagine.py"),"--packet",str(adapter_path),"--output",str(provider_path)])
+            else:
+                provider=run([PY,str(ROOT/"scripts/adapt_provider.py"),"--packet",str(adapter_path),"--provider",a.provider,"--output",str(provider_path)])
+            if provider.returncode!=0: fail(out,"adapter",[f"{a.provider.upper().replace('-','_')}_ADAPTER_FAILED"],provider.stdout or provider.stderr)
+            artifacts["provider_packet"]=provider_path.name
     final={"status":"COMPILED","compiler_version":"0.3.0","timestamp":datetime.now(timezone.utc).isoformat(),"mode":a.mode,"provider":a.provider,"selected_primary":selected,"artifacts":artifacts,"schema_reports":schema_reports,"reason_vector":[]}
     (out/"compile-receipt.json").write_text(json.dumps(final,indent=2),encoding="utf-8"); print(json.dumps(final,indent=2))
 

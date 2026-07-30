@@ -25,3 +25,20 @@ properties:
       status: {enum: [PROPOSED, APPROVED, REJECTED]}
       reviewer: {type: [string, 'null']}
       automatic_application_allowed: {const: false}
+  multi_signal_receipt_id: {type: string}
+  human_review_gate:
+    type: object
+    additionalProperties: true
+    properties:
+      required: {type: boolean}
+      reasons: {type: array, items: {type: string}}
+      automatic_application_allowed: {const: false}
+      large_confidence_change: {type: boolean}
+      structural_mutation: {type: boolean}
+  pattern_history:
+    type: object
+    additionalProperties: false
+    properties:
+      evidence_of_use: {type: array, items: {type: string}}
+      source_projects: {type: array, items: {type: string}}
+      outcome_confidence: {type: number, minimum: 0, maximum: 1}

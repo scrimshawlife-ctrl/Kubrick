@@ -41,3 +41,32 @@ properties:
   saturation_score: {type: number, minimum: 0, maximum: 1}
   revision: {type: integer, minimum: 0}
   updated_at: {type: string}
+  pattern_history:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required: [pattern_id, evidence_of_use, source_projects, outcome_confidence]
+      properties:
+        pattern_id: {type: string}
+        evidence_of_use: {type: array, items: {type: string}}
+        source_projects: {type: array, items: {type: string}}
+        outcome_confidence: {type: number, minimum: 0, maximum: 1}
+        use_count: {type: integer, minimum: 0}
+  evidence_log:
+    type: array
+    items:
+      type: object
+      additionalProperties: true
+      properties:
+        at: {type: string}
+        kind: {type: string}
+        detail: {type: string}
+        refs: {type: array, items: {type: string}}
+        revision: {type: integer}
+  authority:
+    type: object
+    additionalProperties: false
+    properties:
+      state: {enum: [PROPOSED, OBSERVATION, LOCKED]}
+      forge_canonical: {type: boolean}

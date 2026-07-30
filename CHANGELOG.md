@@ -2,6 +2,40 @@
 
 Kubrick is the primary symbolic cinematic narrative engineering skill. It replaces the earlier scriptwriting skill as the recommended system for premise-to-production development with deep motif, geometric, cinematic, storyboard, and visual-fidelity encoding.
 
+## [0.13.0] - 2026-07-30
+
+### Added — Wave 2: Forge Feedback, Multi-Signal Evolution, Project Ledgers
+
+- `scripts/extract_forge_signals.py` extracts multi-signal observation bundles from ledger diffs, revision records, saturation trends, collisions, ingestion results, and payoff realization.
+- `schemas/forge-signal-bundle.schema.yaml` and `schemas/multi-signal-evolution-receipt.schema.yaml`.
+- Multi-signal evolution proposals covering mutation success, production feasibility, anti-slop compliance, cultural-boundary respect, and payoff realization.
+- Human review gates for large confidence deltas and structural or lifecycle mutations.
+- Retirement/deprecation proposals for patterns that repeatedly create debt, collisions, or failed payoffs.
+- First-class project symbolic ledgers with pattern history (evidence-of-use, source projects, outcome confidence), forge rehydrate/apply, and retrieval snapshots.
+- Example Forge signal fixture under `references/examples/forge-signals/`.
+
+### Added — Wave 3: Model Adapters, Closed-Loop QA, MCP Operators
+
+- Shared latent-graph adapters for Flux, SD3, and Midjourney (plus existing Grok Imagine) via `adapt_provider.py`.
+- Compiler provider support for `flux`, `sd3`, and `midjourney`.
+- `closed_loop_visual_qa.py` orchestration with separate geometry, state, residue, and convergence fidelity reporting.
+- CLI operators: saturation scoring, counterpoint, convergence-site locking, surface-occult audit, motif mutation, symbolic-architecture export.
+- Optional stdio MCP server (`mcp_kubrick_server.py`) wrapping the same CLI without becoming authoritative.
+- Time-sensitive contemporary cultural-signal packs with explicit provenance and validity windows.
+
+### Governance
+
+- Forge remains canonical authority; Kubrick emits observations and proposals only.
+- No structural change applies automatically.
+- Adapters never alter canonical symbolic intent.
+- Operators fail closed on weak evidence and emit auditable receipts.
+- Audience-facing prompts remain free of named esoterica unless explicitly requested.
+
+### Changed
+
+- Skill version advanced from `0.12.0` to `0.13.0`.
+- Unified CLI exposes forge-signals, multi-provider adapt, closed-loop-qa, operator, and mcp-server commands.
+
 ## [0.12.0] - 2026-07-29
 
 ### Added — Unified Symbolic Storyboard Compiler
