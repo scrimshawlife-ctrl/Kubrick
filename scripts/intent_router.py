@@ -251,12 +251,11 @@ def _script_for(
     """Map intent/action (+ optional legacy name) to implementation script path.
 
     Locked routing:
-    - ``adapt-grok`` alias → ``adapt_grok_imagine.py``
-    - other provider adapters (including ``do adapt --provider grok-imagine``) →
-      ``adapt_provider.py``
+    - ``adapt-grok`` alias or ``--provider grok-imagine`` → ``adapt_grok_imagine.py``
+    - other provider adapters → ``adapt_provider.py``
     """
     if intent == "adapt" and action == "provider":
-        if legacy_name == "adapt-grok":
+        if legacy_name == "adapt-grok" or _flag_value(flags, "--provider") == "grok-imagine":
             return SCRIPTS / "adapt_grok_imagine.py"
         return SCRIPTS / "adapt_provider.py"
     filename = INTENT_REGISTRY[intent].actions[action]
@@ -340,11 +339,15 @@ def _resolve_do(argv: list[str]) -> IntentCall:
         )
 
     script = _script_for(intent, action, flags)
+    argv = list(flags)
+    # adapt_grok_imagine.py does not accept --provider; strip if present
+    if script.name == "adapt_grok_imagine.py":
+        _, argv = _strip_flag_with_value(argv, "--provider")
     return IntentCall(
         intent=intent,
         action=action,
         script=script,
-        argv=flags,
+        argv=argv,
         legacy_name=None,
     )
 
