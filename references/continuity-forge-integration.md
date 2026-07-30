@@ -61,6 +61,32 @@ This skill produces the *rationale* and *content*. The operator skill (or direct
 - Never claim "this is now in the film" until you have a Forge receipt with committed status.
 - For drift or contradictions discovered here: run local CONTINUITY pass, then cross-validate with Forge `audit_drift`.
 
+## Feedback Into Kubrick (Wave 2)
+
+Extract multi-signal observations from Forge outcomes without promoting authority:
+
+```bash
+python scripts/kubrick.py forge-signals \
+  --project-id myfilm \
+  --input path/to/ledger-diff-or-revision.yaml \
+  --output out/forge-signal-bundle.yaml
+
+python scripts/kubrick.py ledger apply-forge \
+  --ledger project/symbolic-ledger.yaml \
+  --forge-bundle out/forge-signal-bundle.yaml
+
+python scripts/kubrick.py evolution-propose \
+  --pattern-id some_pattern \
+  --forge-bundle out/forge-signal-bundle.yaml \
+  --output out/evolution-proposal.yaml
+```
+
+Rules:
+- Forge signal bundles are `OBSERVATION` only.
+- Multi-signal evolution receipts never set `automatic_application_allowed: true`.
+- Structural mutations and large confidence deltas require human review.
+- Project ledgers remain local until Forge (or an authorized reviewer) promotes them.
+
 ## Recommended Pairing
 
 Load both skills:

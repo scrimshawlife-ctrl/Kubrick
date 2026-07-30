@@ -35,15 +35,31 @@ python scripts/adapt_grok_imagine.py \
 - A provider adapter must fail closed when its neutral input packet is invalid.
 - External generation APIs are optional and outside the adapter runtime.
 
-## Grok Imagine adapter
+## Supported adapters
 
-The first adapter emits one prompt packet per frame with:
+All adapters share the same neutral packet and latent graph identity.
 
-- observable prompt text,
-- continuity locks from the previous frame,
-- declared state constraints,
-- negative constraints,
-- aspect ratio and restrained style defaults,
-- a variation policy that allows only declared frame-state changes.
+```bash
+python scripts/adapt_provider.py --packet out/model-adapter-packet.yaml --provider flux --output out/flux-prompt-packet.yaml
+python scripts/adapt_provider.py --packet out/model-adapter-packet.yaml --provider sd3 --output out/sd3-prompt-packet.yaml
+python scripts/adapt_provider.py --packet out/model-adapter-packet.yaml --provider midjourney --output out/midjourney-prompt-packet.yaml
+python scripts/adapt_grok_imagine.py --packet out/model-adapter-packet.yaml --output out/grok-imagine-prompt-packet.yaml
+```
 
-The adapter does not call Grok or require credentials.
+### Grok Imagine
+
+Emits one prompt packet per frame with observable prompt text, continuity locks, state constraints, negative constraints, aspect ratio / restrained style defaults, and a variation policy limited to declared frame-state changes.
+
+### Flux
+
+Syntax-only positive prompt + negative prompt list with identity lock and declared-delta variation policy.
+
+### SD3
+
+Subject / composition sectioning without motif invention; CFG and seed policy preserve storyboard identity.
+
+### Midjourney
+
+Single prompt line with `--ar`, `--stylize`, `--chaos`, `--style raw`, and `--no` negative flags derived only from neutral constraints.
+
+No adapter calls an external API or requires credentials.

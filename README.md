@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Hermes-Native Symbolic Cinematic Engineering</strong><br>
-  <em>0.12.0 — Unified Compiler • Storyboard Continuity • Governed Outcome Learning</em>
+  <em>0.13.0 — Forge Feedback • Multi-Provider Adapters • Operator Surface</em>
 </p>
 
 <p align="center">
@@ -27,16 +27,16 @@
 
 It converts dramatic pressure into observable geometry, behavior, rhythm, material state, light, sound, convergence, and residue. Esoteric and archetypal source systems remain latent by default: audience-facing packets expose enforceable cinematic constraints rather than named occult concepts.
 
-## 0.12.0 Highlights
+## 0.13.0 Highlights
 
-- **Unified CLI and compiler** — one operator surface for retrieval, graph compilation, storyboard propagation, provider adaptation, visual QA, correction governance, and outcome recording.
-- **Validated storyboard continuity** — ownership, object state, light, material, residue, convergence, and prohibited resets propagate across frames.
-- **Provider-neutral model packets** — Grok Imagine is supported without making any external model API mandatory.
-- **Closed-loop visual QA** — structured observations, dimension-specific fidelity reports, targeted correction packets, and bounded iteration governance.
-- **Proposal-only outcome learning** — production-use receipts may generate evolution proposals, but corpus authority never changes automatically.
-- **Schema-first artifacts** — graph, storyboard, adapter, observation, fidelity, correction, outcome, and evolution artifacts are machine validated.
-- **Deterministic repeatability** — CI compiles the canonical storyboard twice and compares stable hashes for all critical artifacts.
-- **Fail-closed operation** — weak retrieval, invalid structure, continuity drift, schema mismatch, privacy leakage, or stalled correction returns an explicit failure state.
+- **Forge multi-signal feedback** — ledger diffs, revisions, saturation, collisions, ingestion, and payoff outcomes become deterministic observation bundles.
+- **Multi-signal evolution** — confidence, mutation success, production feasibility, anti-slop, cultural boundaries, and payoff realization feed proposal-only evolution with human review gates.
+- **First-class project ledgers** — persistent motif state, pattern history, and retrieval snapshots; Forge remains canonical.
+- **Multi-provider adapters** — Grok Imagine, Flux, SD3, and Midjourney share one latent graph; adapters change syntax only.
+- **Closed-loop visual QA** — observation → differential scoring → targeted correction, with geometry/state/residue/convergence reported separately.
+- **CLI + optional MCP operators** — saturation, counterpoint, convergence locking, surface-occult audit, motif mutation, and symbolic-architecture export.
+- **Time-sensitive cultural-signal packs** — contemporary memetic patterns ship with provenance and validity windows.
+- **Fail-closed governance** — weak evidence returns `NOT_COMPUTABLE`; no structural change applies automatically.
 
 ## Core Philosophy
 
@@ -117,13 +117,12 @@ storyboard-propagate    propagate graph state across frames
 storyboard-compare      inspect frame-to-frame continuity
 adapter-build           build a provider-neutral adapter packet
 adapt-grok              emit Grok Imagine prompt packets
-visual-normalize        normalize human or optional vision observations
-visual-compare          compare expected and observed frame state
-visual-correct          build targeted regeneration instructions
-correction-govern       stop, continue, or escalate correction iterations
-outcome-record          record production-use evidence
- evolution-propose      create proposal-only corpus evolution
- grok-review-bundle     package the complete Grok review workflow
+adapt-flux / adapt-sd3 / adapt-midjourney
+closed-loop-qa          differential visual QA loop
+forge-signals           extract multi-signal Forge observations
+evolution-propose       multi-signal proposal-only evolution
+operator                saturation, counterpoint, lock, audit, export
+mcp-server              optional stdio MCP wrapper
 artifact-validate       validate YAML or JSON against a repository schema
 repeatability           compare stable hashes across two clean compiles
 eval                    run the standalone Hermes regression suite
@@ -137,6 +136,7 @@ python scripts/kubrick.py validate-corpus
 python scripts/kubrick.py coverage
 python scripts/kubrick.py eval
 python scripts/test_outcome_governance.py
+python scripts/test_wave2_wave3.py
 python scripts/kubrick.py repeatability --output out/kubrick/repeatability-report.json
 python scripts/audit_release_version.py --strict
 ```
@@ -147,9 +147,9 @@ python scripts/audit_release_version.py --strict
 |---|---|
 | `SKILL.md` | Canonical Hermes operating contract |
 | `QUICKSTART.md` | Installation and command routing |
-| `docs/ROADMAP-v0.12.md` | Current roadmap and post-release priorities |
-| `docs/RELEASE-NOTES-v0.12.md` | v0.12 release notes |
-| `docs/RELEASE-CHECKLIST-v0.12.md` | Release gates and procedure |
+| `docs/ROADMAP-v0.13.md` | Current roadmap and post-release priorities |
+| `docs/RELEASE-NOTES-v0.13.md` | v0.13 release notes |
+| `docs/RELEASE-CHECKLIST-v0.13.md` | Release gates and procedure |
 | `references/hermes-runtime-contract.md` | Runtime, dependency, artifact, and canon policy |
 | `references/patterns/` | Executable pattern sidecars |
 | `schemas/` | Machine-readable artifact contracts |
@@ -157,7 +157,7 @@ python scripts/audit_release_version.py --strict
 
 ## Version
 
-**0.12.0 — Unified Symbolic Storyboard Compiler and Governed Visual QA**
+**0.13.0 — Forge Feedback, Multi-Provider Adapters, and Operator Surface**
 
 See [CHANGELOG.md](CHANGELOG.md) for release history.
 

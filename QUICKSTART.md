@@ -36,8 +36,12 @@ storyboard-propagate    propagate graph state across frames
 storyboard-compare      inspect adjacent-frame continuity
 adapter-build           build a neutral provider packet
 adapt-grok              emit Grok Imagine prompt packets
-visual-compare          compare expected and observed visual state
-visual-correct          build targeted regeneration instructions
+adapt-flux / adapt-sd3 / adapt-midjourney
+closed-loop-qa          observation → differential score → correction
+forge-signals           extract multi-signal Forge observations
+evolution-propose       multi-signal proposal-only evolution
+operator                saturation, counterpoint, lock, audit, export
+mcp-server              optional stdio MCP wrapper
 artifact-validate       validate YAML/JSON against a repository schema
 eval                    run the regression suite
 ```
@@ -52,7 +56,7 @@ python scripts/kubrick.py compile \
   --out project/out/kubrick
 ```
 
-## 4. Compile a storyboard for Grok Imagine
+## 4. Compile a storyboard for a provider
 
 ```bash
 python scripts/kubrick.py compile \
@@ -63,6 +67,8 @@ python scripts/kubrick.py compile \
   --provider grok-imagine \
   --out project/out/kubrick
 ```
+
+Providers: `none`, `generic`, `grok-imagine`, `flux`, `sd3`, `midjourney`.
 
 This orchestrates:
 
@@ -75,8 +81,46 @@ retrieval
 → storyboard propagation
 → transition comparison
 → neutral adapter packet
-→ Grok Imagine prompt packet
+→ provider prompt packet
 → compile receipt
+```
+
+## 5. Forge feedback and multi-signal evolution
+
+```bash
+python scripts/kubrick.py forge-signals \
+  --project-id myfilm \
+  --input path/to/forge-ledger-diff.yaml \
+  --output out/forge-bundle.yaml
+
+python scripts/kubrick.py evolution-propose \
+  --pattern-id interface_badge_authority_transfer \
+  --receipt out/use-receipt.yaml \
+  --forge-bundle out/forge-bundle.yaml \
+  --output out/evolution-proposal.yaml
+```
+
+## 6. Closed-loop visual QA
+
+```bash
+python scripts/kubrick.py closed-loop-qa \
+  --expected out/storyboard-symbolic-state.yaml \
+  --observation-input observations/frame-001.json \
+  --source-graph-id <graph-id> \
+  --frame-id frame-001 \
+  --out out/qa/frame-001
+```
+
+## 7. Operators
+
+```bash
+python scripts/kubrick.py operator saturation-score --ledger project/symbolic-ledger.yaml
+python scripts/kubrick.py operator convergence-lock --graph out/motif-graph.private.yaml
+python scripts/kubrick.py operator surface-occult-audit --input out/audience-constraints.yaml
+python scripts/kubrick.py operator symbolic-architecture-export \
+  --graph out/motif-graph.private.yaml \
+  --ledger project/symbolic-ledger.yaml \
+  --output out/symbolic-architecture-export.yaml
 ```
 
 A successful storyboard run emits:

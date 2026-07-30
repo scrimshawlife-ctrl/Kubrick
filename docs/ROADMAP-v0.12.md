@@ -26,11 +26,13 @@ Kubrick v0.12 is a CI-verified standalone Hermes symbolic compiler. The complete
 
 ## Post-v0.12 priorities
 
-1. Add Flux, SD3, Midjourney, and video adapters as syntax-only translations over the neutral packet.
+**Completed in v0.13:** Flux/SD3/Midjourney adapters, MCP/CLI operators, Forge multi-signal feedback, multi-signal evolution, first-class ledgers, closed-loop differential QA, contemporary cultural-signal packs. See `docs/ROADMAP-v0.13.md`.
+
+Remaining:
+1. Add video adapters as syntax-only translations over the neutral packet.
 2. Add optional vision-provider normalizers while retaining manual and generic JSON observation paths.
 3. Add privacy-preserving cross-project analytics from approved outcome receipts.
-4. Add optional MCP wrappers over the existing CLI without making MCP authoritative.
-5. Expand the executable corpus only with provenance, misuse risks, mutation requirements, production-cost analysis, and regression coverage.
+4. Expand the executable corpus only with provenance, misuse risks, mutation requirements, production-cost analysis, and regression coverage.
 
 ## Invariants
 

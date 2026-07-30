@@ -1,7 +1,7 @@
 ---
 name: kubrick
 description: "Symbolic cinematic narrative engineering with deterministic retrieval, motif mutation, latent structural encoding, and production-safe outputs."
-version: 0.12.0
+version: 0.13.0
 author: Hermes
 platforms: [linux, macos, windows]
 tags: [Kubrick, HermesSkill, NarrativeEngineering, SymbolicDramaturgy, CinematicEncoding, MotifMutation, NeuroSymbolicGraph, ImagePromptEngineering, Screenplay, Ledger, AntiSlop, ProductionHandoff]
@@ -161,12 +161,20 @@ storyboard-propagate    propagate graph state across frames
 storyboard-compare      inspect frame-to-frame continuity
 adapter-build           build a provider-neutral adapter packet
 adapt-grok              emit Grok Imagine prompt packets
+adapt-flux              emit Flux prompt packets
+adapt-sd3               emit SD3 prompt packets
+adapt-midjourney        emit Midjourney prompt packets
+adapt-provider          syntax-only translation for any supported provider
 visual-normalize        normalize human or optional model observations
 visual-compare          compare expected and observed visual state
 visual-correct          build targeted regeneration instructions
 correction-govern       stop, continue, or escalate correction iterations
+closed-loop-qa          generate→observe→score→correct loop with differential fidelity
 outcome-record          record production-use evidence
-evolution-propose       create proposal-only corpus evolution
+evolution-propose       create proposal-only multi-signal corpus evolution
+forge-signals           extract multi-signal observations from Forge artifacts
+operator                ledger/graph operators (saturation, counterpoint, lock, audit, export)
+mcp-server              optional stdio MCP wrapper over the CLI
 grok-review-bundle      package the complete Grok review workflow
 artifact-validate       validate YAML or JSON against a schema
 repeatability           compare stable hashes across clean compiles
@@ -308,14 +316,17 @@ Outcome learning is explicit, evidence-backed, and proposal-only.
 ```bash
 python scripts/kubrick.py outcome-record --help
 python scripts/kubrick.py evolution-propose --help
+python scripts/kubrick.py forge-signals --help
 ```
 
 Rules:
 - outcome receipts are observations, not corpus authority;
+- every evolution event emits a deterministic multi-signal receipt;
 - confidence deltas are bounded;
+- large confidence changes and structural mutations require human review gates;
 - misuse-risk, mutation-variable, deprecation, and retirement changes remain proposals;
 - no script may automatically apply a proposal to the corpus;
-- structural changes require human review;
+- Forge remains canonical when connected; local ledgers stay PROPOSED until promoted;
 - reference corpus files are never modified during ordinary creative output.
 
 ## Validation and Release
@@ -326,6 +337,7 @@ python scripts/kubrick.py validate-corpus
 python scripts/kubrick.py coverage
 python scripts/kubrick.py eval
 python scripts/test_outcome_governance.py
+python scripts/test_wave2_wave3.py
 python scripts/kubrick.py repeatability --output out/kubrick/repeatability-report.json
 python scripts/audit_release_version.py --strict
 ```
@@ -346,9 +358,9 @@ Minimum pass conditions:
 
 - `README.md` — public project overview
 - `QUICKSTART.md` — installation and command routing
-- `docs/ROADMAP-v0.12.md` — current roadmap
-- `docs/RELEASE-NOTES-v0.12.md` — release notes
-- `docs/RELEASE-CHECKLIST-v0.12.md` — release gates
+- `docs/ROADMAP-v0.13.md` — current roadmap
+- `docs/RELEASE-NOTES-v0.13.md` — release notes
+- `docs/RELEASE-CHECKLIST-v0.13.md` — release gates
 - `references/hermes-runtime-contract.md` — runtime, artifact, and dependency contract
 - `references/symbolic-dramaturgy.md` — symbolic laws and schemas
 - `references/cinematic-symbolism-corpus.md` — cinematic systems and translation patterns

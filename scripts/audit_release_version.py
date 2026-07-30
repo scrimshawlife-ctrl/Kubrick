@@ -13,13 +13,13 @@ TARGETS = {
     "SKILL.md": re.compile(r"^version:\s*([^\s]+)", re.MULTILINE),
     "README.md": re.compile(r"<em>(0\.\d+\.\d+)\s+—"),
     "CHANGELOG.md": re.compile(r"^## \[(0\.\d+\.\d+)\]", re.MULTILINE),
-    "docs/RELEASE-NOTES-v0.12.md": re.compile(r"^# Kubrick v(0\.\d+\.\d+) Release Notes", re.MULTILINE),
+    "docs/RELEASE-NOTES-v0.13.md": re.compile(r"^# Kubrick v(0\.\d+\.\d+) Release Notes", re.MULTILINE),
 }
 
 REQUIRED_CURRENT_REFERENCES = {
-    "README.md": ["docs/ROADMAP-v0.12.md", "docs/RELEASE-NOTES-v0.12.md"],
-    "SKILL.md": ["docs/ROADMAP-v0.12.md", "docs/RELEASE-NOTES-v0.12.md"],
-    "docs/RELEASE-CHECKLIST-v0.12.md": ["v0.12.0"],
+    "README.md": ["docs/ROADMAP-v0.13.md", "docs/RELEASE-NOTES-v0.13.md"],
+    "SKILL.md": ["docs/ROADMAP-v0.13.md", "docs/RELEASE-NOTES-v0.13.md"],
+    "docs/RELEASE-CHECKLIST-v0.13.md": ["v0.13.0"],
 }
 
 
@@ -54,7 +54,14 @@ def main() -> None:
         reference_checks[relative] = checks
         for value, present in checks.items():
             if not present:
-                mismatches.append({"file": relative, "expected": value, "observed": None, "reason": "missing current release reference"})
+                mismatches.append(
+                    {
+                        "file": relative,
+                        "expected": value,
+                        "observed": None,
+                        "reason": "missing current release reference",
+                    }
+                )
 
     report = {
         "status": "READY" if not mismatches else "NOT_READY",
