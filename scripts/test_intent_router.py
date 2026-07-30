@@ -1,5 +1,7 @@
 # scripts/test_intent_router.py
 from __future__ import annotations
+import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -7,6 +9,8 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import intent_router as ir
+
+PY = sys.executable
 
 EXPECTED_INTENTS = {
     "compile", "retrieve", "ledger", "design", "storyboard", "adapt",
@@ -110,6 +114,60 @@ def test_alias_do_parity_matrix():
         assert a.argv == b.argv, (legacy, modern, a.argv, b.argv)
 
 
+def test_mcp_tools_list_includes_kubrick_do():
+    """tools/list via mcp-server alias and direct script must expose kubrick_do."""
+    req = json.dumps({"jsonrpc": "2.0", "id": 1, "method": "tools/list"}) + "\n"
+    for argv in (
+        [PY, str(ROOT / "scripts/kubrick.py"), "mcp-server"],
+        [PY, str(ROOT / "scripts/mcp_kubrick_server.py")],
+    ):
+        proc = subprocess.run(
+            argv,
+            input=req,
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+        assert proc.returncode == 0, (argv, proc.stderr, proc.stdout)
+        lines = [ln for ln in proc.stdout.strip().splitlines() if ln.strip()]
+        assert lines, (argv, proc.stdout)
+        listed = json.loads(lines[0])
+        names = {t["name"] for t in listed["result"]["tools"]}
+        assert "kubrick_do" in names, (argv, names)
+        assert names == {"kubrick_do"}, (argv, names)
+        schema = listed["result"]["tools"][0]["inputSchema"]
+        assert "intent" in schema.get("properties", {})
+        assert "intent" in schema.get("required", [])
+
+
+def test_mcp_kubrick_do_call_unknown_intent_fails_closed():
+    """tools/call kubrick_do with bad intent returns isError (exit 2 from router)."""
+    req = json.dumps(
+        {
+            "jsonrpc": "2.0",
+            "id": 2,
+            "method": "tools/call",
+            "params": {
+                "name": "kubrick_do",
+                "arguments": {"intent": "nope-not-an-intent"},
+            },
+        }
+    ) + "\n"
+    proc = subprocess.run(
+        [PY, str(ROOT / "scripts/mcp_kubrick_server.py")],
+        input=req,
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+    )
+    assert proc.returncode == 0
+    result = json.loads(proc.stdout.strip().splitlines()[0])["result"]
+    assert result.get("isError") is True
+    sc = result.get("structuredContent") or {}
+    assert sc.get("fail_closed") is True
+    assert sc.get("exit_code") == 2
+
+
 def main():
     test_intent_count_and_names()
     test_every_legacy_maps_exactly_once()
@@ -120,8 +178,14 @@ def main():
     test_top_level_help_lists_intents_not_all_aliases()
     test_recipe_storyboard_example()
     test_alias_do_parity_matrix()
-    print("intent_router unit: registry + resolve + help/recipe + alias/do parity PASS")
+    test_mcp_tools_list_includes_kubrick_do()
+    test_mcp_kubrick_do_call_unknown_intent_fails_closed()
+    print(
+        "intent_router unit: registry + resolve + help/recipe + alias/do parity "
+        "+ mcp kubrick_do PASS"
+    )
 
 
 if __name__ == "__main__":
     main()
+
