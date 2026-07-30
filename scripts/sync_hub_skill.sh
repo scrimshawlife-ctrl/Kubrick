@@ -16,6 +16,7 @@ rsync -a --delete \
   --exclude 'PR_BODY.md' \
   --exclude 'scripts/package_optional_skill.sh' \
   --exclude 'scripts/sync_hub_skill.sh' \
+  --exclude 'tests/' \
   "${ROOT}/" "${DEST}/"
 find "${DEST}" -type d -name '__pycache__' -prune -exec rm -rf {} + 2>/dev/null || true
 echo "Synced root → ${DEST}"

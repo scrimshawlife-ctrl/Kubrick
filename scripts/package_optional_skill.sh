@@ -34,9 +34,15 @@ rsync -a --delete \
   --exclude 'docs/RELEASE-NOTES-v0.12.md' \
   --exclude 'PR_BODY.md' \
   --exclude 'scripts/package_optional_skill.sh' \
+  --exclude 'tests/' \
   --exclude 'skills/' \
   --exclude 'skills.sh.json' \
   "${ROOT}/" "${TARGET}/"
+
+# Repository-level tests live outside the optional skill payload in hermes-agent.
+mkdir -p "${DEST_ROOT%/}/tests/skills"
+cp "${ROOT}/tests/hermes-agent/test_kubrick_skill.py" \
+  "${DEST_ROOT%/}/tests/skills/test_kubrick_skill.py"
 
 # Drop any accidental caches that slipped through
 find "${TARGET}" -type d -name '__pycache__' -prune -exec rm -rf {} + 2>/dev/null || true
@@ -52,6 +58,36 @@ echo
 echo "Sanity checks:"
 test -f "${TARGET}/SKILL.md"
 test -f "${TARGET}/LICENSE"
+test -f "${TARGET}/examples/authority-transfer-storyboard/brief.yaml"
+test -f "${TARGET}/examples/authority-transfer-storyboard/symbolic-ledger.yaml"
+test -f "${TARGET}/examples/authority-transfer-storyboard/storyboard-plan.yaml"
+test -f "${DEST_ROOT%/}/tests/skills/test_kubrick_skill.py"
+python3 - "${TARGET}" <<'PY'
+import re
+import sys
+from pathlib import Path
+
+skill = Path(sys.argv[1]) / "SKILL.md"
+text = skill.read_text(encoding="utf-8")
+match = re.search(r"^description: (.*)$", text, re.MULTILINE)
+assert match, "description must be a single-line frontmatter field"
+description = match.group(1)
+assert len(description) <= 60, len(description)
+assert description.endswith("."), description
+
+headings = [
+    "# Kubrick Skill",
+    "## When to Use",
+    "## Prerequisites",
+    "## How to Run",
+    "## Quick Reference",
+    "## Procedure",
+    "## Pitfalls",
+    "## Verification",
+]
+positions = [text.index(heading) for heading in headings]
+assert positions == sorted(positions), "SKILL.md section order is not Hermes-compatible"
+PY
 ! rg -n '/home/|/Users/[A-Za-z]' "${TARGET}/SKILL.md" "${TARGET}/README.md" "${TARGET}/QUICKSTART.md" || true
 rg -n 'license:|author:|name: kubrick' "${TARGET}/SKILL.md" | head -10
 echo
