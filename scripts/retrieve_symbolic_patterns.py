@@ -27,7 +27,8 @@ def canonical_json(value:Any)->str:
 
 def _tokens(value:Any)->set[str]:
     if isinstance(value,(list,tuple,set)): value=" ".join(str(i) for i in value)
-    return set(re.findall(r"[a-z0-9_]+",str(value).lower().replace("-","_")))
+    normalized=str(value).lower().replace("-"," ").replace("_"," ")
+    return set(re.findall(r"[a-z0-9]+",normalized))
 
 def _overlap(query:Any,candidate:Any)->float:
     q=_tokens(query); c=_tokens(candidate)
@@ -121,12 +122,12 @@ def persist(receipt):
     return cache,logged
 
 def main():
-    p=argparse.ArgumentParser(); p.add_argument("--brief"); p.add_argument("--no-cache",action="store_true"); p.add_argument("--gap-report-only",action="store_true"); a=p.parse_args()
-    brief=read_brief(a.brief); ledger=ledger_snapshot(brief); key=cache_key(brief,ledger); cache=CACHE_DIR/f"{key}.json"
+    p=argparse.ArgumentParser();p.add_argument("--brief");p.add_argument("--no-cache",action="store_true");p.add_argument("--gap-report-only",action="store_true");a=p.parse_args()
+    brief=read_brief(a.brief);ledger=ledger_snapshot(brief);key=cache_key(brief,ledger);cache=CACHE_DIR/f"{key}.json"
     if not a.no_cache and cache.exists():
-        r=_load(cache); r["retrieval_receipt"]["cache_hit"]=True; print(yaml.safe_dump(r,sort_keys=False)); raise SystemExit(0 if r["retrieval_receipt"]["status"]=="SELECTED" else 1)
-    ranked=sorted((score_pattern(x,brief,ledger) for x in load_all_patterns().values()),key=lambda x:(-x["total_score"],x["pattern_id"])); receipt=build_receipt(brief,ranked,ledger); receipt["retrieval_receipt"]["cache_hit"]=False
+        receipt=_load(cache);receipt["retrieval_receipt"]["cache_hit"]=True;print(yaml.safe_dump(receipt,sort_keys=False));raise SystemExit(0 if receipt["retrieval_receipt"]["status"]=="SELECTED" else 1)
+    ranked=sorted((score_pattern(pattern,brief,ledger) for pattern in load_all_patterns().values()),key=lambda x:(-x["total_score"],x["pattern_id"]));receipt=build_receipt(brief,ranked,ledger);receipt["retrieval_receipt"]["cache_hit"]=False
     if a.gap_report_only:print(yaml.safe_dump(receipt["retrieval_receipt"]["pattern_gap_report"],sort_keys=False));return
-    c,l=persist(receipt); receipt["retrieval_receipt"]["cached_to"]=str(c); receipt["retrieval_receipt"]["logged_to"]=str(l); print(yaml.safe_dump(receipt,sort_keys=False)); raise SystemExit(0 if receipt["retrieval_receipt"]["status"]=="SELECTED" else 1)
+    cache_path,logged=persist(receipt);receipt["retrieval_receipt"]["cached_to"]=str(cache_path);receipt["retrieval_receipt"]["logged_to"]=str(logged);print(yaml.safe_dump(receipt,sort_keys=False));raise SystemExit(0 if receipt["retrieval_receipt"]["status"]=="SELECTED" else 1)
 
 if __name__=="__main__":main()
