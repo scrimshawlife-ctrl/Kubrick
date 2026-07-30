@@ -92,6 +92,24 @@ def test_recipe_storyboard_example():
     assert call.script.name == "kubrick_compile.py"
 
 
+def test_alias_do_parity_matrix():
+    cases = [
+        (["validate-skill"], ["do", "check", "--action", "skill"]),
+        (["closed-loop-qa", "--expected", "e", "--observation-input", "o",
+          "--source-graph-id", "g", "--frame-id", "f1", "--out", "out/x"],
+         ["do", "visual", "--action", "closed-loop", "--expected", "e",
+          "--observation-input", "o", "--source-graph-id", "g",
+          "--frame-id", "f1", "--out", "out/x"]),
+        (["forge-signals", "--project-id", "p", "--input", "i.yaml", "--output", "o.yaml"],
+         ["do", "learn", "--action", "forge-signals", "--project-id", "p",
+          "--input", "i.yaml", "--output", "o.yaml"]),
+    ]
+    for legacy, modern in cases:
+        a, b = ir.resolve(legacy), ir.resolve(modern)
+        assert a.script == b.script, (legacy, modern, a.script, b.script)
+        assert a.argv == b.argv, (legacy, modern, a.argv, b.argv)
+
+
 def main():
     test_intent_count_and_names()
     test_every_legacy_maps_exactly_once()
@@ -101,7 +119,8 @@ def main():
     test_ledger_passthrough_action()
     test_top_level_help_lists_intents_not_all_aliases()
     test_recipe_storyboard_example()
-    print("intent_router unit: registry + resolve + help/recipe PASS")
+    test_alias_do_parity_matrix()
+    print("intent_router unit: registry + resolve + help/recipe + alias/do parity PASS")
 
 
 if __name__ == "__main__":
