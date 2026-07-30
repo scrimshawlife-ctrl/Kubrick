@@ -126,7 +126,7 @@ def format_intent_help(intent: str) -> str:
             "as the first argv token to the implementation script.",
             f"  example: kubrick do {intent} <action> [flags]",
         ]
-    elif spec.default_action:
+    elif spec.default_action and intent != "check":
         lines += [
             "",
             f"Default action: {spec.default_action}",
