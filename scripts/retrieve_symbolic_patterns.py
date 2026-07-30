@@ -1,289 +1,167 @@
 #!/usr/bin/env python3
-"""Deterministic symbolic-pattern retrieval for Kubrick."""
+"""Kubrick deterministic symbolic retrieval.
 
+Ledger-aware, collision-aware, cacheable, and fail-closed.
+"""
 from __future__ import annotations
-
-import argparse
-import hashlib
-import json
-import re
-import sys
+import argparse, hashlib, json, re, sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Tuple
-
-from kubrick_paths import PATTERNS_DIR, ensure_state_dirs, state_paths
-
+from typing import Any, Dict
 try:
     import yaml
-except ImportError:  # JSON remains available without PyYAML.
-    yaml = None
+except ImportError:
+    print("pyyaml required. pip install pyyaml", file=sys.stderr); raise SystemExit(1)
+from kubrick_paths import PATTERNS_DIR, ensure_state_dirs, state_paths
 
+CACHE_DIR=state_paths()["cache"]
+RECEIPT_DIR=state_paths()["receipts"]
+THRESHOLD=0.55
+MAX_SUPPORTING=2
+WEIGHTS={"dramatic_fit":0.24,"character_fit":0.10,"cinematic_fit":0.12,"cultural_fit":0.10,"source_quality":0.10,"mutation_potential":0.14,"continuity_compatibility":0.10,"payoff_compatibility":0.10}
+COLLISION_TYPES={"REDUNDANT","CONTRADICTORY","CULTURALLY_INCOMPATIBLE","RHYTHMICALLY_OVERLAPPING","PAYOFF_COMPETITION"}
 
-DEFAULT_WEIGHTS = {
-    "dramatic_fit": 0.25,
-    "character_fit": 0.15,
-    "cultural_fit": 0.15,
-    "cinematic_fit": 0.15,
-    "source_quality": 0.10,
-    "mutation_potential": 0.10,
-    "continuity_compatibility": 0.10,
-}
-THRESHOLD = 0.55
-MAX_SUPPORTING = 2
-CORPUS_VERSION = "0.9.0"
+def canonical_json(value:Any)->str:
+    return json.dumps(value,sort_keys=True,separators=(",",":"),default=lambda item:item.isoformat() if hasattr(item,"isoformat") else str(item))
 
+def _tokens(value:Any)->set[str]:
+    if isinstance(value,(list,tuple,set)): value=" ".join(str(i) for i in value)
+    normalized=str(value).lower().replace("-"," ").replace("_"," ")
+    return set(re.findall(r"[a-z0-9]+",normalized))
 
-def load_document(path: Path | None) -> Dict[str, Any]:
-    if path is None:
-        text = sys.stdin.read()
-        suffix = ""
-    else:
-        text = path.read_text(encoding="utf-8")
-        suffix = path.suffix.lower()
-    if suffix == ".json":
-        result = json.loads(text)
-    elif yaml is not None:
-        result = yaml.safe_load(text)
-    else:
-        try:
-            result = json.loads(text)
-        except json.JSONDecodeError as exc:
-            raise RuntimeError(
-                "PyYAML is required for YAML briefs; install requirements.txt "
-                "or provide JSON"
-            ) from exc
-    if not isinstance(result, dict):
-        raise RuntimeError("brief must decode to an object")
-    return result
+def _overlap(query:Any,candidate:Any)->float:
+    q=_tokens(query); c=_tokens(candidate)
+    return len(q&c)/max(1,len(q)) if q and c else 0.0
 
+def _load(path:Path)->Dict[str,Any]:
+    with path.open("r",encoding="utf-8") as h: return json.load(h) if path.suffix==".json" else yaml.safe_load(h) or {}
 
-def load_json_files(root: Path) -> Dict[str, Dict[str, Any]]:
-    patterns: Dict[str, Dict[str, Any]] = {}
-    if not root.exists():
-        return patterns
-    for path in sorted(root.rglob("*.json")):
-        data = json.loads(path.read_text(encoding="utf-8"))
-        pattern_id = data.get("pattern_id")
-        if pattern_id:
-            patterns[str(pattern_id)] = data
+def load_all_patterns()->Dict[str,Dict[str,Any]]:
+    patterns={}
+    for path in PATTERNS_DIR.rglob("*.json"):
+        pattern=_load(path); pid=pattern.get("pattern_id")
+        if pid: patterns[pid]=pattern
+    overlay_dir=state_paths()["patterns"]
+    if overlay_dir.exists():
+        for path in overlay_dir.rglob("*.json"):
+            overlay=_load(path); pid=overlay.get("pattern_id")
+            if pid and pid in patterns:
+                patterns[pid]={**patterns[pid],**overlay}
     return patterns
 
+def ledger_snapshot(brief:Dict[str,Any])->Dict[str,Any]:
+    ledger=brief.get("symbolic_ledger") or {}; active=ledger.get("active_motifs",brief.get("active_project_motifs",[]))
+    if active and isinstance(active[0] if isinstance(active,list) else None,dict): active=[x.get("motif_id","") for x in active]
+    return {"active":sorted(set(active)),"retired":sorted(set(ledger.get("retired_motifs",[]))),"prohibited":sorted(set(ledger.get("prohibited_motifs",brief.get("prohibited_patterns",[])))),"unresolved_payoffs":sorted(set(ledger.get("unresolved_payoffs",[]))),"saturation_score":float(ledger.get("saturation_score",0.0)),"symbolic_debt":float(ledger.get("symbolic_debt",0.0)),"collisions":ledger.get("collisions",[]),"prohibited_cultural_scopes":ledger.get("prohibited_cultural_scopes",[])}
 
-def load_all_patterns() -> Dict[str, Dict[str, Any]]:
-    patterns = load_json_files(PATTERNS_DIR)
-    overlays = load_json_files(state_paths()["patterns"])
-    for pattern_id, overlay in overlays.items():
-        if pattern_id in patterns:
-            patterns[pattern_id] = {**patterns[pattern_id], **overlay}
-    return patterns
+def cache_key(brief,ledger): return hashlib.sha256(canonical_json({"brief":brief,"ledger":ledger}).encode()).hexdigest()[:24]
 
+def production_cost(pattern:Dict[str,Any])->float:
+    raw=pattern.get("production_cost")
+    if isinstance(raw,(int,float)): return max(0.0,min(1.0,float(raw)))
+    if isinstance(raw,str): return {"minimal":0.15,"low":0.3,"medium":0.55,"high":0.8,"very-high":0.95}.get(raw.strip().lower(),0.5)
+    if isinstance(raw,dict):
+        values=[float(v) for v in raw.values() if isinstance(v,(int,float))]
+        return sum(values)/len(values) if values else 0.5
+    return 0.5
 
-def words(value: Any) -> set[str]:
-    return {
-        token
-        for token in re.findall(r"[a-z0-9]+", str(value).lower())
-        if len(token) >= 3
-    }
+def detect_collisions(pattern,ledger):
+    collisions=[]; text=canonical_json(pattern).lower(); pid=pattern.get("pattern_id","")
+    for prohibited in ledger["prohibited"]:
+        prohibited_text=str(prohibited).lower()
+        if prohibited_text==pid.lower() or prohibited_text in text:
+            collisions.append({"type":"PROHIBITED","with":str(prohibited)})
+    for active in ledger["active"]:
+        if active.lower() in text or active.lower()==pid.lower(): collisions.append({"type":"REDUNDANT","with":active})
+    for collision in ledger["collisions"]:
+        if not isinstance(collision,dict): continue
+        kind=collision.get("type"); participants=set(collision.get("patterns",[]))
+        if kind in COLLISION_TYPES and pid in participants: collisions.append({"type":kind,"with":",".join(sorted(participants-{pid}))})
+    if _tokens(pattern.get("cultural_scope",[]))&_tokens(ledger.get("prohibited_cultural_scopes",[])): collisions.append({"type":"CULTURALLY_INCOMPATIBLE","with":"prohibited cultural scope"})
+    return collisions
 
+def score_pattern(pattern,brief,ledger):
+    dq=[brief.get("dramatic_problem",""),brief.get("desired_state_change",""),brief.get("symbolic_intent","")]; dc=pattern.get("dramatic_operations",[])+pattern.get("transformation_grammars",[])+[pattern.get("transferable_structure","")]
+    dramatic_fit=_overlap(dq,dc); character_fit=_overlap([brief.get("character_state",""),brief.get("character_pressure","")],dc)
+    cinematic_fit=max(_overlap(brief.get("preferred_encoding_vectors",[]),pattern.get("cinematic_affordances",[])),0.8 if brief.get("format") in pattern.get("applicable_formats",[]) else 0.0,0.8 if brief.get("genre","").lower() in [g.lower() for g in pattern.get("applicable_genres",[])] else 0.0)
+    cultural_fit=_overlap(brief.get("cultural_context",""),pattern.get("cultural_scope",[])) if brief.get("cultural_context") else 0.65
+    source_quality={"PRIMARY":0.95,"SCHOLARLY":0.85,"PRACTITIONER":0.75,"COMPARATIVE":0.65}.get(pattern.get("source_tier","POPULAR"),0.5)
+    mutation=pattern.get("mutation_requirements",{}); mutation_potential=0.95 if mutation.get("required") and mutation.get("variables") else 0.35
+    active_text=" ".join(ledger["active"]).lower(); redundant=any(t in active_text for t in _tokens(pattern.get("title","")))
+    continuity_compatibility=max(0.0,0.9-(0.35 if redundant else 0)-min(0.5,ledger["saturation_score"]*0.35)-min(0.4,ledger["symbolic_debt"]*0.25))
+    unresolved=ledger["unresolved_payoffs"]; payoff_compatibility=0.75 if not unresolved else min(1.0,0.4+_overlap(unresolved,dc))
+    components={"dramatic_fit":dramatic_fit,"character_fit":character_fit,"cinematic_fit":cinematic_fit,"cultural_fit":cultural_fit,"source_quality":source_quality,"mutation_potential":mutation_potential,"continuity_compatibility":continuity_compatibility,"payoff_compatibility":payoff_compatibility}
+    total=sum(components[k]*w for k,w in WEIGHTS.items()); cost=production_cost(pattern); budget=brief.get("production_cost_ceiling")
+    if isinstance(budget,(int,float)) and cost>float(budget): total-=min(0.35,cost-float(budget))
+    collisions=detect_collisions(pattern,ledger)
+    if any(i["type"] in {"PROHIBITED","CONTRADICTORY","CULTURALLY_INCOMPATIBLE"} for i in collisions): total=0.0
+    else: total-=min(0.3,0.08*len(collisions))
+    return {"pattern_id":pattern["pattern_id"],"total_score":round(max(0.0,min(1.0,total)),4),"score_components":{k:round(v,4) for k,v in components.items()},"collisions":collisions,"production_cost_score":round(cost,4),"provenance_refs":pattern.get("source_refs",[]),"mutation_requirements":mutation,"lexicon_links":pattern.get("lexicon_links",[])}
 
-def any_overlap(needles: Iterable[Any], haystack: Any) -> bool:
-    target = words(haystack)
-    return any(words(value) & target for value in needles)
+def reason_vector(ranked,ledger):
+    if not ranked:return ["NO_EXECUTABLE_PATTERNS"]
+    top=ranked[0]; c=top["score_components"]; reasons=[]
+    if c["dramatic_fit"]<=0:reasons.append("LOW_DRAMATIC_FIT")
+    if c["mutation_potential"]<0.6:reasons.append("LOW_MUTATION_POTENTIAL")
+    if c["continuity_compatibility"]<0.5:reasons.append("SATURATION_OR_SYMBOLIC_DEBT")
+    if c["cultural_fit"]<0.25:reasons.append("LOW_CULTURAL_FIT")
+    if top["production_cost_score"]>0.8:reasons.append("HIGH_PRODUCTION_COST")
+    reasons.extend(sorted({i["type"] for i in top["collisions"]}))
+    if ledger["saturation_score"]>=0.85:reasons.append("SYMBOLIC_OVERLOAD")
+    return reasons or ["BELOW_CONFIDENCE_THRESHOLD"]
 
+def gap_report(brief,ranked):
+    top=ranked[0] if ranked else None; weak=["dramatic","character","cinematic","cultural","mutation"] if not top else [k.replace("_fit","").replace("_potential","") for k,v in top["score_components"].items() if v<0.35]
+    tokens=_tokens(brief.get("dramatic_problem","")); recommended=set(brief.get("requested_domains",[]))
+    if "sound" in tokens:recommended.add("sound")
+    if "threshold" in tokens:recommended.add("ritual-liminal")
+    return {"dramatic_problem":brief.get("dramatic_problem"),"coverage_strength":round(top["total_score"],4) if top else 0.0,"weak_dimensions":weak,"recommended_domains":sorted(recommended)}
 
-def compute_score(
-    pattern: Dict[str, Any],
-    brief: Dict[str, Any],
-    weights: Dict[str, float] | None = None,
-) -> Dict[str, Any]:
-    weights = weights or DEFAULT_WEIGHTS
-    operations = pattern.get("dramatic_operations") or []
-    dramatic = 0.95 if any_overlap(operations, brief.get("dramatic_problem", "")) else 0.7
+def read_brief(path): return _load(Path(path)) if path else yaml.safe_load(sys.stdin.read()) or {}
 
-    genres = [str(item).lower() for item in (pattern.get("applicable_genres") or [])]
-    formats = [str(item).lower() for item in (pattern.get("applicable_formats") or [])]
-    cinematic = 0.6
-    if str(brief.get("genre", "")).lower() in genres:
-        cinematic = 0.9
-    if str(brief.get("format", "")).lower() in formats:
-        cinematic += 0.05
-
-    scopes = pattern.get("cultural_scope") or []
-    cultural = 0.85 if any_overlap(scopes, brief.get("cultural_context", "")) else 0.5
-    tier = str(pattern.get("source_tier", "POPULAR")).upper()
-    tier_score = {
-        "PRIMARY": 0.95,
-        "SCHOLARLY": 0.85,
-        "PRACTITIONER": 0.75,
-    }.get(tier, 0.5)
-    mutation = bool((pattern.get("mutation_requirements") or {}).get("required"))
-
-    active = [str(item).lower() for item in brief.get("active_project_motifs", [])]
-    serialized = json.dumps(pattern, sort_keys=True).lower()
-    compatibility = 0.6 if any(item in serialized for item in active) else 0.8
-
-    components = {
-        "dramatic_fit": dramatic,
-        "cinematic_fit": min(cinematic, 1.0),
-        "cultural_fit": cultural,
-        "source_quality": tier_score,
-        "mutation_potential": 0.9 if mutation else 0.6,
-        "continuity_compatibility": compatibility,
-        "character_fit": 0.7,
-        "cliché_risk": 0.3,
-    }
-    total = sum(components.get(key, 0.5) * weight for key, weight in weights.items())
-    total -= components["cliché_risk"] * 0.20
-    return {
-        "total_score": round(max(0.0, min(1.0, total)), 4),
-        "score_components": {
-            key: round(value, 4) for key, value in components.items()
-        },
-    }
-
-
-def apply_exclusions(
-    patterns: Iterable[Dict[str, Any]], brief: Dict[str, Any]
-) -> Tuple[List[Dict[str, Any]], List[Dict[str, str]]]:
-    prohibited = [str(item).lower() for item in brief.get("prohibited_patterns", [])]
-    accepted = []
-    rejected = []
-    for pattern in patterns:
-        pattern_id = str(pattern["pattern_id"])
-        searchable = f"{pattern_id} {pattern.get('title', '')}".lower()
-        match = next((item for item in prohibited if item in searchable), None)
-        if match:
-            rejected.append(
-                {"pattern_id": pattern_id, "reason": f"prohibited pattern: {match}"}
-            )
-        else:
-            accepted.append(pattern)
-    return accepted, rejected
-
-
-def evolution_order() -> Dict[str, float]:
-    path = state_paths()["ranking"]
-    if not path.exists():
-        return {}
-    try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-        return {
-            str(key): float(value)
-            for key, value in (data.get("pattern_scores") or {}).items()
-        }
-    except (OSError, ValueError, TypeError, json.JSONDecodeError):
-        return {}
-
-
-def rank_patterns(
-    brief: Dict[str, Any], patterns_db: Dict[str, Dict[str, Any]]
-) -> Tuple[List[Dict[str, Any]], List[Dict[str, str]]]:
-    candidates, rejected = apply_exclusions(patterns_db.values(), brief)
-    observed = evolution_order()
-    ranked = []
-    for pattern in candidates:
-        score = compute_score(pattern, brief)
-        if score["total_score"] < 0.3:
-            continue
-        pattern_id = str(pattern["pattern_id"])
-        ranked.append(
-            {
-                "pattern_id": pattern_id,
-                "total_score": score["total_score"],
-                "score_components": score["score_components"],
-                "pattern_confidence": float(pattern.get("confidence", 0.7)),
-                "evolution_score": observed.get(pattern_id, 0.0),
-                "provenance_refs": pattern.get("source_refs") or [],
-                "mutation_requirements": pattern.get("mutation_requirements") or {},
-                "production_cost": pattern.get("production_cost") or {},
-                "selection_reason": (
-                    "Dramatic and cinematic fit after exclusions; "
-                    "evidence ranking used only as a tie-break"
-                ),
-            }
-        )
-    ranked.sort(
-        key=lambda item: (
-            item["total_score"],
-            item["evolution_score"],
-            item["pattern_confidence"],
-            item["pattern_id"],
-        ),
-        reverse=True,
-    )
-    return ranked, rejected
-
-
-def build_receipt(
-    brief: Dict[str, Any],
-    ranked: List[Dict[str, Any]],
-    rejected: List[Dict[str, str]],
-) -> Dict[str, Any]:
-    request_hash = hashlib.sha256(
-        json.dumps(brief, sort_keys=True).encode("utf-8")
-    ).hexdigest()[:16]
-    primary = ranked[0] if ranked else None
-    supporting = ranked[1 : 1 + MAX_SUPPORTING]
-    selected = bool(primary and primary["total_score"] >= THRESHOLD)
-    return {
-        "retrieval_receipt": {
-            "request_hash": request_hash,
-            "corpus_version": CORPUS_VERSION,
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "selected_primary_grammar": primary["pattern_id"] if selected else None,
-            "selected_supporting_grammars": (
-                [item["pattern_id"] for item in supporting] if selected else []
+def build_receipt(brief,ranked,ledger):
+    eligible=[x for x in ranked if x["total_score"]>=THRESHOLD]; primary=eligible[0] if eligible else None; supporting=eligible[1:1+MAX_SUPPORTING]
+    rejected=[
+        {
+            "pattern_id": item["pattern_id"],
+            "reason": ", ".join(
+                collision["type"]
+                for collision in item.get("collisions", [])
+                if collision["type"] in {
+                    "PROHIBITED",
+                    "CONTRADICTORY",
+                    "CULTURALLY_INCOMPATIBLE",
+                }
             ),
-            "ranked_patterns": ranked[:5] if selected else [],
-            "rejected_patterns": rejected,
-            "confidence": primary["total_score"] if primary else 0.0,
-            "status": "SELECTED" if selected else "NOT_COMPUTABLE",
-            "brief": brief,
         }
-    }
+        for item in ranked
+        if any(
+            collision["type"] in {
+                "PROHIBITED",
+                "CONTRADICTORY",
+                "CULTURALLY_INCOMPATIBLE",
+            }
+            for collision in item.get("collisions", [])
+        )
+    ]
+    return {"retrieval_receipt":{"request_hash":cache_key(brief,ledger),"algorithm":"deterministic-v0.11-openclaw","timestamp":datetime.now(timezone.utc).isoformat(),"selected_primary_grammar":primary["pattern_id"] if primary else None,"selected_supporting_grammars":[x["pattern_id"] for x in supporting],"ranked_patterns":ranked[:8] if primary else [],"rejected_patterns":rejected,"confidence":primary["total_score"] if primary else 0.0,"status":"SELECTED" if primary else "NOT_COMPUTABLE","reason_vector":[] if primary else reason_vector(ranked,ledger),"pattern_gap_report":gap_report(brief,ranked),"ledger_snapshot":ledger,"brief":brief}}
 
+def persist(receipt):
+    ensure_state_dirs(); key=receipt["retrieval_receipt"]["request_hash"]
+    cache=CACHE_DIR/f"{key}.json"; logged=RECEIPT_DIR/f"receipt-{key}-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S')}.json"
+    payload=json.dumps(receipt,indent=2,default=lambda item:item.isoformat() if hasattr(item,"isoformat") else str(item))+"\n"
+    for p in (cache,logged):p.write_text(payload,encoding="utf-8")
+    return cache,logged
 
-def log_receipt(receipt: Dict[str, Any]) -> Path:
-    paths = ensure_state_dirs()
-    request_hash = receipt["retrieval_receipt"]["request_hash"]
-    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S-%f")
-    path = paths["receipts"] / f"receipt-{request_hash}-{timestamp}.json"
-    path.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
-    return path
+def main():
+    p=argparse.ArgumentParser();p.add_argument("--brief");p.add_argument("--no-cache",action="store_true");p.add_argument("--no-log",action="store_true");p.add_argument("--gap-report-only",action="store_true");a=p.parse_args()
+    brief=read_brief(a.brief);ledger=ledger_snapshot(brief);key=cache_key(brief,ledger);cache=CACHE_DIR/f"{key}.json"
+    if not a.no_cache and cache.exists():
+        receipt=_load(cache);receipt["retrieval_receipt"]["cache_hit"]=True;print(yaml.safe_dump(receipt,sort_keys=False));raise SystemExit(0 if receipt["retrieval_receipt"]["status"]=="SELECTED" else 1)
+    ranked=sorted((score_pattern(pattern,brief,ledger) for pattern in load_all_patterns().values()),key=lambda x:(-x["total_score"],x["pattern_id"]));receipt=build_receipt(brief,ranked,ledger);receipt["retrieval_receipt"]["cache_hit"]=False
+    if a.gap_report_only:print(yaml.safe_dump(receipt["retrieval_receipt"]["pattern_gap_report"],sort_keys=False));return
+    if not a.no_log:
+        cache_path,logged=persist(receipt);receipt["retrieval_receipt"]["cached_to"]=str(cache_path);receipt["retrieval_receipt"]["logged_to"]=str(logged)
+    print(yaml.safe_dump(receipt,sort_keys=False));raise SystemExit(0 if receipt["retrieval_receipt"]["status"]=="SELECTED" else 1)
 
-
-def output_document(receipt: Dict[str, Any], output_format: str) -> None:
-    if output_format == "json":
-        print(json.dumps(receipt, indent=2))
-    elif yaml is not None:
-        print(yaml.safe_dump(receipt, sort_keys=False, default_flow_style=False))
-    else:
-        raise RuntimeError("PyYAML is required for YAML output; use --format json")
-
-
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--brief", type=Path, help="Path to a JSON or YAML brief")
-    parser.add_argument("--format", choices=("json", "yaml"), default="yaml")
-    parser.add_argument("--no-log", action="store_true")
-    args = parser.parse_args()
-    try:
-        brief = load_document(args.brief)
-        patterns = load_all_patterns()
-        if not patterns:
-            raise RuntimeError(f"no pattern sidecars found under {PATTERNS_DIR}")
-        ranked, rejected = rank_patterns(brief, patterns)
-        receipt = build_receipt(brief, ranked, rejected)
-        if not args.no_log:
-            receipt["retrieval_receipt"]["logged_to"] = str(log_receipt(receipt))
-        output_document(receipt, args.format)
-    except (OSError, RuntimeError, ValueError, json.JSONDecodeError) as exc:
-        print(f"kubrick retrieval failed: {exc}", file=sys.stderr)
-        raise SystemExit(2) from exc
-    if receipt["retrieval_receipt"]["status"] == "NOT_COMPUTABLE":
-        raise SystemExit(1)
-
-
-if __name__ == "__main__":
-    main()
+if __name__=="__main__":main()

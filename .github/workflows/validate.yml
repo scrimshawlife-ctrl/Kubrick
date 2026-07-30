@@ -19,4 +19,7 @@ jobs:
       - run: python -m py_compile scripts/*.py evals/test_openclaw_portability.py
       - run: python -m unittest -v evals/test_openclaw_portability.py
       - run: python scripts/doctor.py
+      - run: python scripts/kubrick.py do check --action skill
+      - run: python scripts/kubrick.py do check --action corpus
+      - run: python scripts/test_intent_router.py
       - run: bash -n install.sh

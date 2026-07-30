@@ -22,6 +22,8 @@ def state_paths() -> dict[str, Path]:
     root = state_root()
     return {
         "root": root,
+        "cache": root / "cache",
+        "registry_cache": root / "cache-registry",
         "receipts": root / "receipts",
         "outcomes": root / "outcomes",
         "evolution": root / "evolution",
@@ -32,6 +34,14 @@ def state_paths() -> dict[str, Path]:
 
 def ensure_state_dirs() -> dict[str, Path]:
     paths = state_paths()
-    for key in ("root", "receipts", "outcomes", "evolution", "patterns"):
+    for key in (
+        "root",
+        "cache",
+        "registry_cache",
+        "receipts",
+        "outcomes",
+        "evolution",
+        "patterns",
+    ):
         paths[key].mkdir(parents=True, exist_ok=True)
     return paths

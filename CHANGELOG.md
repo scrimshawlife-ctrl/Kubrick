@@ -1,34 +1,168 @@
-## [0.9.0] - 2026-07-29
-### Added — OpenClaw Agent Skill Portability
-- Canonical OpenClaw frontmatter with trigger-focused description, runtime
-  requirements, optional state configuration, and homepage metadata.
-- OpenClaw-first installer with timestamped backups and Hermes compatibility.
-- `scripts/doctor.py` for read-only installation, schema, corpus, and retrieval
-  checks.
-- Executable OpenClaw portability tests and GitHub Actions validation on Python
-  3.9 and 3.12.
-- ClawHub publish exclusions and explicit Python dependency declaration.
+# Changelog — Kubrick
+
+Kubrick is the primary symbolic cinematic narrative engineering skill. It replaces the earlier scriptwriting skill as the recommended system for premise-to-production development with deep motif, geometric, cinematic, storyboard, and visual-fidelity encoding.
+
+## [Unreleased]
+
+### Ported — OpenClaw v0.13 edition
+
+- Deliberately ported the v0.13 intent router, compiler, expanded corpus, storyboard propagation, multi-provider adapters, visual QA, design compiler, graph operators, optional MCP surface, and governed learning from `main`.
+- Preserved OpenClaw Agent Skill frontmatter, OpenClaw-first installation, `.clawhubignore`, `scripts/doctor.py`, and portability tests.
+- Redirected mutable retrieval caches, receipts, outcomes, ranking, and reversible overlays to `KUBRICK_STATE_DIR` or `~/.openclaw/state/kubrick`.
+- Kept bundled corpus files immutable; learning remains proposal-only and legacy evolution writes reversible external overlays.
+- The permanent `openclaw` branch remains separate from Hermes `main`.
+
+### Changed — Operator intent router
+
+- Primary CLI surface is `kubrick do <intent> [--action …]` (12 intents) for OpenClaw and humans.
+- Soft aliases preserve all prior top-level command names (`adapt-flux`, `closed-loop-qa`, `validate-skill`, …).
+- Help lists intents only; sugar includes `help`, `recipe`, and `aliases`.
+- Recipes: `recipe storyboard-example`, `recipe verify`.
+- MCP: single tool `kubrick_do` over the same router (never authoritative).
+- Implementation: `scripts/intent_router.py`; design/plan under `docs/superpowers/`.
+
+### Documentation — OpenClaw edition pointer
+
+- Added `docs/OPENCLAW.md` documenting the permanent **`openclaw`** branch Agent Skill packaging contributed by **Prabu** ([@prabu-openclaw](https://github.com/prabu-openclaw); [PR #1](https://github.com/scrimshawlife-ctrl/Kubrick/pull/1), commits `77fa721`, `15defae`).
+- Cross-links from README, QUICKSTART, SKILL, and docs index so Hermes `main` and OpenClaw users can find the correct edition.
+
+## [0.13.0] - 2026-07-30
+
+### Added — Wave 2: Forge Feedback, Multi-Signal Evolution, Project Ledgers
+
+- `scripts/extract_forge_signals.py` extracts multi-signal observation bundles from ledger diffs, revision records, saturation trends, collisions, ingestion results, and payoff realization.
+- `schemas/forge-signal-bundle.schema.yaml` and `schemas/multi-signal-evolution-receipt.schema.yaml`.
+- Multi-signal evolution proposals covering mutation success, production feasibility, anti-slop compliance, cultural-boundary respect, and payoff realization.
+- Human review gates for large confidence deltas and structural or lifecycle mutations.
+- Retirement/deprecation proposals for patterns that repeatedly create debt, collisions, or failed payoffs.
+- First-class project symbolic ledgers with pattern history (evidence-of-use, source projects, outcome confidence), forge rehydrate/apply, and retrieval snapshots.
+- Example Forge signal fixture under `references/examples/forge-signals/`.
+
+### Added — Wave 3: Model Adapters, Closed-Loop QA, MCP Operators
+
+- Shared latent-graph adapters for Flux, SD3, and Midjourney (plus existing Grok Imagine) via `adapt_provider.py`.
+- Compiler provider support for `flux`, `sd3`, and `midjourney`.
+- `closed_loop_visual_qa.py` orchestration with separate geometry, state, residue, and convergence fidelity reporting.
+- CLI operators: saturation scoring, counterpoint, convergence-site locking, surface-occult audit, motif mutation, symbolic-architecture export.
+- Optional stdio MCP server (`mcp_kubrick_server.py`) wrapping the same CLI without becoming authoritative.
+- Time-sensitive contemporary cultural-signal packs with explicit provenance and validity windows.
+
+### Governance
+
+- Forge remains canonical authority; Kubrick emits observations and proposals only.
+- No structural change applies automatically.
+- Adapters never alter canonical symbolic intent.
+- Operators fail closed on weak evidence and emit auditable receipts.
+- Audience-facing prompts remain free of named esoterica unless explicitly requested.
+
+### Added — Design Specification Compiler
+
+- `design-build` compiles heterogeneous creative and technical evidence into a schema-valid design specification.
+- Schema `schemas/design-specification.schema.yaml`, template `templates/design-specification.yaml`, and contract `references/design-specification-compiler.md`.
 
 ### Changed
-- Retrieval receipts, outcomes, ranking data, and evolution artifacts now live
-  outside the installed skill under `KUBRICK_STATE_DIR` or
-  `~/.openclaw/state/kubrick`.
-- Evolution writes reversible overlays instead of mutating packaged pattern
-  sidecars or the bundled index.
-- Retrieval records prohibited-pattern exclusions and uses evidence-derived
-  ranking only as a tie-break.
-- Documentation now treats OpenClaw as the primary runtime while preserving
-  Hermes compatibility and optional Continuity Forge handoff.
 
-### Fixed
-- Removed contradictory mandatory Continuity Forge prerequisites from the
-  standalone skill workflow.
-- Removed undefined “same as base” workflow references and duplicate gate
-  numbering.
-- Added JSON-only operation when PyYAML is unavailable.
-- Corrected OpenClaw installation examples to pin the permanent `openclaw`
-  branch, repaired the portability-test command, and routed Hermes users to
-  the canonical `main` branch.
+- Skill version advanced from `0.12.0` to `0.13.0`.
+- Unified CLI exposes forge-signals, multi-provider adapt, closed-loop-qa, operator, mcp-server, and design-build commands.
+- README, QUICKSTART, SKILL, and `docs/` fully document the Wave 2/3 operator surface and shipped issue status.
+
+## [0.12.0] - 2026-07-29
+
+### Added — Unified Symbolic Storyboard Compiler
+
+- Unified `scripts/kubrick.py` operator CLI.
+- Compiler `0.3.0` orchestration from brief through retrieval, private graph, structured audit, audience translation, storyboard propagation, provider adaptation, and compile receipt.
+- Draft 2020-12 artifact validation with exact failing paths.
+- Canonical authority-transfer storyboard example and CI compilation.
+- Storyboard state propagation for ownership, node, object, light, material, residue, and convergence continuity.
+- Frame-transition comparison and prohibited-reset enforcement.
+- Provider-neutral model-adapter packet contract.
+- First Grok Imagine prompt adapter without mandatory credentials, network access, or model invocation.
+
+### Added — Closed-Loop Visual QA
+
+- Structured visual-observation schema and normalization for human, generic JSON, and optional Grok Vision outputs.
+- Dimension-specific visual-fidelity reports for geometry, state, ownership, object, light, material, residue, convergence, and continuity.
+- Targeted correction packets that preserve passing dimensions and change only observed mismatches.
+- Bounded correction-loop governance with progress, regression, iteration-limit, and human-review decisions.
+- Complete Grok generation/review bundle manifests and observation templates.
+
+### Added — Governed Outcome Learning
+
+- Pattern-use receipts recording retrieval confidence, compile validity, production feasibility, visual fidelity, correction count, payoff realization, cultural-boundary compliance, and operator outcome.
+- Proposal-only pattern-evolution packets with bounded confidence deltas, misuse-risk additions, mutation-variable additions, and lifecycle review actions.
+- Explicit prohibition on automatic corpus mutation or autonomous authority promotion.
+
+### Added — Release and Runtime Hardening
+
+- Deterministic repeatability check across two clean canonical compiles.
+- Stable hashes for private graph, structured packet, storyboard state, transition report, neutral adapter packet, and Grok Imagine packet.
+- Release checklist, release notes, current roadmap, authoritative `VERSION` manifest, and strict release-version audit.
+- CI coverage for Hermes evals, outcome governance, canonical storyboard compilation, schema validation, and repeatability.
+- Legacy sidecar normalization, qualitative production-cost support, structured ledger motif support, timestamp-safe deterministic hashing, and underscore-delimited route matching.
+
+### Changed
+
+- Skill version advanced from `0.11.0` to `0.12.0`.
+- README and SKILL contract now describe the unified storyboard, adapter, visual-QA, and outcome-governance workflow.
+- Outcome learning is observation- and proposal-based; ordinary execution never rewrites corpus confidence or lifecycle state.
+- Continuity Forge, MCP, model APIs, and vision APIs remain optional extensions.
+
+### Governance
+
+- Local creative output remains `PROPOSED`.
+- Production-use evidence remains `OBSERVATION`.
+- Weak or invalid evidence returns `NOT_COMPUTABLE`.
+- Pattern evolution cannot be applied automatically.
+- Private pattern and lexicon semantics remain excluded from audience-facing packets.
+
+## [0.10.0] - 2026-07-29
+
+### Added — Neuro-Symbolic & Compositional Upgrades
+
+- **Internal Motif/Structure Graph Layer**: Lightweight neuro-symbolic graph (nodes = motifs + observed states; edges = relational pressures and state transformations) used internally by the Dynamic Selection Engine. Translated exclusively into observable constraints.
+- **Explicit Disentanglement of Cinematic Systems**: Layout/Geometry, Semantics/Function, and Attributes/States factored (SL-VAE style) to reduce leakage and enable cleaner interlocking.
+- **Compositional Layered Encoding**: Analogs to Compositional Masked Attention (CMA) and Multi-Layered Sampler (MLS) — convergence masking, independent layers with controlled interaction, prioritized constraints.
+- **Conditioning-Style Prompt Engineering**: Prompt sections act as precise control signals (geometry, state differentials, dual light, object participation).
+- **Neuro-Symbolic Predicate Validation**: Internal combinatorial coherence checks treating lexicon entries as observable predicates.
+- **Enhanced Single-Frame State Modeling**: Stronger before/after differentials, persistent residue as charge, layered time within one frame.
+
+- Added section 17 "Neuro-Symbolic Motif Graph Layer" to references/symbolic-dramaturgy.md.
+- Added "Neuro-Symbolic Conditioning Patterns (0.10.0+)" major section to references/cinematic-symbolism-corpus.md.
+- SKILL.md bumped to 0.10.0 with full upgrade description.
+- Goal: Higher relational precision, convergence strength, and controllable symbolic density for narrative + single-frame work while preserving full latency and anti-slop rules.
+
+## [0.9.0] - 2026-07-29
+
+### Added — Dynamic Latent Esoteric–Alchemical Encoding
+
+- Full **Kubrick Esoteric–Alchemical Encoding Lexicon** (200+ entries across Hermetic Principles, Classical Alchemical Operations, Magnum Opus stages, Substances, Vessels, Polarity, Geometry, Elements, Planetary Forces, Initiatory Structures, Mythic Archetypes, Magical Operations, Chaos Magic, Theurgy, Kabbalah, Gnosticism, Neoplatonism, Time/Recursion, Shadow work, Dream/Astral, Divination, Ritual, Color, Sound, and Kubrick-native hidden structures).
+- **Dynamic Esoteric–Alchemical Selection Engine**:
+  - Analyzes prompt content or resulting image description.
+  - Dynamically selects and interlocks multiple lexicon concepts.
+  - Applies exclusively as observable structural constraints (state differentials, convergence points, relational pressure, recurrence-with-mutation, etc.).
+  - **Latent operation**: No automatic disclosure or naming. Outputs are significantly more symbolically dense by default.
+  - Explicit user query only ("what esoteric concepts were used?") triggers private report.
+- New reference file: `references/esoteric-alchemical-lexicon.md`.
+- Updated cinematic-symbolism-corpus.md with full Dynamic Selection rules, triggers, density mandates, and feedback loop for image analysis.
+- SKILL.md updated with 0.9.0 capabilities and latent encoding behavior.
+- Goal: Produce much higher symbolic density through content-driven, interlocking esoteric grammar without wasting tokens on explanation.
+
+See `examples/beach-threshold.md` for baseline; 0.9.0+ runs will be denser.
+
+## [0.8.0] - 2026-07-29
+
+### Added — Profound Esoteric & Single-Frame Integration
+
+- **Esoteric Structural Translation** in `references/cinematic-symbolism-corpus.md`
+  - Formal translation layer for ancient magical and esoteric concepts (liminal/threshold, trace as binding/erasure, witness objects, erasure as active operation, inversion as crossing, dual preservation/dissolution, residue/charge).
+  - All concepts enter exclusively via enforceable structural rules and constraint — never naming, iconography, or occult collage.
+  - New "Core Translation Principles", "Rules for Profound Esoteric Work", and "Single-Frame Esoteric Mappings".
+
+- Expanded **Cinematic Systems** in corpus: Light Systems, Geometry & Negative Space, Material & Trace, Inversion & Reflection, Perceptual Layering & Residue (with profound interlocking requirements).
+- **Single-Frame & Generative Image Translation** section with concrete mappings, test criteria, and enforcement via Corpus Integration Rules.
+- Integration points added across symbolic-dramaturgy.md, SKILL.md, and templates/production-handoff.md for esoteric and profound single-frame work.
+- Stronger requirement for image prompts: interlocking from Light + Geometry + Material/Trace + Inversion at convergence point with state differentials.
 
 ## [0.7.1] - 2026-07-29
 ### Added — Autonomous Evolution from Use
@@ -45,6 +179,8 @@
 - Sidecars now carry usage-driven metadata
 
 The corpus now improves from real application in projects and Forge workflows without manual curation for every pattern.
+
+> **Superseded in 0.12.0:** automatic corpus changes are no longer part of the supported workflow. Outcome evidence now produces human-reviewed proposals only.
 
 ## [0.7.0] - 2026-07-29
 ### Added — Executable Retrieval (P0 of next campaign)
@@ -136,41 +272,22 @@ This sprint converts the rich corpus into a reliable, auditable retrieval-and-co
 - Enhanced documentation across README, hermes docs, and internal references
 - Updated retrieval discipline to prioritize dramatic problem → one primary grammar → at most two secondary → cinematic form → provenance
 
-kubrick now provides a rigorous, auditable bridge from historically grounded symbolic systems to subtle scene, character, blocking, composition, editing, and sound structures.
+Kubrick now provides a rigorous, auditable bridge from historically grounded symbolic systems to subtle scene, character, blocking, composition, editing, and sound structures.
 
-# Changelog — kubrick
+## [0.4.0] - 2026-07-28
 
-kubrick is the primary symbolic cinematic narrative engineering skill. It replaces the earlier scriptwriting skill as the recommended system for premise-to-production development with deep motif, geometric, and cinematic encoding.
+### Added — Public-Ready Improvements
 
-## 0.4.0 — 2026-07-28 (Public-Ready Improvements)
-
-### Major Polish & Completeness
-- Fixed frontmatter to Hermes standards (description under 60 chars, author: Hermes only).
-- Bumped version to 0.4.0.
-- Added full evals/rubric.md with symbolic-specific scoring dimensions.
-- Added strong symbolic regression cases:
-  - test-motif-mutation.md + expected output
-  - test-symbolic-slop.md (Gates M-W detection)
-  - test-geometric-blocking.md
-- Added corresponding expected outputs demonstrating observed-form-first, mandatory mutation, relational geometry, and anti-slop enforcement.
-- Added Quick Reference section to SKILL.md.
+- Fixed frontmatter to Hermes standards.
+- Added symbolic-specific eval rubric and regression cases.
+- Strengthened observed-form-first, mutation, relational geometry, and anti-slop enforcement.
 - Restructured SKILL.md closer to canonical Hermes skill format.
-- Added concrete YAML examples of symbolic_intent + motif_lifecycle + cinematic_encoding.
-- Strengthened README with clearer value proposition and usage examples.
-- Removed formerly scriptwriting language; positioned as the evolved replacement.
-- Updated tags and triggers for clarity.
-- Ensured all anti-slop gates M-W are documented and enforced.
+- Added concrete YAML examples of symbolic intent, motif lifecycle, and cinematic encoding.
 
-### Retained Strengths
-- Governing Law and three symbolic channels (Diegetic / Dramaturgical / Cinematic).
-- observed_form-first discipline.
-- Mandatory motif mutation on recurrence.
-- Full Module 5B schemas (symbolic_intent, motif_lifecycle, shot_motif_ledger, cinematic_encoding, sonic_motif, correspondence_map).
-- Continuity Forge handoff discipline.
-- Anti-slop gates A-W.
+## [0.3.0] - 2026-07-28
 
-## 0.3.0 — 2026-07-28
-Initial public packaging of symbolic upgrade (Module 5B, M-W gates, Forge integration).
+Initial public packaging of symbolic upgrade, Module 5B, Gates M–W, and Forge integration.
 
 ## Earlier
-See scriptwriting history for base narrative engineering foundations (0.1.0-0.2.0). kubrick now supersedes that base for projects requiring cinematic symbolic precision.
+
+See scriptwriting history for base narrative engineering foundations. Kubrick supersedes that base for projects requiring cinematic symbolic precision.

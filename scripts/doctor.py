@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only installation and corpus checks for Kubrick."""
+"""Read-only OpenClaw installation and corpus checks for Kubrick."""
 
 from __future__ import annotations
 
@@ -10,7 +10,12 @@ import tempfile
 from pathlib import Path
 
 from kubrick_paths import INDEX_PATH, PATTERNS_DIR, SKILL_ROOT, state_root
-from retrieve_symbolic_patterns import build_receipt, load_all_patterns, rank_patterns
+from retrieve_symbolic_patterns import (
+    build_receipt,
+    ledger_snapshot,
+    load_all_patterns,
+    score_pattern,
+)
 
 
 def check(condition: bool, message: str, failures: list[str]) -> None:
@@ -43,12 +48,25 @@ def main() -> None:
         "genre": "drama",
         "format": "feature",
         "cultural_context": "contemporary",
-        "prohibited_patterns": ["broken mirror"],
+        "prohibited_patterns": ["alchemical_nigredo_putrefaction"],
     }
-    ranked, rejected = rank_patterns(brief, patterns)
-    receipt = build_receipt(brief, ranked, rejected)["retrieval_receipt"]
+    ledger = ledger_snapshot(brief)
+    ranked = sorted(
+        (score_pattern(pattern, brief, ledger) for pattern in patterns.values()),
+        key=lambda item: (-item["total_score"], item["pattern_id"]),
+    )
+    receipt = build_receipt(brief, ranked, ledger)["retrieval_receipt"]
     check(receipt["status"] == "SELECTED", "retrieval fixture selects a pattern", failures)
     check(bool(receipt["selected_primary_grammar"]), "primary grammar returned", failures)
+    check(
+        any(
+            item["pattern_id"] == "alchemical_nigredo_putrefaction"
+            and "PROHIBITED" in item["reason"]
+            for item in receipt.get("rejected_patterns", [])
+        ),
+        "prohibited patterns are excluded",
+        failures,
+    )
 
     with tempfile.TemporaryDirectory() as directory:
         probe = Path(directory) / "state"

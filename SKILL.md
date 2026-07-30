@@ -1,7 +1,9 @@
 ---
-name: kubrick
-description: "Cinematic scriptwriting, symbolic dramaturgy, motif design, continuity, diagnosis, revision, and production handoff."
+name: "kubrick"
+description: "OpenClaw-native cinematic engineering, deterministic symbolism, storyboard continuity, provider adaptation, visual QA, and governed learning."
+license: MIT
 metadata:
+  kubrick_version: "0.13.0"
   openclaw:
     requires:
       bins:
@@ -9,233 +11,321 @@ metadata:
     envVars:
       - name: KUBRICK_STATE_DIR
         required: false
-        description: Optional writable directory for retrieval receipts, outcomes, and evolution overlays.
+        description: Optional writable directory for retrieval caches, receipts, outcomes, and reversible evolution overlays.
     emoji: "🎬"
-    homepage: https://github.com/scrimshawlife-ctrl/Kubrick
+    homepage: https://github.com/scrimshawlife-ctrl/Kubrick/tree/openclaw
 ---
 
-# Kubrick
+# Kubrick for OpenClaw
 
-Use Kubrick as a disciplined writers' room, script editor, and cinematic
-symbolic-engineering system. It develops ideas from premise to
-production-ready narrative artifacts while preserving causality, character
-agency, continuity, provenance, and production feasibility.
+Kubrick is a standalone OpenClaw Agent Skill for symbolic cinematic narrative engineering. Use it as a disciplined writers' room, script editor, motif system, storyboard continuity engine, provider-prompt compiler, and visual-fidelity reviewer.
 
-Standalone by default. Continuity Forge is optional and becomes canonical only
-after an explicit handoff.
+It converts dramatic intent into observable cinematic structure while preserving causality, character agency, continuity, provenance, production feasibility, and a strict boundary between private symbolic reasoning and audience-facing output.
+
+Continuity Forge is optional. It becomes canonical only after an explicit, verified handoff.
 
 ## Governing law
 
-A symbol should alter how a scene is interpreted without requiring the audience
-to consciously identify it.
+A symbol should alter how a scene is interpreted without requiring the audience to consciously identify it.
 
-Use the sequence: observed form → contextual association → recurrence under new
-pressure → formal mutation → convergence with character choice → retrospective
-legibility.
+Use this sequence:
 
-Reject: symbol appears → symbol is explained → meaning is delivered.
+`observed form → contextual association → recurrence under new pressure → formal mutation → convergence with character choice → retrospective legibility`
+
+Reject this sequence:
+
+`symbol appears → symbol is explained → meaning is delivered`
 
 ## When to use
 
-- Develop a screenplay, pilot, short, video, podcast, scene, logline, beat
-  sheet, or character bible.
-- Diagnose or revise causality, dialogue, motif mutation, blocking, continuity,
-  symbolism, or production feasibility.
-- Design a motif lifecycle across diegetic, dramaturgical, and cinematic
-  channels.
-- Produce scene contracts, cinematic encoding, symbolic architecture, or a
-  production handoff.
-- Prepare approved material for optional Continuity Forge ingestion.
+Use Kubrick when the request involves one or more of:
 
-Do not use for generic prose that does not benefit from cinematic or dramatic
-structure. Do not imitate a living creator's exact style; translate requested
-qualities into high-level formal constraints.
+- screenplay, pilot, short, video, podcast, scene, logline, beat sheet, or character-bible development;
+- narrative or scene diagnosis, revision, continuity, blocking, dialogue, motif mutation, or production feasibility;
+- motif architecture across diegetic, dramaturgical, and cinematic channels;
+- private motif graphs, symbolic ledgers, storyboards, design specifications, provider prompt packets, or visual QA;
+- governed use receipts and proposal-only pattern evolution;
+- an explicit Continuity Forge handoff.
 
-## Runtime
+Do not use Kubrick for generic prose that does not benefit from cinematic or dramatic structure. Do not imitate a living creator's exact style; translate requested qualities into high-level formal constraints.
 
-Python 3 is required for deterministic retrieval. PyYAML is required for YAML
-briefs; JSON briefs work without it.
+## OpenClaw runtime contract
 
-Mutable runtime data belongs outside the installed skill. The scripts use
-`KUBRICK_STATE_DIR` when set, otherwise `~/.openclaw/state/kubrick`. Never store
-project receipts, outcomes, or evolution overlays inside the installed package.
+Treat the installed skill directory as immutable.
+
+- Resolve repository paths relative to this `SKILL.md`, never from the caller's current working directory.
+- Store retrieval caches, receipts, outcomes, and reversible overlays under `KUBRICK_STATE_DIR` when set; otherwise use `~/.openclaw/state/kubrick`.
+- Store project outputs in the user-selected project directory, normally `out/kubrick/<project>`.
+- Never store private project state, generated receipts, or learned overlays inside the installed skill.
+- Use OpenClaw tools only when they materially help. Kubrick's deterministic Python pipeline remains the authority for retrieval, graph compilation, validation, and receipts.
+- Label claims as `observed`, `inferred`, `speculative`, or `canonical`.
+- Keep private motif graphs and hidden structural interpretation out of audience-facing prompts.
+- Fail closed with `NOT_COMPUTABLE` when evidence, authority, or required inputs are missing.
+- Learning is proposal-only. Never mutate bundled corpus files or provenance automatically.
+
+Python 3.9 or newer is required. Install `requirements.txt` for YAML and schema validation support.
 
 ## Request routing
 
-Choose one primary mode:
+Choose the smallest useful primary mode:
 
-- **DEVELOP**: premise, characters, world, theme, structure, sequence plan.
-- **DRAFT**: pages, scenes, beats, dialogue, visual action.
-- **DIAGNOSE**: score problems and identify minimal repairs.
-- **REVISE**: change material while preserving locked architecture and canon.
-- **POLISH**: improve clarity, rhythm, subtext, compression, and voice.
-- **CONTINUITY**: audit state, chronology, motif lifecycle, and unresolved
-  payoffs.
-- **PRODUCTION**: scene contracts, shot logic, cinematic encoding, handoff
-  packet.
-- **ADAPT**: change format while preserving dramatic core and symbolic grammar.
+- **DEVELOP** — premise, characters, world, theme, structure, sequence plan.
+- **DRAFT** — scenes, beats, dialogue, and visual action.
+- **DIAGNOSE** — score faults and identify minimal repairs.
+- **REVISE** — change material while preserving locked architecture and canon.
+- **CONTINUITY** — audit chronology, state, motif lifecycle, and unresolved payoffs.
+- **SINGLE_FRAME** — compile one image or shot with private symbolic structure.
+- **STORYBOARD** — propagate motif state and continuity across frames.
+- **PRODUCTION** — create scene contracts, camera/design constraints, and handoff artifacts.
+- **ADAPT** — convert a neutral packet into provider-specific instructions.
+- **VISUAL_QA** — compare observed output with intended graph state and propose bounded corrections.
+- **DESIGN** — compile a production-facing design specification from graph evidence.
+- **FORGE_FEEDBACK** — ingest optional Forge evidence into governed proposals.
 
-If the request is ambiguous, infer the smallest useful artifact and state the
-assumption. Do not generate an entire screenplay when a premise contract or
-scene diagnosis would resolve the real problem.
+If the request is ambiguous, infer the smallest useful artifact and state the assumption. Do not generate an entire screenplay when a premise contract or scene diagnosis would resolve the actual problem.
 
-## Workflow
+## Core workflow
 
 1. **Intake**
-   - Extract format, audience, runtime, premise, dramatic question, protagonist
-     goal, opposition, stakes, tone, production constraints, approved canon,
-     prohibited elements, and requested artifact.
-   - Label unsupported assumptions as inferred or speculative.
+   - Extract format, audience, runtime, dramatic problem, protagonist goal, opposition, stakes, tone, production constraints, canon, prohibited elements, and requested artifact.
+   - Label unsupported assumptions.
 2. **Dramatic contract**
-   - Define change under pressure, irreversible choice, causal chain, and
-     intended audience effect.
+   - Define change under pressure, irreversible choice, causal chain, and intended audience effect.
    - Structure before pages; behavior before explanation.
-3. **Retrieval**
-   - Convert the problem into a JSON or YAML brief.
-   - Run `scripts/retrieve_symbolic_patterns.py`.
-   - Use one primary grammar and at most two supporting grammars.
-   - If status is `NOT_COMPUTABLE`, do not invent authority; use general
-     dramatic principles or ask for missing context.
-4. **Symbolic intent**
-   - Define `dramatic_function` before interpretation.
-   - Record observed form, allowed channels, visibility ceiling, prohibited
-     readings, production limits, and cultural boundaries.
-5. **Motif lifecycle**
-   - Specify each recurrence, pressure change, formal mutation, channel
-     crossing, and payoff.
-   - Identical recurrence is allowed only when stagnation is the deliberate
-     dramatic point.
-6. **Narrative and scene engineering**
-   - Build causality, sequence turns, state changes, conflict, tactic shifts,
-     reversals, and scene exits.
-   - Translate symbolic intent into relational blocking, composition, camera,
-     edit cadence, sound, and production design.
-7. **Draft or revise**
-   - Preserve approved facts and locked formal constraints.
-   - Use revision diffs for changes that affect continuity or motif
-     architecture.
-8. **Quality gates**
-   - Run the relevant anti-slop gates in
-     `references/anti-slop-patterns.md`.
-   - Score with `evals/rubric.md` when diagnosing or handing off.
+3. **Deterministic retrieval**
+   - Normalize the brief as JSON or YAML.
+   - Retrieve one primary grammar and no more than two supporting grammars.
+   - Respect ledger exclusions, cultural constraints, symbolic debt, collision types, production cost, and the executable corpus registry.
+   - If retrieval returns `NOT_COMPUTABLE`, do not invent authority.
+4. **Private symbolic architecture**
+   - Define dramatic function before interpretation.
+   - Build observed forms, relations, state changes, convergence sites, residue, provenance labels, and channel assignments.
+   - Keep hidden graph structure private.
+5. **Narrative and scene engineering**
+   - Build causality, sequence turns, tactic shifts, reversals, scene exits, and motif mutation.
+   - Translate intent into relational blocking, composition, camera, edit cadence, sound, light, material, costume, and production design.
+6. **Storyboard or provider adaptation**
+   - Propagate symbolic state across frames when the work is sequential.
+   - Build a neutral adapter packet before generating provider-specific instructions.
+7. **Quality gates**
+   - Validate schemas and anti-slop constraints.
+   - For visual work, normalize observations, compare fidelity, generate a bounded correction packet, and stop when governance says pass or stop.
+8. **Learning and handoff**
+   - Record outcomes as observations.
+   - Convert multi-signal evidence into a human-reviewed proposal; never apply corpus changes automatically.
+   - Hand off to Continuity Forge only when explicitly requested and verified.
 9. **Deliver**
-   - Return only the artifact requested plus assumptions, unresolved risks,
-     provenance, and validation notes that materially help.
+   - Return the requested artifact plus only the assumptions, risks, provenance, receipts, and validation notes that materially help.
+
+## Unified CLI
+
+Run from the installed skill directory:
+
+```bash
+python3 scripts/kubrick.py do <intent> [--action <action>] [flags]
+```
+
+The twelve intent families are:
+
+- `compile` — full brief-to-packet compilation;
+- `retrieve` — registry-aware deterministic retrieval;
+- `ledger` — initialize, audit, mutate, rehydrate, or export project state;
+- `design` — build a production-facing design specification;
+- `storyboard` — propagate or compare multi-frame symbolic state;
+- `adapt` — build neutral packets or provider-specific instructions;
+- `visual` — normalize, compare, correct, govern, or run closed-loop QA;
+- `learn` — record outcomes, extract Forge signals, and propose evolution;
+- `check` — validate skill, corpus, coverage, artifacts, repeatability, or evals;
+- `operate` — run graph and ledger operators;
+- `mcp` — expose the optional `kubrick_do` MCP tool;
+- `bundle` — build a Grok review bundle.
+
+Use built-in discovery instead of memorizing legacy commands:
+
+```bash
+python3 scripts/kubrick.py
+python3 scripts/kubrick.py help compile
+python3 scripts/kubrick.py aliases
+python3 scripts/kubrick.py recipe verify
+```
+
+Legacy command aliases remain supported as a soft cutover.
+
+## Common commands
+
+Compile the canonical storyboard example:
+
+```bash
+python3 scripts/kubrick.py do compile \
+  --brief examples/authority-transfer-storyboard/brief.yaml \
+  --ledger examples/authority-transfer-storyboard/symbolic-ledger.yaml \
+  --mode storyboard \
+  --storyboard-plan examples/authority-transfer-storyboard/storyboard-plan.yaml \
+  --provider grok-imagine \
+  --out out/kubrick/authority-transfer
+```
+
+Retrieve without using an existing cache:
+
+```bash
+python3 scripts/kubrick.py do retrieve \
+  --brief /absolute/path/brief.yaml \
+  --no-cache
+```
+
+Build a provider packet:
+
+```bash
+python3 scripts/kubrick.py do adapt \
+  --action provider \
+  --packet /absolute/path/model-adapter-packet.yaml \
+  --provider flux \
+  --output /absolute/path/flux-prompt-packet.yaml
+```
+
+Run closed-loop visual QA:
+
+```bash
+python3 scripts/kubrick.py do visual \
+  --action closed-loop \
+  --expected /absolute/path/motif-graph.private.yaml \
+  --observation-input /absolute/path/visual-observation.yaml \
+  --out /absolute/path/visual-qa
+```
+
+Record evidence and propose an evolution:
+
+```bash
+python3 scripts/kubrick.py do learn \
+  --action outcome \
+  --compile-receipt /absolute/path/compile-receipt.json \
+  --project-id project-001 \
+  --output /absolute/path/pattern-use-receipt.yaml
+
+python3 scripts/kubrick.py do learn \
+  --action evolve \
+  --pattern-id doorway_ownership_transfer \
+  --receipt /absolute/path/pattern-use-receipt.yaml \
+  --output /absolute/path/pattern-evolution-proposal.yaml
+```
+
+The proposal must declare `automatic_application_allowed: false` and remain subject to human review.
+
+## Deterministic RUNE operations
+
+Use these graph and ledger operators only when their preconditions are satisfied:
+
+- `saturation-score`
+- `counterpoint`
+- `convergence-lock`
+- `surface-occult-audit`
+- `symbolic-architecture-export`
+- `motif-mutation`
+
+Each operation must emit or update an auditable artifact. Do not convert private graph vocabulary directly into audience-facing prose.
+
+## Required symbolic artifacts
+
+Use only those required by the task:
+
+- project brief and dramatic contract;
+- retrieval receipt and optional pattern-gap report;
+- private motif-structure graph;
+- project symbolic ledger;
+- structured symbolic audit;
+- audience-facing constraints;
+- storyboard symbolic state and transition report;
+- neutral model-adapter packet and provider packet;
+- visual observation, fidelity report, correction packet, and correction receipt;
+- production-facing design specification;
+- pattern-use receipt, Forge signal bundle, evolution proposal, and multi-signal receipt;
+- optional production or Continuity Forge handoff.
+
+Use the shipped schemas and templates. Preserve deterministic hashes, source paths, timestamps, authority labels, and reason vectors in receipts.
 
 ## Three symbolic channels
 
-- **Diegetic**: objects, places, gestures, costume, architecture, and sound in
-  the world.
-- **Dramaturgical**: repeated choices, roles, reversals, bargains, thresholds,
-  and causal structures.
-- **Cinematic**: framing, geometry, movement, rhythm, light, sound placement,
-  and editing.
+- **Diegetic** — objects, places, gestures, costume, architecture, and sound inside the world.
+- **Dramaturgical** — choices, roles, reversals, bargains, thresholds, and causal structures.
+- **Cinematic** — framing, geometry, movement, rhythm, light, sound placement, and editing.
 
-The strongest motif crosses channels without all channels stating the same
-meaning.
+The strongest motif crosses channels without making every channel state the same meaning.
 
-## Deterministic retrieval
-
-From the installed skill directory:
-
-```bash
-python3 scripts/retrieve_symbolic_patterns.py \
-  --brief /absolute/path/brief.json
-```
-
-The receipt must include status, score components, selected grammar, supporting
-grammars, exclusions, provenance, corpus version, and a request hash. Retrieval
-is advisory evidence, not canon.
-
-Read only the references needed for the chosen mode:
-
-- `references/story-structure.md` for macrostructure.
-- `references/character-and-dialogue.md` for character and dialogue.
-- `references/scene-engineering.md` for scene contracts and revisions.
-- `references/symbolic-dramaturgy.md` for motif and cinematic encoding.
-- `references/retrieval-and-continuity.md` and
-  `references/corpus-usage.md` for retrieval discipline.
-- `references/anti-slop-patterns.md` for diagnosis gates.
-- `references/format-specific-guidance.md` for format changes.
-- `references/continuity.md` for local continuity.
-- `references/continuity-forge-integration.md` only when Forge is installed
-  and the user requests a handoff.
-
-## Evolution from use
-
-Record explicit outcomes in the external state directory, then run:
-
-```bash
-python3 scripts/evolve_from_use.py
-```
-
-Evolution may adjust confidence overlays and recommendation ordering from
-evidence. It must emit a receipt, preserve the bundled corpus, and never invent
-new governing patterns or rewrite provenance autonomously.
-
-## Optional Continuity Forge handoff
-
-Kubrick produces proposals. Continuity Forge owns canonical production state
-only after explicit ingestion.
-
-Before any Forge write:
-
-- Confirm Forge is installed and inspect its current CLI or MCP surface.
-- Acquire the required lease or mutation authority.
-- Include actor, authorization scope, idempotency key, rationale, and expected
-  state hash when supported.
-- Surface returned receipts, hashes, diagnostics, and canonical IDs.
-- Do not claim local Kubrick artifacts are canonical after Forge takes
-  ownership.
-
-## Anti-slop invariants
+## Anti-slop gates
 
 Reject or repair:
 
-- Explanation of symbolism already legible in action or form.
-- One-to-one symbolism without contextual transformation.
-- Repetition without mutation.
-- Archetype as costume rather than function.
-- Unsupported cross-tradition equivalence.
-- Numerology without structural effect.
-- Symbolism that weakens causality, agency, clarity, tone, credibility, or
-  feasibility.
-- Mystery created only by withheld causal information.
-- Premature confirmation of the correct interpretation.
-- Generic dialogue, exposition dumps, continuity drift, and ornamental
-  cinematic language.
+- explanation of symbolism already legible in action or form;
+- one-to-one symbolism without contextual transformation;
+- repetition without mutation;
+- archetype used as costume rather than function;
+- unsupported cross-tradition equivalence;
+- numerology without structural effect;
+- symbolism that weakens causality, agency, clarity, tone, credibility, or feasibility;
+- mystery created only by withheld causal information;
+- premature confirmation of the correct interpretation;
+- generic dialogue, exposition dumps, continuity drift, ornamental shot language, or provider prompts that leak private graph semantics.
 
-## Core artifacts
+Apply the structured anti-slop audit and the prose anti-slop audit before calling a compiled artifact complete.
 
-- project brief
-- dramatic contract
-- logline and beat sheet
-- character bible
-- scene contract
-- `symbolic_intent`
-- `motif_registry` and `motif_lifecycle`
-- `cinematic_encoding`
-- `symbolic_architecture`
-- continuity ledger
-- `retrieval_receipt`
-- `revision_diff`
-- production handoff
+## Continuity and authority
 
-Use the schemas and templates already shipped in this repository when
-structured output is requested.
+Inside OpenClaw, local project artifacts are proposals unless another verified system owns canonical state.
+
+Before any Continuity Forge write:
+
+- confirm Forge is installed and inspect its current CLI or MCP surface;
+- acquire the required lease or mutation authority;
+- include actor, authorization scope, idempotency key, rationale, and expected state hash when supported;
+- surface returned receipts, hashes, diagnostics, and canonical IDs;
+- never claim local Kubrick artifacts are canonical after Forge takes ownership.
+
+## References
+
+Load only what the chosen mode requires:
+
+- `QUICKSTART.md` — operator onboarding and canonical examples.
+- `references/hermes-runtime-contract.md` — current portable execution contract; apply its deterministic rules under OpenClaw while treating Hermes-specific naming as upstream terminology.
+- `references/retrieval-and-continuity.md` and `references/corpus-usage.md` — retrieval discipline.
+- `references/executable-corpus-registry.yaml` and `references/corpus-index.yaml` — corpus routing.
+- `references/hermes-graph-operators.md` — RUNE operator semantics.
+- `references/hermes-storyboard-state.md` — frame-to-frame state propagation.
+- `references/hermes-model-adapters.md` — neutral and provider-specific adaptation.
+- `references/hermes-visual-qa.md` — closed-loop visual QA.
+- `references/design-specification-compiler.md` — design compilation.
+- `references/anti-slop-patterns.md` — diagnosis gates.
+- `references/continuity-forge-integration.md` — optional handoff only.
 
 ## Validation
 
-Before final delivery:
+Before release or material delivery, run the checks proportional to the task:
 
-- Every scene changes state or earns its place.
-- Every symbolic element has a dramatic function.
-- Recurrences mutate or intentionally demonstrate stagnation.
-- Causality and character agency survive the symbolic layer.
-- Cultural claims have appropriate provenance and boundaries.
-- Production instructions are relational and feasible, not decorative shot
-  lists.
-- Continuity, locked canon, and unresolved payoffs are consistent.
-- Any deterministic script result was checked for a real
-  `SELECTED`/`NOT_COMPUTABLE` status.
-- Any Forge claim was verified from Forge itself.
+```bash
+python3 scripts/doctor.py
+python3 -m unittest -v evals/test_openclaw_portability.py
+python3 scripts/kubrick.py do check --action skill
+python3 scripts/kubrick.py do check --action corpus
+python3 scripts/kubrick.py do check --action coverage
+python3 scripts/kubrick.py do check --action eval
+python3 scripts/test_outcome_governance.py
+python3 scripts/test_wave2_wave3.py
+python3 scripts/test_design_specification.py
+python3 scripts/test_intent_router.py
+python3 scripts/audit_release_version.py --strict --output out/kubrick/release-version-report.json
+```
+
+Also verify:
+
+- each scene changes state or earns its place;
+- every symbolic element has a dramatic function;
+- recurrences mutate or deliberately demonstrate stagnation;
+- causality and agency survive the symbolic layer;
+- cultural claims retain provenance and bounded interpretation;
+- production instructions are relational and feasible;
+- continuity and unresolved payoffs remain consistent;
+- all deterministic results were checked for real `SELECTED`, `COMPILED`, `PASS`, or `NOT_COMPUTABLE` status;
+- no private graph vocabulary leaked into audience-facing output;
+- no learned proposal was applied automatically;
+- any external-system claim was verified from that system.
+
+Kubrick is an OpenClaw Agent Skill first: deterministic where computation matters, restrained where ambiguity matters, private where hidden structure matters, and explicit about authority at every boundary.

@@ -1,204 +1,169 @@
-index_version: 0.5.0
-retrieval_rules: 'See corpus-usage.md: identify dramatic problem first, one primary
-  grammar, at most two secondary, prefer process over icon, always retrieve provenance.'
+index_version: 0.11.5
+runtime: standalone-hermes
+registry: references/executable-corpus-registry.yaml
+retrieval_rules:
+  identify_dramatic_problem_first: true
+  require_observable_evidence: true
+  primary_limit: 1
+  supporting_limit: 2
+  prefer_process_over_icon: true
+  require_provenance: true
+  require_mutation: true
+  fail_closed: NOT_COMPUTABLE
+  minimum_threshold: 0.55
 by_dramatic_problem:
   identity_dissolution_breakdown:
-    primary_grammar: putrefaction / nigredo (alchemical)
-    affordances:
-    - CONTAMINATE
-    - INVERT
-    - DESCEND
     patterns:
     - alchemical_nigredo_putrefaction
-    cinematic:
-    - reduced palette
-    - negative space dominance
-    - slow camera into void
-    provenance_note: PRIMARY alchemy + Freud
-  threshold_crossing_status_change:
-    primary_grammar: liminal passage / initiation
-    affordances:
-    - CROSS
-    - INITIATE
-    - ENCLOSE
+    - alchemical_calcination_false_structure
+    - alchemical_dissolution_boundary_loss
+    - lynch_causal_discontinuity_residue
+  discernment_signal_from_noise:
     patterns:
-    - liminal_threshold_crossing
-    - propp_villainy_lack_mediation
-    cinematic:
-    - frame edge crossing
-    - sound change at boundary
-    - new composition post-crossing
-    provenance_note: SCHOLARLY (Turner/van Gennep) + Propp
-  hidden_connection_revelation:
-    primary_grammar: correspondence / as above so below
-    affordances:
-    - MIRROR
-    - REVEAL
-    - BIND
+    - alchemical_separation_signal_from_noise
+    - image_dialogue_counterpoint
+    - broken_symmetry_state_evidence
+  opposed_forces_third_state:
     patterns:
-    - hermetic_as_above_so_below
-    - peircean_icon_index_symbol
-    cinematic:
-    - parallel framing micro/macro
-    - graphic match across scales
-    provenance_note: PRIMARY Hermeticum + Peirce
-  compulsion_repetition_pressure:
-    primary_grammar: rhythmic repetition / recurrence with mutation
-    affordances:
-    - REPEAT
-    - CONTAMINATE
+    - alchemical_conjunction_opposed_forces
+    - dual_light_conflicting_claims
+    - image_dialogue_counterpoint
+  iterative_refinement:
     patterns:
-    - rhythmic_repetition_cadence
-    - geometric_enclosure_breaking
-    cinematic:
-    - pulse in camera/editing/sound
-    - geometry that tightens or breaks
-    provenance_note: PRIMARY rhythmic traditions + film analysis
-  unseen_power_threat:
-    primary_grammar: acousmatic / offscreen
-    affordances:
-    - CONCEAL
-    - HAUNT
-    - REVEAL
+    - alchemical_distillation_iterative_refinement
+    - resnais_temporal_recurrence_substitution
+    - indian_tala_accent_displacement
+  embodied_consequence:
     patterns:
-    - acousmatic_sound_offscreen_power
-    - trickster_boundary_violation
-    cinematic:
-    - reaction to unseen source
-    - sound bridge
-    - empty frame with dominant sound
-    provenance_note: SCHOLARLY Chion + folklore trickster cycles
-  memory_personal_residue:
-    primary_grammar: condensation / personal association
-    affordances:
-    - TRANSFER
-    - MIRROR
-    - HAUNT
+    - alchemical_coagulation_embodied_consequence
+    - object_residue_continuity_after_use
+    - material_repair_visible_scar
+    - costume_state_identity_migration
+  authority_transfer_and_vacancy:
     patterns:
-    - personal_association_residue
-    - cinematic_graphic_match_substitution
-    cinematic:
-    - lingering on private detail
-    - match cut carrying private charge
-    provenance_note: PRIMARY Freud method
-  group_discipline_vs_desire:
-    primary_grammar: geometric binding / fragmentation
-    affordances:
-    - BIND
-    - INVERT
-    - FRAGMENT
+    - kubrick_center_transfer_authority
+    - doorway_ownership_transfer
+    - interface_badge_authority_transfer
+    - negative_space_authority_vacancy
+  institutional_pressure:
     patterns:
-    - geometric_enclosure_breaking (Denis marching example)
-    - contemporary_corporate_iconography
-    cinematic:
-    - repetitive formation
-    - body as geometry
-    - rhythm mutating to collapse
-    provenance_note: film-derived (Denis Beau Travail)
-  brand_or_meme_identity:
-    primary_grammar: modern myth / viral symbol
-    affordances:
-    - BIND
-    - CONTAMINATE
-    - INVERT
+    - corporate_grid_enclosure_compliance
+    - surveillance_distributed_gaze
+    - vertical_hierarchy_descent
+    - crowd_formation_fracture
+  memory_time_and_residue:
     patterns:
-    - contemporary_corporate_iconography
-    - internet_meme_viral_symbol
-    cinematic:
-    - logo as center
-    - meme pose or image inserted
-    - brand space contamination
-    provenance_note: PRIMARY advertising artifacts + digital folklore
-by_affordance:
-  BIND:
-  - hermetic_as_above_so_below
-  - rhythmic_repetition_cadence
-  - geometric_enclosure_breaking
-  CONTAMINATE:
+    - resnais_temporal_recurrence_substitution
+    - tarkovsky_material_memory_weathering
+    - object_residue_continuity_after_use
+    - reflection_substitution_ownership
+  sound_absence_and_distributed_agency:
+    patterns:
+    - sonic_motif_source_migration
+    - sonic_silence_withdrawal_revelation
+    - japanese_ma_active_interval
+    - indian_tala_accent_displacement
+  spatial_threshold_and_route_pressure:
+    patterns:
+    - labyrinth_route_pressure
+    - doorway_ownership_transfer
+    - vertical_hierarchy_descent
+    - occlusion_relational_denial
+  contemporary_status_and_template_systems:
+    patterns:
+    - interface_badge_authority_transfer
+    - meme_template_role_mutation
+    - corporate_grid_enclosure_compliance
+    - surveillance_distributed_gaze
+    - memetic_template_half_life
+    - platform_attention_economy_gaze
+  light_color_and_formal_state:
+    patterns:
+    - dual_light_conflicting_claims
+    - kubrick_red_culmination_state
+    - broken_symmetry_state_evidence
+    - negative_space_authority_vacancy
+  environment_and_world_agency:
+    patterns:
+    - environmental_response_world_agency
+    - tarkovsky_material_memory_weathering
+    - object_residue_continuity_after_use
+by_domain:
+  alchemical:
   - alchemical_nigredo_putrefaction
-  - red_carpet (Kubrick)
-  - contemporary_corporate_iconography
-  INVERT:
-  - propp_villainy_lack_mediation
-  - trickster_boundary_violation
-  - acousmatic_sound_offscreen_power
-  REPEAT:
-  - rhythmic_repetition_cadence
-  - motif_lifecycle (core)
-  - Resnais repetition patterns
-  MIRROR:
-  - peircean_icon_index_symbol
-  - Tarkovsky water/reflection
-  - Lynch red room
-  CROSS / INITIATE:
-  - liminal_threshold_crossing
-  - monolith (Kubrick)
-  - Bresson hands (transfer as crossing)
-by_cinematic_technique:
-  graphic_match:
-  - cinematic_graphic_match_substitution
-  - Kubrick bone-to-station
-  - Resnais memory matches
-  acousmatic_sound:
-  - acousmatic_sound_offscreen_power
-  - Tarkovsky water sounds
-  negative_space / broken symmetry:
-  - geometric_enclosure_breaking
-  - Kubrick Shining carpet and twins
-  repetitive_pulse:
-  - rhythmic_repetition_cadence
-  - Denis marching
-  - Bresson hands rhythm
-by_source_tier_example:
-  PRIMARY:
-  - Corpus Hermeticum
-  - Freud Interpretation of Dreams
-  - Propp Morphology
-  - Saussure Course
-  - Peirce papers
-  - Primary alchemical texts (Rosarium, Zosimos)
-  - Vitruvius
-  - Traditional rhythmic systems
-  - Original film artifacts (Kubrick, Tarkovsky, Bresson, Denis, etc.)
-  - Advertising primaries (Apple 1984, etc.)
-  SCHOLARLY:
-  - Eliade Sacred and the Profane
-  - Turner Ritual Process
-  - Chion Audio-Vision
-  - Shifman Memes in Digital Culture
-notes:
-- Always return provenance with any retrieved pattern.
-- For film-derived patterns, cite the specific film + director.
-- This index is for fast routing only; full details live in the pattern files and
-  registries.
+  - alchemical_calcination_false_structure
+  - alchemical_dissolution_boundary_loss
+  - alchemical_separation_signal_from_noise
+  - alchemical_conjunction_opposed_forces
+  - alchemical_distillation_iterative_refinement
+  - alchemical_coagulation_embodied_consequence
+  cinematic:
+  - kubrick_center_transfer_authority
+  - kubrick_red_culmination_state
+  - bresson_gesture_object_transfer
+  - tarkovsky_material_memory_weathering
+  - lynch_causal_discontinuity_residue
+  - resnais_temporal_recurrence_substitution
+  - soviet_montage_collision_thesis
+  - dual_light_conflicting_claims
+  - japanese_ma_active_interval
+  - environmental_response_world_agency
+  sound-rhythmic:
+  - sonic_motif_source_migration
+  - sonic_silence_withdrawal_revelation
+  - indian_tala_accent_displacement
+  spatial-geometric:
+  - labyrinth_route_pressure
+  - doorway_ownership_transfer
+  - vertical_hierarchy_descent
+  - crowd_formation_fracture
+  - occlusion_relational_denial
+  - broken_symmetry_state_evidence
+  - negative_space_authority_vacancy
+  semiotic:
+  - image_dialogue_counterpoint
+  - reflection_substitution_ownership
+  - object_residue_continuity_after_use
+  - material_repair_visible_scar
+  - costume_state_identity_migration
+  contemporary:
+  - interface_badge_authority_transfer
+  - corporate_grid_enclosure_compliance
+  - meme_template_role_mutation
+  - surveillance_distributed_gaze
+  - memetic_template_half_life
+  - platform_attention_economy_gaze
+strong_defaults:
+- alchemical_separation_signal_from_noise
+- alchemical_coagulation_embodied_consequence
+- kubrick_center_transfer_authority
+- bresson_gesture_object_transfer
+- tarkovsky_material_memory_weathering
+- sonic_silence_withdrawal_revelation
+- image_dialogue_counterpoint
+- environmental_response_world_agency
+- negative_space_authority_vacancy
 retrieval_scoring:
   weights:
-    dramatic_fit: 0.25
-    character_fit: 0.15
-    cultural_fit: 0.15
-    cinematic_fit: 0.15
+    dramatic_fit: 0.24
+    character_fit: 0.1
+    cinematic_fit: 0.12
+    cultural_fit: 0.1
     source_quality: 0.1
-    mutation_potential: 0.1
+    mutation_potential: 0.14
     continuity_compatibility: 0.1
-    "clich\xE9_risk": -0.2
+    payoff_compatibility: 0.1
+  route_match_bonus: 0.08
+  strong_default_bonus: 0.03
   minimum_threshold: 0.55
   return_if_below: NOT_COMPUTABLE
-exclusion_profiles:
-  identity_fragmentation:
-    dramatic_problem: identity fragmentation
-    overused_patterns:
-    - broken mirror
-    - doubled face reflection
-    - black-and-white split
-    - unexplained twins
-    cultural_conflicts: []
-    genre_mismatches:
-    - pure comedy
-    "visual_clich\xE9s":
-    - literal shattered glass
-    - two-sided lighting on face
-    prohibited_source_families:
-    - modern pop psychology without grounding
+motif_collision_types:
+- REDUNDANT
+- CONTRADICTORY
+- CULTURALLY_INCOMPATIBLE
+- VISUALLY_CONFUSING
+- RHYTHMICALLY_OVERLAPPING
+- PAYOFF_COMPETITION
 project_symbolic_ledger_template:
   governing_grammar: null
   supporting_grammars: []
@@ -209,8 +174,10 @@ project_symbolic_ledger_template:
   shot_usage: {}
   unresolved_payoffs: []
   completed_payoffs: []
-  symbolic_debt: []
+  symbolic_debt: 0.0
   saturation_score: 0.0
+  collisions: []
+  prohibited_cultural_scopes: []
 symbolic_budget_defaults:
   project_density_target: 1
   sequence_density_target: 2
@@ -219,10 +186,11 @@ symbolic_budget_defaults:
   explicitness_ceiling: peripheral
   recurrence_spacing: at least one scene or significant mutation between recurrences
   overload_failure: SYMBOLIC_OVERLOAD
-motif_collision_types:
-- REDUNDANT
-- CONTRADICTORY
-- CULTURALLY_INCOMPATIBLE
-- VISUALLY_CONFUSING
-- RHYTHMICALLY_OVERLAPPING
-- PAYOFF_COMPETITION
+guards:
+  observed_form_first: true
+  mandatory_mutation: true
+  latent_operation_default: true
+  tradition_boundaries_required: true
+  symbolism_subordinate_to_causality: true
+  direct_film_imitation_prohibited: true
+  color_meaning_project_specific: true

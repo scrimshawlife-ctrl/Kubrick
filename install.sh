@@ -88,6 +88,6 @@ chmod +x "$DEST"/scripts/*.py 2>/dev/null || true
 echo "Kubrick installed for ${PLATFORM}: ${DEST}"
 echo "Run: python3 ${DEST}/scripts/doctor.py"
 if ! python3 -c 'import yaml' >/dev/null 2>&1; then
-  echo "PyYAML is not installed. JSON briefs work now; for YAML run:"
+  echo "PyYAML is required by the v0.13 runtime. Install it with:"
   echo "  python3 -m pip install -r ${DEST}/requirements.txt"
 fi

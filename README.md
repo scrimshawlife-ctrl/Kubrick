@@ -1,442 +1,437 @@
-<div align="center">
+<p align="center">
+  <img src="assets/hero.jpg" alt="Kubrick — Symbolic Cinematic Narrative Engineering" width="100%">
+</p>
 
-# KUBRICK
+<h1 align="center">Kubrick</h1>
 
-### Deterministic Symbolic Narrative Engineering
+<p align="center">
+  <strong>OpenClaw-Native Symbolic Cinematic Engineering</strong><br>
+  <em>0.13.0 — OpenClaw Edition • Forge Feedback • Multi-Provider Adapters • Operator Surface</em>
+</p>
 
-**A Zero State creative-technology system for OpenClaw and compatible Agent Skills runtimes**
+<p align="center">
+  <a href="https://github.com/scrimshawlife-ctrl/Kubrick/releases"><img src="https://img.shields.io/github/v/release/scrimshawlife-ctrl/Kubrick?color=5a6a8a&style=flat-square" alt="Latest Release"></a>
+  <a href="https://github.com/scrimshawlife-ctrl/Kubrick"><img src="https://img.shields.io/github/stars/scrimshawlife-ctrl/Kubrick?style=flat-square" alt="GitHub Stars"></a>
+  <a href="https://github.com/scrimshawlife-ctrl/Kubrick/issues"><img src="https://img.shields.io/github/issues/scrimshawlife-ctrl/Kubrick?style=flat-square" alt="Issues"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-1a1f2e?style=flat-square" alt="License"></a>
+  <a href="#installation"><img src="https://img.shields.io/badge/OpenClaw-Agent_Skill-8b5cf6?style=flat-square" alt="OpenClaw Agent Skill"></a>
+</p>
 
-*Structure before pages · Behavior before explanation · Mutation before repetition*
-
-[Quickstart](QUICKSTART.md) · [Skill Specification](SKILL.md) · [Changelog](CHANGELOG.md)
-
-</div>
-
----
-
-## Overview
-
-Kubrick is a portable OpenClaw Agent Skill for developing, diagnosing,
-revising, and preparing cinematic narratives with controlled motif systems,
-visual grammar, dramatic causality, and production-aware continuity. This
-edition is maintained on the permanent `openclaw` branch. The repository's
-`main` branch remains the canonical Hermes edition.
-
-It converts a creative brief into explicit narrative contracts and traceable symbolic architecture—without reducing symbols to fixed meanings or allowing cinematic style to override character agency, causality, or feasibility.
-
-> **Observed form first. Dramatic function second. Interpretation remains latent.**
-
-Kubrick is developed under **Zero State**, an independent creative-technology practice focused on tools that preserve curiosity, authorship, structural coherence, and human creative agency during changing technological conditions.
-
-Kubrick is an Agent Skill—not a Python package—and works without Continuity
-Forge.
+<p align="center">
+  <strong>Observed form first. Dramatic function first. Hidden architecture made executable.</strong>
+</p>
 
 ---
 
-## Why Kubrick
+**Kubrick** is a self-contained OpenClaw Agent Skill for screenplay development, scene diagnosis, motif engineering, cinematic encoding, storyboard continuity, generative prompt construction, closed-loop visual QA, multi-signal outcome learning, and governed design-specification compilation.
 
-Most generative writing systems can produce pages. Kubrick is designed to produce the **coherent cinematic operating system behind those pages**.
+This is the permanent **`openclaw`** edition. The canonical Hermes edition remains on [`main`](https://github.com/scrimshawlife-ctrl/Kubrick/tree/main); the two branches are maintained deliberately rather than silently merged.
 
-It provides:
+It converts dramatic pressure into observable geometry, behavior, rhythm, material state, light, sound, convergence, and residue. Esoteric and archetypal source systems remain latent by default: audience-facing packets expose enforceable cinematic constraints rather than named occult concepts.
 
-- **Narrative engineering** from premise through scene-level execution
-- **Motif lifecycle control** requiring meaningful mutation across recurrence
-- **Three-channel symbolism** across diegetic, dramaturgical, and cinematic form
-- **Deterministic pattern retrieval** with scoring, exclusions, provenance, and receipts
-- **Anti-slop diagnosis** for exposition, symbolic redundancy, cliché, obscurity, and continuity drift
-- **Production-facing artifacts** such as scene contracts, cinematic encoding, and symbolic architecture
-- **Optional Continuity Forge handoff** for canonical ingestion, ledgers, revision safety, and shot contracts
-- **Evidence-based evolution** from recorded project outcomes rather than opaque autonomous rewriting
+## How to use
 
----
+### What Kubrick is for
 
-## Core Principle
+Use Kubrick when you are building a story or image sequence and care about **what the audience can see and feel** — objects, light, geometry, ownership, recurrence, residue — not about dumping named symbols or occult labels into the frame.
 
-A symbol should alter the conditions under which a scene is interpreted without requiring the audience to consciously identify or decode it.
+Typical jobs:
 
-Kubrick models symbolism as a transformation process:
+- develop a premise, scene, or storyboard with consistent motifs
+- turn a brief into a structured symbolic plan and image prompts
+- check that a generated frame still matches the intended state
+- keep a project’s motif ledger as you revise
 
-```text
-observable form
-    ↓
-contextual association
-    ↓
-recurrence under new pressure
-    ↓
-formal mutation
-    ↓
-convergence with character choice
-    ↓
-retrospective legibility
-```
+You do **not** need Continuity Forge, an image API, or an MCP server to start. Those are optional add-ons.
 
-The system rejects the weaker pattern:
+### Option A — Talk to OpenClaw (normal creative use)
 
-```text
-symbol appears → symbol is explained → meaning is delivered
-```
+1. Install Kubrick as an OpenClaw skill (see [Installation](#installation)).
+2. In OpenClaw, load the **kubrick** skill (or ask in a way that triggers it: screenplay, motif, storyboard, image prompt, continuity).
+3. Describe the project in plain language: format, pressure, what must change, what is on screen.
+4. OpenClaw uses Kubrick’s rules and, when useful, the deterministic tools under the hood.
+5. Treat local output as **draft / proposal** until you explicitly approve it or hand it to a canonical system (e.g. Continuity Forge).
 
----
+You mostly work in conversation. You only need the CLI when you want scripts, CI, or batch pipelines.
 
-## Workflow
+### Option B — Command line (tools and pipelines)
 
-```mermaid
-flowchart LR
-    A[Creative Brief] --> B[Intake and Constraints]
-    B --> C[Pattern Retrieval]
-    C --> D[Symbolic Intent]
-    D --> E[Motif Registry]
-    E --> F[Narrative Architecture]
-    F --> G[Scene Contracts]
-    G --> H[Cinematic Encoding]
-    H --> I[Diagnosis and Quality Gates]
-    I --> J{Production Governance?}
-    J -- Standalone --> K[Script and Production Packet]
-    J -- Continuity Forge --> L[Compile and Canonical Ingest]
-    L --> M[Ledger and Shot Contracts]
-    K --> N[Outcome Recording]
-    M --> N
-    N --> O[Evolution Receipt]
-```
-
-### 1. Intake and constraint extraction
-
-Kubrick begins by separating known constraints from suggestions and interpretive possibilities.
-
-Typical inputs include:
-
-- format and target duration
-- premise, dramatic question, and intended audience effect
-- character pressures and irreversible choices
-- genre and production constraints
-- visual, sonic, spatial, or cultural references
-- locked canon and prohibited changes
-- desired deliverables: logline, beat sheet, script, diagnosis, rewrite, or production packet
-
-The result is a bounded creative problem rather than an unrestricted generation prompt.
-
-### 2. Deterministic pattern retrieval
-
-Kubrick searches its symbolic pattern corpus using the project brief, exclusions, genre context, dramatic function, and saturation constraints.
+From a clone of this repo (or the installed skill directory):
 
 ```bash
-python scripts/retrieve_symbolic_patterns.py \
-  --brief evals/retrieval/inputs/sample_melodrama_lowbudget.yaml
+# See the short list of jobs Kubrick can run
+python scripts/kubrick.py --help
+
+# Sanity-check the skill install
+python scripts/kubrick.py do check --action smoke
+
+# Run the built-in storyboard example end-to-end
+python scripts/kubrick.py recipe storyboard-example
 ```
 
-The retriever emits a `retrieval_receipt` containing ranked patterns, score decomposition, provenance, exclusions, and fallback state. When evidence is insufficient, retrieval returns `NOT_COMPUTABLE` rather than inventing a recommendation.
+The pattern is always:
 
-### 3. Symbolic intent contract
+```text
+python scripts/kubrick.py do <job> [options…]
+```
 
-Before motifs are selected, Kubrick defines why symbolic structure is needed.
+Think of `<job>` as *what you want done*, not a pile of script names:
 
-A valid `symbolic_intent` specifies:
-
-- dramatic function
-- pressure or contradiction being externalized
-- interpretive field being altered
-- channels in which the system may operate
-- boundaries preventing one-to-one symbolism or unsupported cultural equivalence
-
-Purely decorative or esoteric symbolism is rejected.
-
-### 4. Motif registry and lifecycle
-
-Each motif begins with observable form—not an assigned meaning.
-
-Kubrick records:
-
-- physical or behavioral form
-- first narrative context
-- channel usage
-- recurrence points
-- pressure applied at each recurrence
-- required mutation
-- inversion, fracture, convergence, or exhaustion state
-- collision and saturation risk
-
-A motif may recur unchanged only when stagnation itself is the dramatic point.
-
-### 5. Narrative architecture
-
-The symbolic system is integrated with ordinary dramatic engineering:
-
-1. premise
-2. character objectives and contradictions
-3. world rules
-4. thematic tensions
-5. macrostructure
-6. sequences and beats
-7. scene engines
-8. dialogue and prose
-9. continuity state
-10. revision logic
-
-Symbolism remains subordinate to agency, causality, clarity, tone, and production feasibility.
-
-### 6. Scene contracts
-
-Before or alongside screenplay pages, Kubrick can create scene contracts defining:
-
-- scene objective and source of pressure
-- value change and entrance/exit state
-- character knowledge
-- continuity dependencies
-- active motifs and required mutations
-- blocking and spatial relationships
-- visual and sonic recurrence rules
-- production constraints
-
-These contracts make scenes testable and reduce narrative compression or visual drift during downstream generation.
-
-### 7. Cinematic encoding
-
-Kubrick translates narrative and symbolic decisions into filmable form through `cinematic_encoding`:
-
-- relational composition
-- geometric patterns
-- blocking systems
-- camera behavior
-- shot recurrence and mutation
-- edit cadence
-- sonic motifs
-- lighting and production-design states
-
-A centered frame, circular move, threshold, or repeated sound matters only when its behavior changes with dramatic conditions.
-
-### 8. Diagnosis and revision
-
-| Mode | Purpose |
+| Job | In plain English |
 |---|---|
-| `DEVELOP` | Build premise, characters, structure, and symbolic architecture |
-| `DRAFT` | Generate scenes or screenplay pages from approved foundations |
-| `DIAGNOSE` | Identify structural, symbolic, continuity, and execution failures |
-| `REVISE` | Change material while preserving locked constraints and canon |
-| `POLISH` | Improve dialogue, rhythm, specificity, and voice without structural drift |
-| `CONTINUITY` | Audit state, recurrence, knowledge, and motif lifecycle consistency |
-| `PRODUCTION` | Produce scene contracts, cinematic encoding, and handoff packets |
-| `ADAPT` | Change format while preserving dramatic core and symbolic grammar |
+| `compile` | Turn a brief (+ optional ledger) into graph, storyboard, and image-ready packets |
+| `retrieve` | Find matching cinematic patterns for a dramatic problem |
+| `ledger` | Start or update the project’s motif checklist |
+| `adapt` | Reword a neutral packet for Grok Imagine, Flux, SD3, or Midjourney |
+| `visual` | Compare what you expected in a frame to what you observed; suggest fixes |
+| `learn` | Record outcomes or propose (never auto-apply) pattern improvements |
+| `check` | Validate the skill, corpus, or run smoke tests |
+| `operate` | Score saturation, lock convergence, audit for named esoterica, export architecture |
+| `design` | Compile a governed design specification from project evidence |
+| `storyboard` | Propagate or compare multi-frame state |
+| `bundle` | Package a Grok-oriented review workflow |
+| `mcp` | Optional machine interface over the same tools |
 
-Diagnosis checks for symbol explanation, occult collage, symbolic redundancy, one-to-one symbolism, repetition without mutation, archetype costume, tradition flattening, numerology inflation, symbolic supremacy, mystery by obscurity, and premature interpretive closure.
-
-### 9. Optional Continuity Forge handoff
-
-Kubrick creates proposals. Continuity Forge can make approved material canonical.
-
-```text
-Kubrick
-  creative development
-  symbolic architecture
-  scene contracts
-  cinematic encoding
-        ↓
-Continuity Forge
-  compile
-  canonical ingest
-  ledger
-  mutation control
-  shot contracts
-  drift audit
-```
+Ask for help on one job:
 
 ```bash
-continuity-forge compile <script-or-outline> --out <output-directory>
+python scripts/kubrick.py help adapt
 ```
 
-After ingestion, the Forge ledger and intermediate representation become the source of truth. Local Kubrick artifacts remain proposals unless committed through Forge.
+### A simple path: idea → storyboard → image prompt
 
-See [`references/continuity-forge-integration.md`](references/continuity-forge-integration.md) for the exact integration procedure.
-
-### 10. Outcome recording and controlled evolution
-
-Kubrick improves retrieval rankings from explicit project evidence.
-
-```text
-~/.openclaw/state/kubrick/receipts/
-~/.openclaw/state/kubrick/outcomes/
-```
-
-Then run:
+1. **Write a short brief** (dramatic problem, what changes, what is visible).
+   Example layout: `examples/authority-transfer-storyboard/brief.yaml`
+2. **Optionally keep a ledger** of active motifs for the project.
+   Example: `examples/authority-transfer-storyboard/symbolic-ledger.yaml`
+3. **Compile** (this is the main pipeline):
 
 ```bash
-python scripts/evolve_from_use.py
+python scripts/kubrick.py do compile \
+  --brief examples/authority-transfer-storyboard/brief.yaml \
+  --ledger examples/authority-transfer-storyboard/symbolic-ledger.yaml \
+  --mode storyboard \
+  --storyboard-plan examples/authority-transfer-storyboard/storyboard-plan.yaml \
+  --provider grok-imagine \
+  --out out/kubrick/authority-transfer
 ```
 
-The evolution engine writes reversible confidence and ranking overlays under
-the external state directory. It never mutates the bundled corpus, autonomously
-invents governing patterns, or rewrites provenance. Every run emits an
-evolution receipt.
+4. **Open the output folder.** You get a private motif graph, storyboard state, and a provider prompt packet ready for your image tool.
+5. **After you generate images**, you can feed an observation back through `do visual` to see what drifted (geometry, ownership, residue, etc.) and what to regenerate.
+6. **Do not expect the corpus to rewrite itself.** Outcomes can create *proposals*; a human still decides.
 
----
+Or skip the long form and run:
+
+```bash
+python scripts/kubrick.py recipe storyboard-example
+```
+
+### Things that stay true no matter how you use it
+
+- **Show, don’t name** — audience-facing prompts avoid named esoterica unless you explicitly ask.
+- **If the evidence is weak, Kubrick stops** — it returns a clear failure rather than inventing structure.
+- **Local work is not “locked canon”** — proposals and observations stay local until you promote them.
+- **Old command names still work** if you used them before; the preferred form is `do <job>`.
+
+### Option C — Hermes upstream
+
+If your agent host is **Hermes**, use the canonical upstream edition on branch **`main`**:
+
+```bash
+git clone --branch main --single-branch \
+  https://github.com/scrimshawlife-ctrl/Kubrick.git
+cd Kubrick
+./install.sh
+```
+
+This branch remains the OpenClaw edition maintained with work by **Prabu** ([@prabu-openclaw](https://github.com/prabu-openclaw)). It uses OpenClaw skill packaging, installs under `~/.openclaw/skills/kubrick`, and keeps mutable runtime state outside the skill package.
+
+Full detail, install paths, and credits: **[`docs/OPENCLAW.md`](docs/OPENCLAW.md)**
+Branch: https://github.com/scrimshawlife-ctrl/Kubrick/tree/openclaw
+Upstream PR (history): https://github.com/scrimshawlife-ctrl/Kubrick/pull/1
+
+### Where to go next
+
+| Need | Go here |
+|---|---|
+| Copy-paste workflows | [`QUICKSTART.md`](QUICKSTART.md) |
+| OpenClaw operating rules | [`SKILL.md`](SKILL.md) |
+| OpenClaw edition notes and credits | [`docs/OPENCLAW.md`](docs/OPENCLAW.md) |
+| Full command table | [Operator Commands](#operator-commands) |
+| Design of the command surface | [`docs/superpowers/specs/2026-07-30-operator-intent-router-design.md`](docs/superpowers/specs/2026-07-30-operator-intent-router-design.md) |
+
+## 0.13.0 Highlights
+
+Wave 2 and Wave 3 of the production-hardening roadmap are **ported to `openclaw` from `main`** ([#3](https://github.com/scrimshawlife-ctrl/Kubrick/issues/3), [#4](https://github.com/scrimshawlife-ctrl/Kubrick/issues/4), [PR #24](https://github.com/scrimshawlife-ctrl/Kubrick/pull/24)).
+
+| Area | What landed |
+|---|---|
+| **Forge multi-signal feedback** | Ledger diffs, revisions, saturation, collisions, ingestion, and payoff outcomes → deterministic observation bundles |
+| **Multi-signal evolution** | Confidence, mutation success, feasibility, anti-slop, cultural boundaries, payoff → proposal-only evolution with human review gates |
+| **First-class project ledgers** | Persistent motif state, pattern history, rehydrate/apply-forge, retrieval snapshots; Forge remains canonical |
+| **Multi-provider adapters** | Grok Imagine, Flux, SD3, Midjourney share one latent graph; adapters change **syntax only** |
+| **Closed-loop visual QA** | Observe → normalize → differential score → correct; geometry / state / residue / convergence reported separately |
+| **CLI + optional MCP operators** | Intent router (`do <intent>`), soft aliases, recipes; MCP tool `kubrick_do`; saturation, counterpoint, lock, occult audit, export |
+| **Cultural-signal packs** | Time-sensitive contemporary memetic patterns with provenance and validity windows |
+| **Design specification compiler** | Heterogeneous evidence → schema-valid `design.md` candidate without silent authority promotion |
+| **Fail-closed governance** | Weak evidence → `NOT_COMPUTABLE`; no structural change applies automatically |
+
+## Core Philosophy
+
+- **Observed first, meaning second** — every motif begins as concrete form, behavior, relation, or material state.
+- **Dramatic function before symbolism** — symbolic design must change pressure, agency, causality, or interpretation.
+- **Mandatory mutation** — recurrence changes scale, ownership, orientation, material, rhythm, framing, context, or consequence.
+- **Three-channel symbolism** — diegetic, dramaturgical, and cinematic channels cross without explanatory dialogue.
+- **Constraint over citation** — source traditions become geometry, rhythm, threshold, role persistence, transformation, and residue.
+- **Fail closed** — weak evidence or unresolved boundaries return `NOT_COMPUTABLE`.
+- **Human-governed evolution** — local outputs remain observations or proposals until explicitly approved.
+- **Forge-canonical when connected** — Continuity Forge owns committed project state; Kubrick never auto-promotes authority.
 
 ## Installation
 
-Install the permanent OpenClaw branch directly from Git:
-
 ```bash
 openclaw skills install git:scrimshawlife-ctrl/Kubrick@openclaw --global
-python3 ~/.openclaw/skills/kubrick/scripts/doctor.py
 ```
 
-For a checked-out development copy:
+Or install from a branch clone:
 
 ```bash
-git clone --branch openclaw --single-branch https://github.com/scrimshawlife-ctrl/Kubrick.git
+git clone --branch openclaw --single-branch \
+  https://github.com/scrimshawlife-ctrl/Kubrick.git
 cd Kubrick
 python3 -m pip install -r requirements.txt
 ./install.sh
 ```
 
-The manual installer uses `~/.openclaw/skills/kubrick`, OpenClaw's shared
-managed-skill directory. OpenClaw discovers the skill from its `SKILL.md`
-frontmatter and loads the body only when the request matches.
+Default destination:
 
-Hermes users should install the canonical `main` branch instead:
+```text
+~/.openclaw/skills/kubrick
+```
+
+Install repository validation dependencies when developing locally:
 
 ```bash
-git clone --branch main --single-branch https://github.com/scrimshawlife-ctrl/Kubrick.git Kubrick-Hermes
+python -m pip install pyyaml jsonschema
 ```
 
-Mutable receipts, outcomes, rankings, and evolution overlays default to
-`~/.openclaw/state/kubrick`. Override that location with
-`KUBRICK_STATE_DIR`. No Continuity Forge installation is required for
-standalone use.
-
----
-
-## Quick Start
-
-### In OpenClaw
-
-```text
-Develop this premise into a feature outline with a controlled motif lifecycle,
-relational cinematic geometry, and scene-level symbolic pressure.
-```
-
-```text
-Diagnose this scene for motif repetition, exposition, and geometric drift.
-```
-
-```text
-Rewrite this sequence while keeping the broken-circle motif and circular
-blocking locked, but mutate their function under the protagonist's new choice.
-```
-
-```text
-Create a production handoff with scene contracts, cinematic encoding,
-shot recurrence rules, and symbolic architecture.
-```
-
-### From the command line
+Validate the installed skill:
 
 ```bash
-python scripts/retrieve_symbolic_patterns.py \
-  --brief evals/retrieval/inputs/sample_melodrama_lowbudget.yaml
+python3 ~/.openclaw/skills/kubrick/scripts/doctor.py
+python3 ~/.openclaw/skills/kubrick/scripts/kubrick.py do check --action skill
 ```
 
-A minimal input and expected-output pair is available in `examples/minimal-retrieval-example.zip`.
+Continuity Forge, MCP servers, generation APIs, and vision APIs remain optional.
 
----
+Mutable caches, receipts, outcomes, and reversible overlays live under `KUBRICK_STATE_DIR` or `~/.openclaw/state/kubrick`; the installed skill remains immutable.
 
-## Core Artifacts
+## Unified Pipeline
 
-| Artifact | Purpose |
+```bash
+python scripts/kubrick.py do compile \
+  --brief examples/authority-transfer-storyboard/brief.yaml \
+  --ledger examples/authority-transfer-storyboard/symbolic-ledger.yaml \
+  --mode storyboard \
+  --storyboard-plan examples/authority-transfer-storyboard/storyboard-plan.yaml \
+  --provider grok-imagine \
+  --out out/kubrick/authority-transfer
+```
+
+Providers: `none` · `generic` · `grok-imagine` · `flux` · `sd3` · `midjourney`
+
+```text
+brief
+→ registry-aware retrieval
+→ private motif graph
+→ structural and anti-slop audit
+→ audience constraints
+→ storyboard state propagation
+→ transition comparison
+→ neutral model-adapter packet
+→ provider prompt packet (syntax-only)
+→ schema receipts
+→ compile receipt
+```
+
+## Operator Commands
+
+Primary surface:
+
+```bash
+python scripts/kubrick.py do <intent> [--action <action>] [flags]
+```
+
+| Intent | Purpose |
 |---|---|
-| `symbolic_intent` | Defines the dramatic purpose and limits of symbolic work |
-| `motif_registry` | Records observable motifs, channels, recurrence, and lifecycle |
-| `motif_lifecycle` | Specifies pressure-driven mutation across appearances |
-| `cinematic_encoding` | Converts narrative relationships into composition, blocking, camera, edit, sound, and design rules |
-| `symbolic_architecture` | Packages the complete symbolic system for production or Forge handoff |
-| `scene_contract` | Defines scene causality, state changes, continuity, motifs, and visual execution |
-| `retrieval_receipt` | Preserves ranked pattern results, scoring, exclusions, and provenance |
-| `evolution_receipt` | Records corpus-confidence changes derived from explicit outcomes |
-| `revision_diff` | Tracks symbolic and continuity effects of a proposed revision |
+| `compile` | Full brief-to-packet symbolic compile |
+| `retrieve` | Registry-aware deterministic retrieval |
+| `ledger` | Project symbolic ledger (init / audit / mutate / rehydrate / apply-forge) |
+| `design` | Governed design-specification compilation |
+| `storyboard` | Multi-frame state propagate / compare |
+| `adapt` | Neutral adapter packet and provider syntax translation |
+| `visual` | Visual QA loop (normalize / compare / correct / govern / closed-loop) |
+| `learn` | Outcome receipts, multi-signal evolution, Forge signal extraction |
+| `check` | Validation and regression (skill, corpus, coverage, eval, smoke, …) |
+| `operate` | Saturation, counterpoint, lock, surface-occult audit, architecture export |
+| `mcp` | Optional stdio MCP wrapper — single tool `kubrick_do` (never authoritative) |
+| `bundle` | Package the complete Grok review workflow |
 
----
+Sugar: `python scripts/kubrick.py help <intent>`, `recipe <name>`, `aliases`.
 
-## Three Symbolic Channels
+Legacy peer names (`adapt-flux`, `closed-loop-qa`, `validate-skill`, …) remain soft aliases.
 
-| Channel | Surface | Typical evidence |
-|---|---|---|
-| **Diegetic** | Elements inside the story world | objects, gestures, architecture, costume, sound, repeated behavior |
-| **Dramaturgical** | Causal and structural repetition | choices, reversals, roles, thresholds, bargains, repeated situations |
-| **Cinematic** | Formal presentation | framing, geometry, movement, rhythm, light, sound placement, editing |
+Step-by-step recipes: [`QUICKSTART.md`](QUICKSTART.md).
 
-The strongest motifs cross channels without every channel stating the same thing.
+## Common Workflows
 
----
+### Multi-provider adaptation
 
-## Repository Map
+```bash
+python scripts/kubrick.py do adapt \
+  --graph out/motif-graph.private.yaml \
+  --storyboard out/storyboard-symbolic-state.yaml \
+  --provider generic \
+  --output out/model-adapter-packet.yaml
 
-```text
-Kubrick/
-├── SKILL.md                         # OpenClaw behavior, routing, gates, and procedures
-├── QUICKSTART.md                    # Minimal installation and execution path
-├── CHANGELOG.md                     # Version history
-├── install.sh                       # OpenClaw installer; optional Hermes target
-├── scripts/
-│   ├── retrieve_symbolic_patterns.py
-│   ├── evolve_from_use.py
-│   ├── kubrick_paths.py
-│   └── doctor.py
-├── references/
-│   ├── patterns/                    # Machine-readable pattern sidecars
-│   ├── corpus/                      # Genre and domain pattern packs
-│   ├── usage/                       # Examples only; live state is external
-│   ├── symbolic-dramaturgy.md
-│   └── continuity-forge-integration.md
-├── evals/                           # Retrieval, behavior, and portability tests
-└── examples/                        # Minimal working examples
+python scripts/kubrick.py do adapt --action provider \
+  --packet out/model-adapter-packet.yaml \
+  --provider flux \
+  --output out/flux-prompt-packet.yaml
 ```
 
----
+Adapters preserve `source_graph_id` and never rewrite canonical symbolic intent.
 
-## Design Boundaries
+### Forge feedback → evolution proposal
 
-Kubrick:
+```bash
+python scripts/kubrick.py do learn --action forge-signals \
+  --project-id myfilm \
+  --input references/examples/forge-signals/ledger-before-after.yaml \
+  --output out/forge-bundle.yaml
 
-- **does** develop and assess narrative material
-- **does** create explicit symbolic and cinematic contracts
-- **does** produce provenance-linked recommendations and receipts
-- **does** integrate with Continuity Forge when available
-- **does not** own canonical production state
-- **does not** treat archetypes as declared character identities
-- **does not** flatten distinct traditions into unsupported equivalence
-- **does not** allow symbolism to override causality or character agency
-- **does not** claim `NOT_COMPUTABLE` problems have been solved
+python scripts/kubrick.py do ledger apply-forge \
+  --ledger project/symbolic-ledger.yaml \
+  --forge-bundle out/forge-bundle.yaml
 
----
+python scripts/kubrick.py do learn --action evolve \
+  --pattern-id interface_badge_authority_transfer \
+  --forge-bundle out/forge-bundle.yaml \
+  --output out/evolution-proposal.yaml
+```
 
-## Zero State Ecosystem
+Every evolution event emits a multi-signal receipt. Structural changes and large confidence deltas require human review. Nothing applies automatically.
 
-Kubrick is a **Zero State** system: a modular creative instrument built to help authors use advanced generative technology without surrendering intention, authorship, curiosity, or structural control.
+### Closed-loop visual QA
 
-Within the ecosystem:
+```bash
+python scripts/kubrick.py do visual --action closed-loop \
+  --expected out/storyboard-symbolic-state.yaml \
+  --observation-input observations/frame-001.json \
+  --source-graph-id <graph-id> \
+  --frame-id frame-001 \
+  --out out/qa/frame-001
+```
 
-- **Kubrick** engineers narrative and symbolic form.
-- **Continuity Forge** governs canonical production state and revision integrity.
-- **OpenClaw** provides the primary agent execution surface.
-- **Hermes** uses the canonical skill edition maintained on `main`.
-- **Zero State** provides the creative philosophy, design language, and ecosystem identity.
+### Operators and optional MCP
 
-> **Zero State — creativity and authenticity as primary resources during changing times.**
+```bash
+python scripts/kubrick.py do operate saturation-score --ledger project/symbolic-ledger.yaml
+python scripts/kubrick.py do operate surface-occult-audit --input out/audience-constraints.yaml
+python scripts/kubrick.py do operate symbolic-architecture-export \
+  --graph out/motif-graph.private.yaml \
+  --ledger project/symbolic-ledger.yaml \
+  --output out/symbolic-architecture-export.yaml
 
----
+# Optional — single MCP tool kubrick_do; fail closed on weak evidence
+python scripts/kubrick.py do mcp
+```
+
+### Design specification
+
+```bash
+python scripts/kubrick.py do design --help
+```
+
+See `references/design-specification-compiler.md` and `templates/design-specification.yaml`.
+
+## Verification
+
+```bash
+python scripts/kubrick.py do check --action skill
+python scripts/kubrick.py do check --action corpus
+python scripts/kubrick.py do check --action coverage
+python scripts/kubrick.py do check --action eval
+python scripts/test_outcome_governance.py
+python scripts/test_wave2_wave3.py
+python scripts/test_design_specification.py
+python scripts/kubrick.py do check --action repeatability --output out/kubrick/repeatability-report.json
+python scripts/audit_release_version.py --strict
+```
+
+CI runs OpenClaw portability checks, v0.13 evals, outcome governance, Wave 2/3 smoke tests, multi-provider storyboard compiles, repeatability, and strict release-version audit.
+
+## Documentation
+
+| File | Purpose |
+|---|---|
+| [`SKILL.md`](SKILL.md) | OpenClaw Agent Skill operating contract |
+| [`QUICKSTART.md`](QUICKSTART.md) | Installation and command routing |
+| [`CHANGELOG.md`](CHANGELOG.md) | Release history |
+| [`docs/ROADMAP-v0.13.md`](docs/ROADMAP-v0.13.md) | Current roadmap and next priorities |
+| [`docs/RELEASE-NOTES-v0.13.md`](docs/RELEASE-NOTES-v0.13.md) | v0.13 release notes |
+| [`docs/RELEASE-CHECKLIST-v0.13.md`](docs/RELEASE-CHECKLIST-v0.13.md) | Release gates and procedure |
+| [`docs/README.md`](docs/README.md) | Docs index (incl. intent-router design/plan) |
+| [`docs/OPENCLAW.md`](docs/OPENCLAW.md) | OpenClaw edition notes, installation, and credits |
+| [`docs/superpowers/specs/2026-07-30-operator-intent-router-design.md`](docs/superpowers/specs/2026-07-30-operator-intent-router-design.md) | Operator intent-router design |
+| [`references/hermes-runtime-contract.md`](references/hermes-runtime-contract.md) | Runtime, dependency, artifact, and canon policy |
+| [`references/hermes-model-adapters.md`](references/hermes-model-adapters.md) | Provider adapter contract |
+| [`references/hermes-visual-qa.md`](references/hermes-visual-qa.md) | Visual QA contract |
+| [`references/continuity-forge-integration.md`](references/continuity-forge-integration.md) | Forge handoff and feedback |
+| [`references/design-specification-compiler.md`](references/design-specification-compiler.md) | Design-spec compiler |
+| [`references/patterns/`](references/patterns/) | Executable pattern sidecars |
+| [`schemas/`](schemas/) | Machine-readable artifact contracts |
+| [`evals/`](evals/) | Regression and adversarial specifications |
+
+## Architecture (v0.13)
+
+```text
+                    ┌─────────────────────┐
+                    │  Project brief +    │
+                    │  symbolic ledger    │
+                    └──────────┬──────────┘
+                               │
+              retrieve → graph → audit → audience
+                               │
+                    storyboard propagate / compare
+                               │
+              neutral adapter packet (shared latent graph)
+                               │
+            ┌──────────────────┼──────────────────┐
+            ▼                  ▼                  ▼
+      grok-imagine           flux / sd3        midjourney
+      (syntax only)        (syntax only)     (syntax only)
+                               │
+                    closed-loop visual QA
+                    (geometry · state · residue · convergence)
+                               │
+              outcome receipt → multi-signal evolution proposal
+                               │
+                    human review gate (never auto-apply)
+                               │
+              optional Forge signals ←── Continuity Forge (canonical)
+```
 
 ## Version
 
-**0.9.0 — OpenClaw Portability + Immutable Package State**
+**0.13.0 — Forge Feedback, Multi-Provider Adapters, and Operator Surface**
 
-See [CHANGELOG.md](CHANGELOG.md) for release details.
+Ported to permanent branch `openclaw` from the v0.13.0 work shipped on `main` via [PR #24](https://github.com/scrimshawlife-ctrl/Kubrick/pull/24). Issues [#3](https://github.com/scrimshawlife-ctrl/Kubrick/issues/3) and [#4](https://github.com/scrimshawlife-ctrl/Kubrick/issues/4) are closed.
 
-## License
+See [CHANGELOG.md](CHANGELOG.md) for full release history.
 
-Kubrick is available under the [MIT License](LICENSE).
+---
 
-<div align="center">
-
-**ZERO STATE**
-
-*Tools for making what does not exist yet.*
-
-</div>
+<p align="center">
+  <em>Symbolism should alter the conditions under which a scene is interpreted—without requiring the audience to consciously identify it.</em>
+</p>
