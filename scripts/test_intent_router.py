@@ -40,10 +40,52 @@ def test_every_legacy_maps_exactly_once():
         assert alias.action in actions or alias.passthrough_action, name
 
 
+def test_resolve_do_adapt_provider():
+    call = ir.resolve([
+        "do", "adapt", "--action", "provider",
+        "--provider", "flux", "--packet", "p.yaml", "--output", "o.yaml",
+    ])
+    assert call.intent == "adapt"
+    assert call.action == "provider"
+    assert call.script.name == "adapt_provider.py"
+    assert call.argv == ["--provider", "flux", "--packet", "p.yaml", "--output", "o.yaml"]
+    assert call.legacy_name is None
+
+
+def test_resolve_alias_adapt_flux():
+    call = ir.resolve(["adapt-flux", "--packet", "p.yaml", "--output", "o.yaml"])
+    assert call.intent == "adapt"
+    assert call.action == "provider"
+    assert call.script.name == "adapt_provider.py"
+    assert "--provider" in call.argv and "flux" in call.argv
+    assert call.legacy_name == "adapt-flux"
+
+
+def test_resolve_unknown_intent():
+    try:
+        ir.resolve(["do", "nope"])
+        raise AssertionError("expected RouterError")
+    except ir.RouterError as e:
+        assert e.exit_code == 2
+        assert "compile" in e.message or "valid" in e.message.lower()
+
+
+def test_ledger_passthrough_action():
+    call = ir.resolve(["ledger", "audit", "--ledger", "L.yaml"])
+    assert call.intent == "ledger"
+    assert call.action == "audit"
+    assert call.script.name == "symbolic_ledger.py"
+    assert call.argv[0] == "audit"
+
+
 def main():
     test_intent_count_and_names()
     test_every_legacy_maps_exactly_once()
-    print("intent_router unit: registry PASS")
+    test_resolve_do_adapt_provider()
+    test_resolve_alias_adapt_flux()
+    test_resolve_unknown_intent()
+    test_ledger_passthrough_action()
+    print("intent_router unit: registry + resolve PASS")
 
 
 if __name__ == "__main__":
