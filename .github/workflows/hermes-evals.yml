@@ -15,6 +15,7 @@ jobs:
           python-version: '3.12'
       - run: python -m pip install pyyaml jsonschema
       - run: python scripts/run_hermes_evals.py
+      - run: python scripts/test_outcome_governance.py
       - name: Compile canonical storyboard example
         run: |
           python scripts/kubrick.py compile --brief examples/authority-transfer-storyboard/brief.yaml --ledger examples/authority-transfer-storyboard/symbolic-ledger.yaml --mode storyboard --storyboard-plan examples/authority-transfer-storyboard/storyboard-plan.yaml --provider grok-imagine --out out/kubrick/example
