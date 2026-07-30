@@ -101,6 +101,8 @@ This contract describes the **Hermes** skill on `main`. An OpenClaw Agent Skill 
 
 References, schemas, pattern sidecars, and eval fixtures are immutable during ordinary use.
 
+Every compile receipt records deterministic runtime identity fields: `kubrick_version`, `corpus_version`, `corpus_digest`, `schema_bundle_version`, `provider_adapter_version`, `command`, `command_digest`, and `normalized_input_digest`. Digests use relative paths and canonical semantic inputs. They exclude timestamps, absolute paths, file metadata, and environment details.
+
 ## Canon policy
 
 Kubrick may preserve approved facts and generate proposals. It must not promote content to `LOCKED` on its own.

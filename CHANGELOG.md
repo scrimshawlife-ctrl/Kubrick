@@ -9,6 +9,8 @@ Kubrick is the primary symbolic cinematic narrative engineering skill. It replac
 - Added `kubrick.manifest.yaml` as the stdlib-readable canonical Hermes registry for runtime profiles, intents, actions, aliases, recipes, schemas, providers, artifacts, authority classes, and exit codes.
 - Added `pyproject.toml` to declare Python compatibility and optional `validation` / `dev` tooling without turning Kubrick into a required Python package.
 - Added manifest validation, router parity tests, release-version alignment, and a cross-platform stdlib CI matrix.
+- Added deterministic compile-receipt identities for the Kubrick release, corpus, schema bundle, provider adapter, command options, and normalized semantic input.
+- Added mutation-sensitive identity tests and compile-receipt repeatability coverage.
 
 ### Changed
 
