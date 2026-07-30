@@ -76,6 +76,10 @@ Design: `docs/superpowers/specs/2026-07-30-operator-intent-router-design.md`.
 
 See root `README.md`, `QUICKSTART.md`, and `docs/README.md` for workflows and the docs index.
 
+## OpenClaw edition
+
+This contract describes the **Hermes** skill on `main`. An OpenClaw Agent Skill packaging of Kubrick is maintained on the permanent branch `openclaw` (work by Prabu / @prabu-openclaw). That edition uses different install roots, external state directories, and packaging metadata. See `docs/OPENCLAW.md` and https://github.com/scrimshawlife-ctrl/Kubrick/tree/openclaw .
+
 ## Artifact classes
 
 | Artifact | Default status | Write location |

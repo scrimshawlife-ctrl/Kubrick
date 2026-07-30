@@ -10,7 +10,17 @@ Current release: **0.13.0** (see root `VERSION`).
 | [`../README.md`](../README.md) | Everyone | Public overview, install, architecture |
 | [`../QUICKSTART.md`](../QUICKSTART.md) | Operators | Intent-first command workflows + recipes |
 | [`../SKILL.md`](../SKILL.md) | Hermes runtime | Canonical skill operating contract |
+| [`OPENCLAW.md`](OPENCLAW.md) | OpenClaw users | OpenClaw Agent Skill edition (Prabu; branch `openclaw`) |
 | [`../CHANGELOG.md`](../CHANGELOG.md) | Maintainers | Release history |
+
+## Runtime editions
+
+| Edition | Branch | Notes |
+|---|---|---|
+| **Hermes** | [`main`](https://github.com/scrimshawlife-ctrl/Kubrick/tree/main) | Canonical Hermes skill; intent router; v0.13+ compiler |
+| **OpenClaw** | [`openclaw`](https://github.com/scrimshawlife-ctrl/Kubrick/tree/openclaw) | Agent Skill packaging by **Prabu** ([PR #1](https://github.com/scrimshawlife-ctrl/Kubrick/pull/1)); external state dir; doctor / portability tests |
+
+See [`OPENCLAW.md`](OPENCLAW.md) for install commands, credit, and what differs between editions.
 
 ## Operator surface (intent router)
 

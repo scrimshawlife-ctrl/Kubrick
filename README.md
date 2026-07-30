@@ -131,12 +131,27 @@ python scripts/kubrick.py recipe storyboard-example
 - **Local work is not “locked canon”** — proposals and observations stay local until you promote them.  
 - **Old command names still work** if you used them before; the preferred form is `do <job>`.
 
+### Option C — OpenClaw (separate permanent branch)
+
+If your agent host is **OpenClaw** rather than Hermes, use the dedicated OpenClaw edition maintained with work by **Prabu** ([@prabu-openclaw](https://github.com/prabu-openclaw)). It lives on the permanent git branch **`openclaw`**, not on `main`.
+
+```bash
+openclaw skills install git:scrimshawlife-ctrl/Kubrick@openclaw --global
+```
+
+That edition uses OpenClaw skill packaging, installs under `~/.openclaw/skills/kubrick`, and keeps mutable runtime state outside the skill package. The creative corpus and laws stay aligned in spirit; installer, state paths, and some tooling differ.
+
+Full detail, install paths, and credits: **[`docs/OPENCLAW.md`](docs/OPENCLAW.md)**  
+Branch: https://github.com/scrimshawlife-ctrl/Kubrick/tree/openclaw  
+Upstream PR (history): https://github.com/scrimshawlife-ctrl/Kubrick/pull/1
+
 ### Where to go next
 
 | Need | Go here |
 |---|---|
 | Copy-paste workflows | [`QUICKSTART.md`](QUICKSTART.md) |
 | Hermes operating rules | [`SKILL.md`](SKILL.md) |
+| OpenClaw edition (Prabu) | [`docs/OPENCLAW.md`](docs/OPENCLAW.md) |
 | Full command table | [Operator Commands](#operator-commands) |
 | Design of the command surface | [`docs/superpowers/specs/2026-07-30-operator-intent-router-design.md`](docs/superpowers/specs/2026-07-30-operator-intent-router-design.md) |
 
@@ -194,6 +209,8 @@ python ~/.hermes/skills/kubrick/scripts/kubrick.py do check --action skill
 ```
 
 Continuity Forge, MCP servers, generation APIs, and vision APIs remain optional.
+
+**OpenClaw users:** install from the permanent [`openclaw`](https://github.com/scrimshawlife-ctrl/Kubrick/tree/openclaw) branch — see [`docs/OPENCLAW.md`](docs/OPENCLAW.md). This `main` branch is the Hermes edition.
 
 ## Unified Pipeline
 
@@ -351,6 +368,7 @@ CI (`.github/workflows/hermes-evals.yml`) runs Hermes evals, outcome governance,
 | [`docs/RELEASE-NOTES-v0.13.md`](docs/RELEASE-NOTES-v0.13.md) | v0.13 release notes |
 | [`docs/RELEASE-CHECKLIST-v0.13.md`](docs/RELEASE-CHECKLIST-v0.13.md) | Release gates and procedure |
 | [`docs/README.md`](docs/README.md) | Docs index (incl. intent-router design/plan) |
+| [`docs/OPENCLAW.md`](docs/OPENCLAW.md) | OpenClaw Agent Skill edition (Prabu; branch `openclaw`) |
 | [`docs/superpowers/specs/2026-07-30-operator-intent-router-design.md`](docs/superpowers/specs/2026-07-30-operator-intent-router-design.md) | Operator intent-router design |
 | [`references/hermes-runtime-contract.md`](references/hermes-runtime-contract.md) | Runtime, dependency, artifact, and canon policy |
 | [`references/hermes-model-adapters.md`](references/hermes-model-adapters.md) | Provider adapter contract |

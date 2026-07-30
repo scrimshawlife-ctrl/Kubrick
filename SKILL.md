@@ -42,6 +42,8 @@ Kubrick acts as a disciplined writers' room, script editor, cinematic symbolic e
 
 **Optional companions:** Continuity Forge, model APIs, vision APIs, and MCP operators. Their absence never blocks local Kubrick work.
 
+**OpenClaw:** this `SKILL.md` is the Hermes edition on `main`. For OpenClaw Agent Skill packaging (install under `~/.openclaw/skills/kubrick`, external state directory, doctor), use the permanent git branch `openclaw` maintained with work by Prabu ([@prabu-openclaw](https://github.com/prabu-openclaw)). See `docs/OPENCLAW.md` and https://github.com/scrimshawlife-ctrl/Kubrick/tree/openclaw .
+
 ## Governing Law
 
 > A symbol should alter the conditions under which a scene is interpreted without requiring the audience to consciously identify it.
@@ -359,6 +361,7 @@ Minimum pass conditions:
 - `README.md` — public project overview
 - `QUICKSTART.md` — installation and command routing
 - `docs/README.md` — documentation index
+- `docs/OPENCLAW.md` — OpenClaw Agent Skill edition (Prabu; branch `openclaw`)
 - `docs/ROADMAP-v0.13.md` — current roadmap
 - `docs/RELEASE-NOTES-v0.13.md` — release notes
 - `docs/RELEASE-CHECKLIST-v0.13.md` — release gates
