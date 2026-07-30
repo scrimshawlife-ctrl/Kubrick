@@ -119,7 +119,7 @@ python scripts/kubrick.py design-build \
 
 python scripts/kubrick.py artifact-validate \
   --schema schemas/design-specification.schema.yaml \
-  --input templates/design-specification.yaml
+  --artifact templates/design-specification.yaml
 ```
 
 ## Drift Semantics
