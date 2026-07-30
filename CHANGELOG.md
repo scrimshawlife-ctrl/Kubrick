@@ -11,11 +11,13 @@ Kubrick is the primary symbolic cinematic narrative engineering skill. It replac
 - Added manifest validation, router parity tests, release-version alignment, and a cross-platform stdlib CI matrix.
 - Added deterministic compile-receipt identities for the Kubrick release, corpus, schema bundle, provider adapter, command options, and normalized semantic input.
 - Added mutation-sensitive identity tests and compile-receipt repeatability coverage.
+- Added a canonical structured diagnostic schema and failure matrix for router errors, unavailable validation dependencies, and compiler `NOT_COMPUTABLE` paths.
 
 ### Changed
 
 - The unified Hermes intent router now derives its registry, aliases, and recipes from the canonical manifest.
 - The smoke gate now validates the manifest before the skill and corpus.
+- The unified router now supports `KUBRICK_DIAGNOSTICS=json`; compiler `NOT_COMPUTABLE` consistently exits with manifest code `4`, while missing required optional tooling exits `3`.
 
 ### Changed — Operator intent router
 

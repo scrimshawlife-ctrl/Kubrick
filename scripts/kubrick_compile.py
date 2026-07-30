@@ -4,11 +4,12 @@ from __future__ import annotations
 import argparse, hashlib, json, subprocess, sys
 from datetime import datetime, timezone
 from pathlib import Path
+from diagnostics import abort, diagnostic
 from runtime_identity import compile_identity
 try:
     import yaml
 except ImportError:
-    raise SystemExit("pyyaml required")
+    abort(diagnostic(status="DEPENDENCY_UNAVAILABLE",code="PY_YAML_REQUIRED",exit_code=3,message="PyYAML is required for compile; install the validation runtime profile",context={"package":"PyYAML","profile":"validation"}))
 ROOT=Path(__file__).resolve().parent.parent
 PY=sys.executable
 RUN_IDENTITY={}
@@ -21,10 +22,10 @@ def write(path,data):
 
 def run(cmd): return subprocess.run(cmd,cwd=ROOT,text=True,capture_output=True)
 
-def fail(out,stage,reasons,diagnostic=None):
-    final={"status":"NOT_COMPUTABLE","compiler_version":"0.3.0",**RUN_IDENTITY,"stage":stage,"reason_vector":reasons}
-    if diagnostic: final["diagnostic"]=diagnostic[-2000:]
-    (out/"compile-receipt.json").write_text(json.dumps(final,indent=2),encoding="utf-8"); print(json.dumps(final,indent=2)); raise SystemExit(1)
+def fail(out,stage,reasons,diagnostic_output=None):
+    payload=diagnostic(status="NOT_COMPUTABLE",code="COMPILE_NOT_COMPUTABLE",exit_code=4,message=f"compile stopped at {stage}",reason_vector=reasons,context={"stage":stage,"implementation_output":diagnostic_output[-2000:] if diagnostic_output else ""})
+    final={"status":"NOT_COMPUTABLE","compiler_version":"0.3.0",**RUN_IDENTITY,"stage":stage,"reason_vector":reasons,"diagnostic":payload}
+    (out/"compile-receipt.json").write_text(json.dumps(final,indent=2),encoding="utf-8"); print(json.dumps(final,indent=2)); raise SystemExit(4)
 
 def validate(out,artifact,schema,label):
     report=out/f"schema-{label}.json"; result=run([PY,str(ROOT/"scripts/validate_artifact.py"),"--artifact",str(artifact),"--schema",str(ROOT/schema),"--output",str(report)])

@@ -140,6 +140,8 @@ Return `NOT_COMPUTABLE` when:
 
 A failure result must include a reason vector and the minimum missing information needed to proceed.
 
+The unified CLI uses stable exit codes from `kubrick.manifest.yaml`: `1` execution or validation failure, `2` invalid command or arguments, `3` unavailable optional dependency with no degraded operation, and `4` domain-level `NOT_COMPUTABLE`. Set `KUBRICK_DIAGNOSTICS=json` for diagnostics conforming to `schemas/diagnostic.schema.json`; the default remains concise human-readable stderr.
+
 ## Maintenance policy
 
 Evolution and corpus modification are separate from ordinary runtime.
