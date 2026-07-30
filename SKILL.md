@@ -150,43 +150,30 @@ When Continuity Forge outcomes are available, extract multi-signal observations 
 
 ## Unified CLI
 
+Primary operator surface:
+
 ```bash
-python scripts/kubrick.py <command> [arguments]
+python scripts/kubrick.py do <intent> [--action <action>] [flags]
 ```
 
-Core commands:
+Intents: `compile`, `retrieve`, `ledger`, `design`, `storyboard`, `adapt`,
+`visual`, `learn`, `check`, `operate`, `mcp`, `bundle`
+
+Examples:
 
 ```text
-validate-skill          validate Hermes skill structure
-validate-corpus         validate executable pattern sidecars
-coverage                audit corpus and registry coverage
-compile                 run the unified compiler
-retrieve                run registry-aware deterministic retrieval
-ledger                  init / audit / mutate / rehydrate / apply-forge / export-retrieval
-design-build            compile a governed design specification
-storyboard-propagate    propagate graph state across frames
-storyboard-compare      inspect frame-to-frame continuity
-adapter-build           build a provider-neutral adapter packet
-adapt-grok              emit Grok Imagine prompt packets
-adapt-flux              emit Flux prompt packets
-adapt-sd3               emit SD3 prompt packets
-adapt-midjourney        emit Midjourney prompt packets
-adapt-provider          syntax-only translation for any supported provider
-visual-normalize        normalize human or optional model observations
-visual-compare          compare expected and observed visual state
-visual-correct          build targeted regeneration instructions
-correction-govern       stop, continue, or escalate correction iterations
-closed-loop-qa          generate→observe→score→correct loop with differential fidelity
-outcome-record          record production-use evidence
-evolution-propose       create proposal-only multi-signal corpus evolution
-forge-signals           extract multi-signal observations from Forge artifacts
-operator                ledger/graph operators (saturation, counterpoint, lock, audit, export)
-mcp-server              optional stdio MCP wrapper over the CLI
-grok-review-bundle      package the complete Grok review workflow
-artifact-validate       validate YAML or JSON against a schema
-repeatability           compare stable hashes across clean compiles
-eval                    run the standalone Hermes regression suite
+kubrick do compile --brief … --ledger … --mode storyboard --provider flux --out …
+kubrick do adapt --action provider --provider flux --packet … --output …
+kubrick do visual --action closed-loop --expected … --observation-input … --out …
+kubrick do learn --action forge-signals --project-id … --input … --output …
+kubrick do check --action smoke
 ```
+
+Sugar: `kubrick help <intent>`, `kubrick recipe <name>`, `kubrick aliases`.
+
+Legacy names (`adapt-flux`, `closed-loop-qa`, `validate-skill`, …) remain soft aliases.
+
+Optional MCP exposes a single tool: `kubrick_do` (same intent router; never authoritative).
 
 Providers for `compile --provider`: `none`, `generic`, `grok-imagine`, `flux`, `sd3`, `midjourney`.
 
@@ -278,7 +265,7 @@ Default density:
 If no candidate clears the threshold, return `NOT_COMPUTABLE` with a reason vector and pattern-gap report.
 
 ```bash
-python scripts/kubrick.py retrieve --brief path/to/brief.yaml
+python scripts/kubrick.py do retrieve --brief path/to/brief.yaml
 ```
 
 ## Neuro-Symbolic Graph Discipline
@@ -326,9 +313,9 @@ Kubrick must never fail merely because Continuity Forge or another external syst
 Outcome learning is explicit, evidence-backed, and proposal-only.
 
 ```bash
-python scripts/kubrick.py outcome-record --help
-python scripts/kubrick.py evolution-propose --help
-python scripts/kubrick.py forge-signals --help
+python scripts/kubrick.py do learn --action outcome --help
+python scripts/kubrick.py do learn --action evolve --help
+python scripts/kubrick.py do learn --action forge-signals --help
 ```
 
 Rules:
@@ -344,14 +331,14 @@ Rules:
 ## Validation and Release
 
 ```bash
-python scripts/kubrick.py validate-skill
-python scripts/kubrick.py validate-corpus
-python scripts/kubrick.py coverage
-python scripts/kubrick.py eval
+python scripts/kubrick.py do check --action skill
+python scripts/kubrick.py do check --action corpus
+python scripts/kubrick.py do check --action coverage
+python scripts/kubrick.py do check --action eval
 python scripts/test_outcome_governance.py
 python scripts/test_wave2_wave3.py
 python scripts/test_design_specification.py
-python scripts/kubrick.py repeatability --output out/kubrick/repeatability-report.json
+python scripts/kubrick.py do check --action repeatability --output out/kubrick/repeatability-report.json
 python scripts/audit_release_version.py --strict
 ```
 

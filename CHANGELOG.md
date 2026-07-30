@@ -2,6 +2,12 @@
 
 Kubrick is the primary symbolic cinematic narrative engineering skill. It replaces the earlier scriptwriting skill as the recommended system for premise-to-production development with deep motif, geometric, cinematic, storyboard, and visual-fidelity encoding.
 
+## [Unreleased]
+
+### Changed
+- Operator CLI: primary surface is `kubrick do <intent>`; legacy command names remain soft aliases.
+- MCP: single `kubrick_do` tool.
+
 ## [0.13.0] - 2026-07-30
 
 ### Added — Wave 2: Forge Feedback, Multi-Signal Evolution, Project Ledgers

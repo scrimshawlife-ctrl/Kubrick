@@ -18,53 +18,64 @@ python -m pip install pyyaml jsonschema
 Validate:
 
 ```bash
-python scripts/kubrick.py validate-skill
+python scripts/kubrick.py do check --action skill
 ```
 
 ## 2. Unified CLI
 
+Primary surface:
+
 ```bash
-python scripts/kubrick.py <command> [arguments]
+python scripts/kubrick.py do <intent> [--action <action>] [flags]
 ```
 
-### Core commands
+### Intents
 
 ```text
-validate-skill          validate Hermes skill structure
-validate-corpus         validate executable patterns
-coverage                audit corpus and registry coverage
-compile                 run the unified compiler
-retrieve                run registry-aware retrieval
-ledger                  init / audit / mutate / rehydrate / apply-forge
-design-build            compile a governed design specification
-storyboard-propagate    propagate graph state across frames
-storyboard-compare      inspect adjacent-frame continuity
-adapter-build           build a neutral provider packet
-adapt-grok              emit Grok Imagine prompt packets
-adapt-flux              emit Flux prompt packets
-adapt-sd3               emit SD3 prompt packets
-adapt-midjourney        emit Midjourney prompt packets
-adapt-provider          syntax-only translation for any supported provider
-visual-normalize        normalize human or optional model observations
-visual-compare          compare expected and observed visual state
-visual-correct          build targeted regeneration instructions
-correction-govern       stop, continue, or escalate correction iterations
-closed-loop-qa          observation → differential score → correction
-outcome-record          record production-use evidence
-evolution-propose       multi-signal proposal-only evolution
-forge-signals           extract multi-signal Forge observations
-operator                saturation, counterpoint, lock, audit, export, mutate
-mcp-server              optional stdio MCP wrapper
-grok-review-bundle      package the complete Grok review workflow
-artifact-validate       validate YAML/JSON against a repository schema
-repeatability           compare stable hashes across clean compiles
-eval                    run the regression suite
+compile      Full brief-to-packet compile
+retrieve     Registry-aware pattern retrieval
+ledger       Project symbolic ledger (init / audit / mutate / …)
+design       Design-specification compilation
+storyboard   Multi-frame state (propagate / compare)
+adapt        Neutral packet and provider adaptation
+visual       Visual QA loop (normalize / compare / correct / govern / closed-loop)
+learn        Outcomes and multi-signal evolution (outcome / evolve / forge-signals)
+check        Validation and regression (skill / corpus / coverage / eval / smoke / …)
+operate      Graph/ledger operators (saturation, counterpoint, lock, audit, export)
+mcp          Optional stdio MCP server (single tool: kubrick_do)
+bundle       Grok review bundle
 ```
+
+Sugar:
+
+```bash
+python scripts/kubrick.py help <intent>
+python scripts/kubrick.py recipe <name>    # e.g. storyboard-example, verify
+python scripts/kubrick.py aliases
+```
+
+### Aliases
+
+Legacy peer command names still work as soft aliases (soft cutover). Prefer `do <intent>`.
+
+Examples:
+
+```bash
+# Preferred
+python scripts/kubrick.py do check --action skill
+python scripts/kubrick.py do visual --action closed-loop --expected … --observation-input … --out …
+
+# Legacy (still supported)
+python scripts/kubrick.py validate-skill
+python scripts/kubrick.py closed-loop-qa --expected … --observation-input … --out …
+```
+
+Full map: `python scripts/kubrick.py aliases`.
 
 ## 3. Compile a single frame
 
 ```bash
-python scripts/kubrick.py compile \
+python scripts/kubrick.py do compile \
   --brief project/brief.yaml \
   --ledger project/symbolic-ledger.yaml \
   --mode single-frame \
@@ -74,7 +85,7 @@ python scripts/kubrick.py compile \
 ## 4. Compile a storyboard for a provider
 
 ```bash
-python scripts/kubrick.py compile \
+python scripts/kubrick.py do compile \
   --brief project/brief.yaml \
   --ledger project/symbolic-ledger.yaml \
   --mode storyboard \
@@ -103,7 +114,7 @@ retrieval
 ### Canonical example
 
 ```bash
-python scripts/kubrick.py compile \
+python scripts/kubrick.py do compile \
   --brief examples/authority-transfer-storyboard/brief.yaml \
   --ledger examples/authority-transfer-storyboard/symbolic-ledger.yaml \
   --mode storyboard \
@@ -111,6 +122,8 @@ python scripts/kubrick.py compile \
   --provider grok-imagine \
   --out out/kubrick/authority-transfer
 ```
+
+Or: `python scripts/kubrick.py recipe storyboard-example`
 
 A successful storyboard run emits:
 
@@ -138,14 +151,14 @@ Weak retrieval, invalid graph state, schema drift, anti-slop failure, storyboard
 ## 5. Project ledger
 
 ```bash
-python scripts/kubrick.py ledger init \
+python scripts/kubrick.py do ledger init \
   --project-id my-film \
   --out project/symbolic-ledger.yaml
 
-python scripts/kubrick.py ledger audit \
+python scripts/kubrick.py do ledger audit \
   --ledger project/symbolic-ledger.yaml
 
-python scripts/kubrick.py ledger mutate \
+python scripts/kubrick.py do ledger mutate \
   --ledger project/symbolic-ledger.yaml \
   --motif-id cracked-badge \
   --observed-form "a cracked access badge" \
@@ -153,7 +166,7 @@ python scripts/kubrick.py ledger mutate \
   --mutation "ownership and access function transferred" \
   --pattern-link interface_badge_authority_transfer
 
-python scripts/kubrick.py ledger export-retrieval \
+python scripts/kubrick.py do ledger export-retrieval \
   --ledger project/symbolic-ledger.yaml \
   --out project/ledger-retrieval-snapshot.yaml
 ```
@@ -163,7 +176,7 @@ Local ledger state remains `PROPOSED` unless explicitly ingested by Continuity F
 ## 6. Forge feedback and multi-signal evolution
 
 ```bash
-python scripts/kubrick.py forge-signals \
+python scripts/kubrick.py do learn --action forge-signals \
   --project-id myfilm \
   --input path/to/forge-ledger-diff.yaml \
   --output out/forge-bundle.yaml
@@ -171,11 +184,11 @@ python scripts/kubrick.py forge-signals \
 # Example fixture:
 # references/examples/forge-signals/ledger-before-after.yaml
 
-python scripts/kubrick.py ledger apply-forge \
+python scripts/kubrick.py do ledger apply-forge \
   --ledger project/symbolic-ledger.yaml \
   --forge-bundle out/forge-bundle.yaml
 
-python scripts/kubrick.py evolution-propose \
+python scripts/kubrick.py do learn --action evolve \
   --pattern-id interface_badge_authority_transfer \
   --receipt out/use-receipt.yaml \
   --forge-bundle out/forge-bundle.yaml \
@@ -193,7 +206,7 @@ Rules:
 ## 7. Closed-loop visual QA
 
 ```bash
-python scripts/kubrick.py closed-loop-qa \
+python scripts/kubrick.py do visual --action closed-loop \
   --expected out/storyboard-symbolic-state.yaml \
   --observation-input observations/frame-001.json \
   --source-graph-id <graph-id> \
@@ -215,23 +228,23 @@ The receipt reports **geometry**, **state**, **residue**, and **convergence** fi
 ## 8. Multi-provider adapters
 
 ```bash
-python scripts/kubrick.py adapter-build \
+python scripts/kubrick.py do adapt \
   --graph out/motif-graph.private.yaml \
   --storyboard out/storyboard-symbolic-state.yaml \
   --provider generic \
   --output out/model-adapter-packet.yaml
 
-python scripts/kubrick.py adapt-provider \
+python scripts/kubrick.py do adapt --action provider \
   --packet out/model-adapter-packet.yaml \
   --provider flux \
   --output out/flux-prompt-packet.yaml
 
-python scripts/kubrick.py adapt-provider \
+python scripts/kubrick.py do adapt --action provider \
   --packet out/model-adapter-packet.yaml \
   --provider sd3 \
   --output out/sd3-prompt-packet.yaml
 
-python scripts/kubrick.py adapt-provider \
+python scripts/kubrick.py do adapt --action provider \
   --packet out/model-adapter-packet.yaml \
   --provider midjourney \
   --output out/midjourney-prompt-packet.yaml
@@ -242,25 +255,25 @@ Adapters change syntax only. They do not call external APIs, require credentials
 ## 9. Operators and optional MCP
 
 ```bash
-python scripts/kubrick.py operator saturation-score \
+python scripts/kubrick.py do operate saturation-score \
   --ledger project/symbolic-ledger.yaml
 
-python scripts/kubrick.py operator counterpoint \
+python scripts/kubrick.py do operate counterpoint \
   --packet out/structured-symbolic-packet.yaml
 
-python scripts/kubrick.py operator convergence-lock \
+python scripts/kubrick.py do operate convergence-lock \
   --graph out/motif-graph.private.yaml
 
-python scripts/kubrick.py operator surface-occult-audit \
+python scripts/kubrick.py do operate surface-occult-audit \
   --input out/audience-constraints.yaml
 
-python scripts/kubrick.py operator symbolic-architecture-export \
+python scripts/kubrick.py do operate symbolic-architecture-export \
   --graph out/motif-graph.private.yaml \
   --ledger project/symbolic-ledger.yaml \
   --output out/symbolic-architecture-export.yaml
 
-# Optional MCP surface — same CLI tools, never authoritative
-python scripts/kubrick.py mcp-server
+# Optional MCP surface — single tool kubrick_do, never authoritative
+python scripts/kubrick.py do mcp
 ```
 
 Every operator emits an auditable receipt and fails closed on weak evidence.
@@ -268,7 +281,7 @@ Every operator emits an auditable receipt and fails closed on weak evidence.
 ## 10. Design specification
 
 ```bash
-python scripts/kubrick.py design-build --help
+python scripts/kubrick.py do design --help
 ```
 
 Use when consolidating design intent into a schema-valid specification (`schemas/design-specification.schema.yaml`). See:
@@ -279,7 +292,7 @@ Use when consolidating design intent into a schema-valid specification (`schemas
 ## 11. Validate an artifact
 
 ```bash
-python scripts/kubrick.py artifact-validate \
+python scripts/kubrick.py do check --action artifact \
   --artifact out/kubrick/motif-graph.private.yaml \
   --schema schemas/motif-structure-graph.schema.yaml
 ```
@@ -289,16 +302,18 @@ Validation errors include exact artifact paths.
 ## 12. Full verification
 
 ```bash
-python scripts/kubrick.py validate-skill
-python scripts/kubrick.py validate-corpus
-python scripts/kubrick.py coverage
-python scripts/kubrick.py eval
+python scripts/kubrick.py do check --action skill
+python scripts/kubrick.py do check --action corpus
+python scripts/kubrick.py do check --action coverage
+python scripts/kubrick.py do check --action eval
 python scripts/test_outcome_governance.py
 python scripts/test_wave2_wave3.py
 python scripts/test_design_specification.py
-python scripts/kubrick.py repeatability --output out/kubrick/repeatability-report.json
+python scripts/kubrick.py do check --action repeatability --output out/kubrick/repeatability-report.json
 python scripts/audit_release_version.py --strict
 ```
+
+Shortcut: `python scripts/kubrick.py recipe verify` (runs `do check --action smoke`).
 
 ## Runtime rules
 
