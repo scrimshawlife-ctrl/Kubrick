@@ -2,6 +2,8 @@
 
 ## Current state
 
+> **Superseded for planning:** current status lives in [`ROADMAP-v0.13.md`](ROADMAP-v0.13.md). This document is retained as historical v0.12 context.
+
 Kubrick v0.12 is a CI-verified standalone Hermes symbolic compiler. The complete local pipeline now covers deterministic retrieval, private graph construction, structured audit, storyboard continuity, provider adaptation, visual QA, correction governance, outcome receipts, proposal-only evolution, and repeatability verification.
 
 ## Completed

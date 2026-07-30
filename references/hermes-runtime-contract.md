@@ -55,6 +55,21 @@ Examples: PyYAML or jsonschema. A helper that needs one must:
 
 Continuity Forge, MCP servers, model APIs, and rendering providers are optional extensions. Their absence cannot block local creative work.
 
+## v0.13 operator surface
+
+The unified CLI (`scripts/kubrick.py`) is the authoritative local operator surface. Key additive commands in 0.13:
+
+- `forge-signals` — multi-signal Forge observation extraction
+- `evolution-propose` — multi-signal proposal-only evolution with human review gates
+- `closed-loop-qa` — differential visual fidelity loop
+- `adapt-flux` / `adapt-sd3` / `adapt-midjourney` / `adapt-provider` — syntax-only provider packets
+- `operator` — saturation, counterpoint, convergence lock, surface-occult audit, architecture export
+- `mcp-server` — optional stdio MCP wrapper over the same CLI (never authoritative)
+- `design-build` — governed design-specification compilation
+- `ledger` subcommands — `rehydrate`, `apply-forge`, `export-retrieval`, `record-pattern`
+
+See root `README.md`, `QUICKSTART.md`, and `docs/README.md` for workflows and the docs index.
+
 ## Artifact classes
 
 | Artifact | Default status | Write location |

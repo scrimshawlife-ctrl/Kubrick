@@ -123,7 +123,13 @@ Emit production-facing packets: visual identity, scene contract, shot recurrence
 Preserve dramatic function, graph identity, and state change while translating format, runtime, genre, platform, or provider syntax.
 
 ### VISUAL_QA
-Normalize a human or optional model observation, compare expected and observed state by dimension, issue targeted corrections, and stop or escalate bounded iterations when progress stalls or a critical dimension regresses.
+Normalize a human or optional model observation, compare expected and observed state by dimension, issue targeted corrections, and stop or escalate bounded iterations when progress stalls or a critical dimension regresses. Prefer `closed-loop-qa` when a full differential receipt is required.
+
+### DESIGN
+Compile heterogeneous creative and technical evidence into a schema-valid design specification. Do not invent missing product requirements; weak or contradictory evidence remains an open question or `NOT_COMPUTABLE`. See `references/design-specification-compiler.md`.
+
+### FORGE_FEEDBACK
+When Continuity Forge outcomes are available, extract multi-signal observations with `forge-signals`, optionally apply them to the local project ledger, and emit proposal-only evolution. Never promote local ledgers or proposals to canon without Forge/human authority.
 
 ## Core Workflow
 
@@ -156,7 +162,8 @@ validate-corpus         validate executable pattern sidecars
 coverage                audit corpus and registry coverage
 compile                 run the unified compiler
 retrieve                run registry-aware deterministic retrieval
-ledger                  initialize, audit, or mutate local project state
+ledger                  init / audit / mutate / rehydrate / apply-forge / export-retrieval
+design-build            compile a governed design specification
 storyboard-propagate    propagate graph state across frames
 storyboard-compare      inspect frame-to-frame continuity
 adapter-build           build a provider-neutral adapter packet
@@ -180,6 +187,8 @@ artifact-validate       validate YAML or JSON against a schema
 repeatability           compare stable hashes across clean compiles
 eval                    run the standalone Hermes regression suite
 ```
+
+Providers for `compile --provider`: `none`, `generic`, `grok-imagine`, `flux`, `sd3`, `midjourney`.
 
 ## Deterministic Operations
 
@@ -234,6 +243,9 @@ Construct only what is needed from:
 - `correction_iteration_receipt`
 - `pattern_use_receipt`
 - `pattern_evolution_proposal`
+- `multi_signal_evolution_receipt`
+- `forge_signal_bundle`
+- `design_specification`
 - `revision_delta`
 - `production_handoff`
 
@@ -338,6 +350,7 @@ python scripts/kubrick.py coverage
 python scripts/kubrick.py eval
 python scripts/test_outcome_governance.py
 python scripts/test_wave2_wave3.py
+python scripts/test_design_specification.py
 python scripts/kubrick.py repeatability --output out/kubrick/repeatability-report.json
 python scripts/audit_release_version.py --strict
 ```
@@ -358,10 +371,15 @@ Minimum pass conditions:
 
 - `README.md` — public project overview
 - `QUICKSTART.md` — installation and command routing
+- `docs/README.md` — documentation index
 - `docs/ROADMAP-v0.13.md` — current roadmap
 - `docs/RELEASE-NOTES-v0.13.md` — release notes
 - `docs/RELEASE-CHECKLIST-v0.13.md` — release gates
 - `references/hermes-runtime-contract.md` — runtime, artifact, and dependency contract
+- `references/hermes-model-adapters.md` — multi-provider adapter contract
+- `references/hermes-visual-qa.md` — closed-loop visual QA contract
+- `references/continuity-forge-integration.md` — Forge handoff and multi-signal feedback
+- `references/design-specification-compiler.md` — design-spec compiler
 - `references/symbolic-dramaturgy.md` — symbolic laws and schemas
 - `references/cinematic-symbolism-corpus.md` — cinematic systems and translation patterns
 - `references/esoteric-alchemical-lexicon.md` — latent structural lexicon
