@@ -19,9 +19,13 @@ echo "Installing Kubrick to: ${DEST}"
 mkdir -p "$(dirname "${DEST}")"
 
 if [[ -d "${DEST}" ]]; then
-  echo "Existing installation found. Backing up to ${DEST}.bak"
-  rm -rf "${DEST}.bak"
-  mv "${DEST}" "${DEST}.bak"
+  # Keep backups outside the skills tree so Hermes does not discover "kubrick.bak".
+  BAK_DIR="${TARGET_BASE}/.install-backups"
+  mkdir -p "${BAK_DIR}"
+  BAK_PATH="${BAK_DIR}/kubrick-$(date +%Y%m%d%H%M%S)"
+  echo "Existing installation found. Backing up to ${BAK_PATH}"
+  rm -rf "${BAK_PATH}"
+  mv "${DEST}" "${BAK_PATH}"
 fi
 
 mkdir -p "${DEST}"

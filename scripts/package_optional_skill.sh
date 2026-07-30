@@ -24,6 +24,7 @@ rsync -a --delete \
   --exclude 'dist/' \
   --exclude 'out/' \
   --exclude '__pycache__/' \
+  --exclude '**/__pycache__/' \
   --exclude '*.pyc' \
   --exclude '.pytest_cache/' \
   --exclude 'docs/superpowers/' \
@@ -35,6 +36,10 @@ rsync -a --delete \
   --exclude 'scripts/package_optional_skill.sh' \
   --exclude 'skills.sh.json' \
   "${ROOT}/" "${TARGET}/"
+
+# Drop any accidental caches that slipped through
+find "${TARGET}" -type d -name '__pycache__' -prune -exec rm -rf {} + 2>/dev/null || true
+find "${TARGET}" -type f -name '*.pyc' -delete 2>/dev/null || true
 
 echo "Packaged → ${TARGET}"
 echo

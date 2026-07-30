@@ -387,7 +387,7 @@ Minimum pass conditions:
 - `docs/ROADMAP-v0.13.md` — current roadmap
 - `docs/RELEASE-NOTES-v0.13.md` — release notes
 - `docs/RELEASE-CHECKLIST-v0.13.md` — release gates
-- `docs/superpowers/specs/2026-07-30-operator-intent-router-design.md` — intent-router design
+- `docs/HERMES-OFFICIAL-SUBMISSION.md` — official optional-skills / community publish checklist
 - `references/hermes-runtime-contract.md` — runtime, artifact, and dependency contract
 - `references/hermes-model-adapters.md` — multi-provider adapter contract
 - `references/hermes-visual-qa.md` — closed-loop visual QA contract
