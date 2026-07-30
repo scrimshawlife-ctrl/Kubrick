@@ -1,8 +1,10 @@
 # Kubrick Quickstart
 
-Kubrick is a **standalone Hermes skill** (v0.13.0). Continuity Forge, MCP servers, model APIs, and external generation providers remain optional.
+Kubrick is a **standalone Hermes skill** on branch **`main`** (v0.13.0). Continuity Forge, MCP servers, model APIs, and external generation providers remain optional.
 
-## 1. Install
+**OpenClaw?** Use the permanent [`openclaw`](https://github.com/scrimshawlife-ctrl/Kubrick/tree/openclaw) branch (OpenClaw Agent Skill packaging by **Prabu**). See [`docs/OPENCLAW.md`](docs/OPENCLAW.md) — install target is `~/.openclaw/skills/kubrick`, not Hermes.
+
+## 1. Install (Hermes / `main`)
 
 ```bash
 ./install.sh
@@ -20,6 +22,15 @@ Validate:
 ```bash
 python scripts/kubrick.py do check --action skill
 ```
+
+### OpenClaw install (other branch)
+
+```bash
+openclaw skills install git:scrimshawlife-ctrl/Kubrick@openclaw --global
+# or: git clone --branch openclaw --single-branch …
+```
+
+Details and credits: [`docs/OPENCLAW.md`](docs/OPENCLAW.md).
 
 ## 2. Unified CLI
 

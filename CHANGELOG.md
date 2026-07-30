@@ -13,6 +13,11 @@ Kubrick is the primary symbolic cinematic narrative engineering skill. It replac
 - MCP: single tool `kubrick_do` over the same router (never authoritative).
 - Implementation: `scripts/intent_router.py`; design/plan under `docs/superpowers/`.
 
+### Documentation — OpenClaw edition pointer
+
+- Added `docs/OPENCLAW.md` documenting the permanent **`openclaw`** branch Agent Skill packaging contributed by **Prabu** ([@prabu-openclaw](https://github.com/prabu-openclaw); [PR #1](https://github.com/scrimshawlife-ctrl/Kubrick/pull/1), commits `77fa721`, `15defae`).
+- Cross-links from README, QUICKSTART, SKILL, and docs index so Hermes `main` and OpenClaw users can find the correct edition.
+
 ## [0.13.0] - 2026-07-30
 
 ### Added — Wave 2: Forge Feedback, Multi-Signal Evolution, Project Ledgers
