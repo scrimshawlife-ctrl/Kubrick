@@ -17,6 +17,7 @@ COMMANDS = {
     "compile": "kubrick_compile.py",
     "retrieve": "retrieve_symbolic_patterns_registry.py",
     "ledger": "symbolic_ledger.py",
+    "design-build": "generate_design_spec.py",
     "storyboard-propagate": "propagate_graph_state.py",
     "storyboard-compare": "compare_frame_state.py",
     "adapter-build": "build_model_adapter_packet.py",
