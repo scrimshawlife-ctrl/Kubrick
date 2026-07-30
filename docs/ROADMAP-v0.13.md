@@ -15,15 +15,15 @@ Kubrick closes Wave 2 and Wave 3 from the production-hardening roadmap:
 
 Also on `main` (adjacent capability): deterministic **design specification compiler** (`design-build`).
 
-### Post-0.13 — Operator intent router (Unreleased)
+### Post-0.13 — Operator intent router (**merged to main**)
 
-Simplifies the Hermes/human CLI from ~29 flat peers to **`kubrick do <intent>`** (12 intents) with soft aliases, recipes, and MCP tool `kubrick_do`.
+Simplifies the Hermes/human CLI from ~29 flat peers to **`kubrick do <intent>`** (12 intents) with soft aliases, recipes, and MCP tool `kubrick_do`. Listed under CHANGELOG **[Unreleased]** until the next version tag.
 
 | Tracking | Status |
 |---|---|
 | Design | [`docs/superpowers/specs/2026-07-30-operator-intent-router-design.md`](../superpowers/specs/2026-07-30-operator-intent-router-design.md) |
 | Plan | [`docs/superpowers/plans/2026-07-30-operator-intent-router.md`](../superpowers/plans/2026-07-30-operator-intent-router.md) |
-| Implementation PR | [#28](https://github.com/scrimshawlife-ctrl/Kubrick/pull/28) |
+| Implementation | [PR #28](https://github.com/scrimshawlife-ctrl/Kubrick/pull/28) **Merged** |
 
 | Tracking (0.13) | Status |
 |---|---|

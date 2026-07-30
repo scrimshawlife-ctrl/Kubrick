@@ -1,7 +1,7 @@
 # Kubrick Documentation
 
 Current release: **0.13.0** (see root `VERSION`).  
-**Unreleased on main (pending merge):** operator intent router — `kubrick do <intent>`.
+**On main (Unreleased changelog):** operator intent router — `kubrick do <intent>` ([PR #28](https://github.com/scrimshawlife-ctrl/Kubrick/pull/28)).
 
 ## Start here
 
