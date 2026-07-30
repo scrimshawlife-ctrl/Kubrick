@@ -7,7 +7,7 @@ from __future__ import annotations
 import argparse, hashlib, json, re, sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict
 try:
     import yaml
 except ImportError:
@@ -21,6 +21,9 @@ THRESHOLD=0.55
 MAX_SUPPORTING=2
 WEIGHTS={"dramatic_fit":0.24,"character_fit":0.10,"cinematic_fit":0.12,"cultural_fit":0.10,"source_quality":0.10,"mutation_potential":0.14,"continuity_compatibility":0.10,"payoff_compatibility":0.10}
 COLLISION_TYPES={"REDUNDANT","CONTRADICTORY","CULTURALLY_INCOMPATIBLE","RHYTHMICALLY_OVERLAPPING","PAYOFF_COMPETITION"}
+
+def canonical_json(value:Any)->str:
+    return json.dumps(value,sort_keys=True,separators=(",",":"),default=lambda item:item.isoformat() if hasattr(item,"isoformat") else str(item))
 
 def _tokens(value:Any)->set[str]:
     if isinstance(value,(list,tuple,set)): value=" ".join(str(i) for i in value)
@@ -41,13 +44,11 @@ def load_all_patterns()->Dict[str,Dict[str,Any]]:
     return patterns
 
 def ledger_snapshot(brief:Dict[str,Any])->Dict[str,Any]:
-    ledger=brief.get("symbolic_ledger") or {}
-    active=ledger.get("active_motifs",brief.get("active_project_motifs",[]))
+    ledger=brief.get("symbolic_ledger") or {}; active=ledger.get("active_motifs",brief.get("active_project_motifs",[]))
     if active and isinstance(active[0] if isinstance(active,list) else None,dict): active=[x.get("motif_id","") for x in active]
     return {"active":sorted(set(active)),"retired":sorted(set(ledger.get("retired_motifs",[]))),"prohibited":sorted(set(ledger.get("prohibited_motifs",brief.get("prohibited_patterns",[])))),"unresolved_payoffs":sorted(set(ledger.get("unresolved_payoffs",[]))),"saturation_score":float(ledger.get("saturation_score",0.0)),"symbolic_debt":float(ledger.get("symbolic_debt",0.0)),"collisions":ledger.get("collisions",[]),"prohibited_cultural_scopes":ledger.get("prohibited_cultural_scopes",[])}
 
-def cache_key(brief,ledger):
-    return hashlib.sha256(json.dumps({"brief":brief,"ledger":ledger},sort_keys=True,separators=(",",":")).encode()).hexdigest()[:24]
+def cache_key(brief,ledger): return hashlib.sha256(canonical_json({"brief":brief,"ledger":ledger}).encode()).hexdigest()[:24]
 
 def production_cost(pattern:Dict[str,Any])->float:
     raw=pattern.get("production_cost")
@@ -59,7 +60,7 @@ def production_cost(pattern:Dict[str,Any])->float:
     return 0.5
 
 def detect_collisions(pattern,ledger):
-    collisions=[]; text=json.dumps(pattern,sort_keys=True).lower(); pid=pattern.get("pattern_id","")
+    collisions=[]; text=canonical_json(pattern).lower(); pid=pattern.get("pattern_id","")
     for active in ledger["active"]:
         if active.lower() in text or active.lower()==pid.lower(): collisions.append({"type":"REDUNDANT","with":active})
     for collision in ledger["collisions"]:
@@ -70,10 +71,8 @@ def detect_collisions(pattern,ledger):
     return collisions
 
 def score_pattern(pattern,brief,ledger):
-    dq=[brief.get("dramatic_problem",""),brief.get("desired_state_change",""),brief.get("symbolic_intent","")]
-    dc=pattern.get("dramatic_operations",[])+pattern.get("transformation_grammars",[])+[pattern.get("transferable_structure","")]
-    dramatic_fit=_overlap(dq,dc)
-    character_fit=_overlap([brief.get("character_state",""),brief.get("character_pressure","")],dc)
+    dq=[brief.get("dramatic_problem",""),brief.get("desired_state_change",""),brief.get("symbolic_intent","")]; dc=pattern.get("dramatic_operations",[])+pattern.get("transformation_grammars",[])+[pattern.get("transferable_structure","")]
+    dramatic_fit=_overlap(dq,dc); character_fit=_overlap([brief.get("character_state",""),brief.get("character_pressure","")],dc)
     cinematic_fit=max(_overlap(brief.get("preferred_encoding_vectors",[]),pattern.get("cinematic_affordances",[])),0.8 if brief.get("format") in pattern.get("applicable_formats",[]) else 0.0,0.8 if brief.get("genre","").lower() in [g.lower() for g in pattern.get("applicable_genres",[])] else 0.0)
     cultural_fit=_overlap(brief.get("cultural_context",""),pattern.get("cultural_scope",[])) if brief.get("cultural_context") else 0.65
     source_quality={"PRIMARY":0.95,"SCHOLARLY":0.85,"PRACTITIONER":0.75,"COMPARATIVE":0.65}.get(pattern.get("source_tier","POPULAR"),0.5)
@@ -102,16 +101,13 @@ def reason_vector(ranked,ledger):
     return reasons or ["BELOW_CONFIDENCE_THRESHOLD"]
 
 def gap_report(brief,ranked):
-    top=ranked[0] if ranked else None
-    weak=["dramatic","character","cinematic","cultural","mutation"] if not top else [k.replace("_fit","").replace("_potential","") for k,v in top["score_components"].items() if v<0.35]
+    top=ranked[0] if ranked else None; weak=["dramatic","character","cinematic","cultural","mutation"] if not top else [k.replace("_fit","").replace("_potential","") for k,v in top["score_components"].items() if v<0.35]
     tokens=_tokens(brief.get("dramatic_problem","")); recommended=set(brief.get("requested_domains",[]))
     if "sound" in tokens:recommended.add("sound")
     if "threshold" in tokens:recommended.add("ritual-liminal")
     return {"dramatic_problem":brief.get("dramatic_problem"),"coverage_strength":round(top["total_score"],4) if top else 0.0,"weak_dimensions":weak,"recommended_domains":sorted(recommended)}
 
-def read_brief(path):
-    if path:return _load(Path(path))
-    return yaml.safe_load(sys.stdin.read()) or {}
+def read_brief(path): return _load(Path(path)) if path else yaml.safe_load(sys.stdin.read()) or {}
 
 def build_receipt(brief,ranked,ledger):
     eligible=[x for x in ranked if x["total_score"]>=THRESHOLD]; primary=eligible[0] if eligible else None; supporting=eligible[1:1+MAX_SUPPORTING]
@@ -120,7 +116,8 @@ def build_receipt(brief,ranked,ledger):
 def persist(receipt):
     CACHE_DIR.mkdir(parents=True,exist_ok=True); RECEIPT_DIR.mkdir(parents=True,exist_ok=True); key=receipt["retrieval_receipt"]["request_hash"]
     cache=CACHE_DIR/f"{key}.json"; logged=RECEIPT_DIR/f"receipt-{key}-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S')}.json"
-    for p in (cache,logged):p.write_text(json.dumps(receipt,indent=2)+"\n",encoding="utf-8")
+    payload=json.dumps(receipt,indent=2,default=lambda item:item.isoformat() if hasattr(item,"isoformat") else str(item))+"\n"
+    for p in (cache,logged):p.write_text(payload,encoding="utf-8")
     return cache,logged
 
 def main():
