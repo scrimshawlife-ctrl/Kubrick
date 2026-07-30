@@ -17,6 +17,16 @@ relations:
     relation: crosses
     pressure: 0.9
     transformation: badge ownership determines who may cross the doorway
+layers:
+  layout_geometry:
+    - repeated work cells
+    - peripheral checkpoint
+  semantics_function:
+    - institutional persistence
+    - delegated control
+  attributes_states:
+    - vacant command
+    - transferred credential
 geometry:
   - repeated work cells organized around an empty center
   - one controlled doorway at the edge of the frame
