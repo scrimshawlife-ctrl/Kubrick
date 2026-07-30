@@ -7,7 +7,7 @@
 | Wave 2 + Wave 3 implementation | Merged to `main` ([PR #24](https://github.com/scrimshawlife-ctrl/Kubrick/pull/24)) |
 | Issues #3 / #4 | Closed |
 | Hermes Skill Evals on PR | Passed at merge |
-| `v0.13.0` git tag / GitHub Release | Pending (this checklist) |
+| `v0.13.0` git tag / GitHub Release | **Published** — https://github.com/scrimshawlife-ctrl/Kubrick/releases/tag/v0.13.0 |
 
 ## Required gates
 
@@ -27,8 +27,8 @@
 - [x] Surface-occult audit fails closed on named esoterica
 - [x] No audience-facing packet exposes private pattern or lexicon links
 - [x] README and QUICKSTART document Wave 2/3 + design-build commands
-- [ ] Create and publish the `v0.13.0` tag from verified `main`
-- [ ] Publish GitHub Release notes from `docs/RELEASE-NOTES-v0.13.md` / changelog
+- [x] Create and publish the `v0.13.0` tag from verified `main`
+- [x] Publish GitHub Release notes from `docs/RELEASE-NOTES-v0.13.md` / changelog
 
 ## Release procedure
 
