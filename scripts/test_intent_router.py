@@ -78,6 +78,20 @@ def test_ledger_passthrough_action():
     assert call.argv[0] == "audit"
 
 
+def test_top_level_help_lists_intents_not_all_aliases():
+    text = ir.format_top_level_help()
+    assert "adapt" in text and "visual" in text and "learn" in text
+    assert "adapt-flux" not in text  # aliases not first-class
+    assert "do <intent>" in text or "kubrick do" in text
+
+
+def test_recipe_storyboard_example():
+    argv = ir.resolve_recipe("storyboard-example")
+    call = ir.resolve(argv)
+    assert call.intent == "compile"
+    assert call.script.name == "kubrick_compile.py"
+
+
 def main():
     test_intent_count_and_names()
     test_every_legacy_maps_exactly_once()
@@ -85,7 +99,9 @@ def main():
     test_resolve_alias_adapt_flux()
     test_resolve_unknown_intent()
     test_ledger_passthrough_action()
-    print("intent_router unit: registry + resolve PASS")
+    test_top_level_help_lists_intents_not_all_aliases()
+    test_recipe_storyboard_example()
+    print("intent_router unit: registry + resolve + help/recipe PASS")
 
 
 if __name__ == "__main__":

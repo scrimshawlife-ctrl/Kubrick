@@ -1,58 +1,111 @@
 #!/usr/bin/env python3
-"""Unified Hermes-native CLI for Kubrick's deterministic tools."""
+"""Unified Hermes-native CLI for Kubrick's deterministic tools.
+
+Primary surface:
+  kubrick do <intent> [--action <action>] [flags]
+
+Also:
+  kubrick recipe <name>
+  kubrick help [<intent>]
+  kubrick aliases
+  <legacy-command> [flags]   # soft aliases via intent_router
+"""
 from __future__ import annotations
 
-import argparse
+import os
 import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+SCRIPTS = Path(__file__).resolve().parent
 PY = sys.executable
 
-COMMANDS = {
-    "validate-skill": "validate_hermes_skill.py",
-    "validate-corpus": "validate_pattern_corpus.py",
-    "coverage": "audit_corpus_coverage.py",
-    "compile": "kubrick_compile.py",
-    "retrieve": "retrieve_symbolic_patterns_registry.py",
-    "ledger": "symbolic_ledger.py",
-    "design-build": "generate_design_spec.py",
-    "storyboard-propagate": "propagate_graph_state.py",
-    "storyboard-compare": "compare_frame_state.py",
-    "adapter-build": "build_model_adapter_packet.py",
-    "adapt-grok": "adapt_grok_imagine.py",
-    "adapt-flux": "adapt_flux.py",
-    "adapt-sd3": "adapt_sd3.py",
-    "adapt-midjourney": "adapt_midjourney.py",
-    "adapt-provider": "adapt_provider.py",
-    "visual-normalize": "normalize_visual_observation.py",
-    "visual-compare": "compare_visual_observation.py",
-    "visual-correct": "build_visual_correction_packet.py",
-    "correction-govern": "govern_correction_iteration.py",
-    "closed-loop-qa": "closed_loop_visual_qa.py",
-    "outcome-record": "record_pattern_outcome.py",
-    "evolution-propose": "propose_pattern_evolution.py",
-    "forge-signals": "extract_forge_signals.py",
-    "operator": "graph_operators.py",
-    "mcp-server": "mcp_kubrick_server.py",
-    "grok-review-bundle": "build_grok_review_bundle.py",
-    "artifact-validate": "validate_artifact.py",
-    "repeatability": "check_repeatability.py",
-    "eval": "run_hermes_evals.py",
-}
+sys.path.insert(0, str(SCRIPTS))
+import intent_router as ir  # noqa: E402
+
+
+def _is_agent() -> bool:
+    """Quiet mode for agents / non-TTY (suppress alias deprecation notes)."""
+    return os.environ.get("KUBRICK_AGENT") == "1" or not sys.stderr.isatty()
+
+
+def _dispatch_smoke(call: ir.IntentCall) -> None:
+    """check smoke: validate skill then pattern corpus (composite)."""
+    for script in ("validate_hermes_skill.py", "validate_pattern_corpus.py"):
+        r = subprocess.run([PY, str(SCRIPTS / script), *call.argv], cwd=ROOT)
+        if r.returncode != 0:
+            raise SystemExit(r.returncode)
+    print("check smoke: PASS")
+    raise SystemExit(0)
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(prog="kubrick", description="Kubrick standalone Hermes operator CLI")
-    parser.add_argument("command", choices=sorted(COMMANDS))
-    parser.add_argument("args", nargs=argparse.REMAINDER)
-    ns = parser.parse_args()
-    # argparse remainder keeps a leading -- sometimes; strip a lone separator
-    args = ns.args
-    if args and args[0] == "--":
-        args = args[1:]
-    result = subprocess.run([PY, str(ROOT / "scripts" / COMMANDS[ns.command]), *args], cwd=ROOT)
+    argv = sys.argv[1:]
+
+    # Top-level help (prefer entrypoint handling; avoid RouterError("HELP") path)
+    if not argv or (argv[0] in {"-h", "--help", "help"} and len(argv) == 1):
+        sys.stdout.write(ir.format_top_level_help())
+        raise SystemExit(0)
+
+    if argv[0] == "help" and len(argv) >= 2:
+        try:
+            sys.stdout.write(ir.format_intent_help(argv[1]))
+        except ir.RouterError as e:
+            print(e.message, file=sys.stderr)
+            raise SystemExit(e.exit_code)
+        raise SystemExit(0)
+
+    if argv[0] == "aliases":
+        sys.stdout.write(ir.format_aliases())
+        raise SystemExit(0)
+
+    if argv[0] == "recipe":
+        if len(argv) < 2:
+            raise SystemExit("usage: kubrick recipe <name>")
+        try:
+            argv = ir.resolve_recipe(argv[1])
+        except ir.RouterError as e:
+            print(e.message, file=sys.stderr)
+            raise SystemExit(e.exit_code)
+
+    # do <intent> --help / -h → intent help (do not pass --help into scripts)
+    if (
+        len(argv) >= 2
+        and argv[0] == "do"
+        and any(tok in {"-h", "--help"} for tok in argv[2:])
+    ):
+        try:
+            sys.stdout.write(ir.format_intent_help(argv[1]))
+        except ir.RouterError as e:
+            print(e.message, file=sys.stderr)
+            raise SystemExit(e.exit_code)
+        raise SystemExit(0)
+
+    try:
+        call = ir.resolve(argv)
+    except ir.RouterError as e:
+        if e.message == "HELP":
+            sys.stdout.write(ir.format_top_level_help())
+            raise SystemExit(0)
+        print(e.message, file=sys.stderr)
+        raise SystemExit(e.exit_code)
+
+    if (
+        call.legacy_name
+        and not _is_agent()
+        and os.environ.get("KUBRICK_QUIET") != "1"
+    ):
+        print(
+            f"note: `{call.legacy_name}` is a legacy alias; "
+            f"prefer `kubrick do {call.intent} --action {call.action}`",
+            file=sys.stderr,
+        )
+
+    if call.intent == "check" and call.action == "smoke":
+        _dispatch_smoke(call)
+
+    result = subprocess.run([PY, str(call.script), *call.argv], cwd=ROOT)
     raise SystemExit(result.returncode)
 
 

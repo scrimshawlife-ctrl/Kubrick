@@ -180,6 +180,28 @@ def all_legacy_commands() -> set[str]:
     return set(ALIAS_TABLE)
 
 
+# Human sugar: expand to full ``do …`` argv for resolve() (not shell).
+RECIPES: dict[str, list[str]] = {
+    "storyboard-example": [
+        "do",
+        "compile",
+        "--brief",
+        "examples/authority-transfer-storyboard/brief.yaml",
+        "--ledger",
+        "examples/authority-transfer-storyboard/symbolic-ledger.yaml",
+        "--mode",
+        "storyboard",
+        "--storyboard-plan",
+        "examples/authority-transfer-storyboard/storyboard-plan.yaml",
+        "--provider",
+        "grok-imagine",
+        "--out",
+        "out/kubrick/authority-transfer",
+    ],
+    "verify": ["do", "check", "--action", "smoke"],
+}
+
+
 class RouterError(Exception):
     """CLI router failure (unknown intent/action, missing command). Exit code 2."""
 
@@ -187,6 +209,116 @@ class RouterError(Exception):
         super().__init__(message)
         self.message = message
         self.exit_code = exit_code
+
+
+def format_top_level_help() -> str:
+    """List the 12 intents only; aliases are not first-class."""
+    lines = [
+        "usage: kubrick do <intent> [--action <action>] [flags]",
+        "",
+        "Intents:",
+    ]
+    for name in sorted(INTENT_REGISTRY):
+        lines.append(f"  {name:12} {INTENT_REGISTRY[name].description}")
+    lines += [
+        "",
+        "Sugar:  kubrick recipe <name>",
+        "        kubrick help <intent>",
+        "        kubrick aliases",
+        "Legacy command names still work as aliases.",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def format_intent_help(intent: str) -> str:
+    """Actions and routing notes for a single intent."""
+    if intent not in INTENT_REGISTRY:
+        raise RouterError(
+            f"unknown intent {intent!r}; valid intents: {_valid_intents_msg()}"
+        )
+    spec = INTENT_REGISTRY[intent]
+    lines = [
+        f"usage: kubrick do {intent} [--action <action>] [flags]",
+        f"       kubrick help {intent}",
+        "",
+        f"{intent}: {spec.description}",
+        "",
+        "Actions:",
+    ]
+    for action in sorted(spec.actions):
+        script = spec.actions[action]
+        default_mark = " (default)" if action == spec.default_action else ""
+        lines.append(f"  {action:28} → {script}{default_mark}")
+    if intent == "check":
+        lines.append(
+            "  note: action 'smoke' runs validate_hermes_skill.py then "
+            "validate_pattern_corpus.py"
+        )
+    if intent in {"ledger", "operate"}:
+        lines += [
+            "",
+            "Pass-through: first positional token is the action and is forwarded",
+            "as the first argv token to the implementation script.",
+            f"  example: kubrick do {intent} <action> [flags]",
+        ]
+    elif spec.default_action:
+        lines += [
+            "",
+            f"Default action: {spec.default_action}",
+        ]
+    if intent == "adapt":
+        lines += [
+            "",
+            "Defaults: --provider set → provider; else build.",
+            "Provider grok-imagine routes to adapt_grok_imagine.py.",
+        ]
+    if intent == "visual":
+        lines += [
+            "",
+            "Defaults: --expected and --observation-input → closed-loop;",
+            "else --action is required.",
+        ]
+    if intent == "check":
+        lines += [
+            "",
+            "Default action: smoke (skill + corpus).",
+        ]
+    lines += [
+        "",
+        "Legacy aliases: kubrick aliases",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def format_aliases() -> str:
+    """Human-readable legacy alias → intent/action map."""
+    lines = [
+        "Legacy command aliases (soft cutover; prefer kubrick do <intent>):",
+        "",
+    ]
+    for name in sorted(ALIAS_TABLE):
+        alias = ALIAS_TABLE[name]
+        if alias.passthrough_action:
+            target = f"{alias.intent} <subcommand>"
+        else:
+            target = f"do {alias.intent} --action {alias.action}"
+            if alias.fixed_flags:
+                target += " " + " ".join(alias.fixed_flags)
+        lines.append(f"  {name:24} → {target}")
+    lines += [
+        "",
+        f"{len(ALIAS_TABLE)} aliases. Intents: {', '.join(sorted(INTENT_REGISTRY))}",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def resolve_recipe(name: str) -> list[str]:
+    """Expand a recipe name to argv suitable for ``resolve()`` (not a shell line)."""
+    if name not in RECIPES:
+        raise RouterError(
+            f"unknown recipe {name!r}; valid recipes: {', '.join(sorted(RECIPES))}"
+        )
+    return list(RECIPES[name])
 
 
 def _flag_value(flags: list[str], name: str) -> str | None:
