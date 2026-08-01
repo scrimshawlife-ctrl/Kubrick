@@ -1,16 +1,16 @@
 {
   "manifest_version": 1,
   "name": "kubrick",
-  "version": "0.14.0",
+  "version": "0.15.0-dev",
   "host": "hermes",
   "runtime_profiles": {
     "prose": {
       "dependencies": [],
-      "guarantee": "Creative routing, diagnosis, drafting, revision, and symbolic translation through SKILL.md and references."
+      "guarantee": "Creative routing, diagnosis, drafting, revision, symbolic translation, and first-class design/script/image/video workflows through SKILL.md and references."
     },
     "stdlib": {
       "dependencies": [],
-      "guarantee": "Core routing, structural validation, deterministic hashing, graph operations, and JSON artifacts with Python 3.10+."
+      "guarantee": "Core routing, structural validation, deterministic hashing, graph operations, production-surface contracts, and JSON artifacts with Python 3.10+."
     },
     "validation": {
       "dependencies": ["PyYAML>=6", "jsonschema>=4"],
@@ -25,7 +25,10 @@
     "compile": {"description": "Full brief-to-packet compile", "default_action": "run", "actions": {"run": "kubrick_compile.py"}},
     "retrieve": {"description": "Registry-aware pattern retrieval", "default_action": "retrieve", "actions": {"retrieve": "retrieve_symbolic_patterns_registry.py"}},
     "ledger": {"description": "Project symbolic ledger", "default_action": null, "actions": {"init": "symbolic_ledger.py", "audit": "symbolic_ledger.py", "mutate": "symbolic_ledger.py", "rehydrate": "symbolic_ledger.py", "apply-forge": "symbolic_ledger.py", "export-retrieval": "symbolic_ledger.py", "record-pattern": "symbolic_ledger.py"}},
-    "design": {"description": "Design-specification compilation", "default_action": "build", "actions": {"build": "generate_design_spec.py"}},
+    "design": {"description": "First-class design.md lifecycle", "default_action": "create", "actions": {"build": "design_surface.py", "create": "design_surface.py", "improve": "design_surface.py", "audit": "design_surface.py", "reconcile": "design_surface.py", "update": "design_surface.py", "validate": "design_surface.py"}},
+    "script": {"description": "First-class script development and continuity", "default_action": "create", "actions": {"create": "script_surface.py", "improve": "script_surface.py", "diagnose": "script_surface.py", "adapt": "script_surface.py", "continuity-check": "script_surface.py", "handoff": "script_surface.py"}},
+    "image": {"description": "First-class still-image prompt engineering", "default_action": "prompt", "actions": {"prompt": "image_surface.py", "sequence": "image_surface.py", "reference": "image_surface.py", "negative": "image_surface.py", "adapt": "image_surface.py", "qa": "image_surface.py"}},
+    "video": {"description": "First-class temporal video prompt engineering", "default_action": "shot", "actions": {"shot": "video_surface.py", "motion": "video_surface.py", "sequence": "video_surface.py", "adapt": "video_surface.py", "qa": "video_surface.py"}},
     "storyboard": {"description": "Multi-frame state", "default_action": null, "actions": {"propagate": "propagate_graph_state.py", "compare": "compare_frame_state.py"}},
     "adapt": {"description": "Neutral packet and provider adaptation", "default_action": "build", "actions": {"build": "build_model_adapter_packet.py", "provider": "adapt_provider.py"}},
     "visual": {"description": "Visual QA loop", "default_action": null, "actions": {"normalize": "normalize_visual_observation.py", "compare": "compare_visual_observation.py", "correct": "build_visual_correction_packet.py", "govern": "govern_correction_iteration.py", "closed-loop": "closed_loop_visual_qa.py"}},
@@ -40,6 +43,12 @@
     "retrieve": {"intent": "retrieve", "action": "retrieve"},
     "ledger": {"intent": "ledger", "action": "init", "passthrough_action": true},
     "design-build": {"intent": "design", "action": "build"},
+    "design-create": {"intent": "design", "action": "create"},
+    "design-improve": {"intent": "design", "action": "improve"},
+    "script-create": {"intent": "script", "action": "create"},
+    "script-improve": {"intent": "script", "action": "improve"},
+    "image-prompt": {"intent": "image", "action": "prompt"},
+    "video-shot": {"intent": "video", "action": "shot"},
     "storyboard-propagate": {"intent": "storyboard", "action": "propagate"},
     "storyboard-compare": {"intent": "storyboard", "action": "compare"},
     "adapter-build": {"intent": "adapt", "action": "build"},
@@ -68,10 +77,14 @@
   },
   "recipes": {
     "storyboard-example": ["do", "compile", "--brief", "examples/authority-transfer-storyboard/brief.yaml", "--ledger", "examples/authority-transfer-storyboard/symbolic-ledger.yaml", "--mode", "storyboard", "--storyboard-plan", "examples/authority-transfer-storyboard/storyboard-plan.yaml", "--provider", "grok-imagine", "--out", "out/kubrick/authority-transfer"],
+    "design-improvement": ["do", "design", "--action", "improve", "--input", "design.md", "--evidence", "project-evidence.md", "--output", "out/design-improvement.json"],
+    "script-diagnosis": ["do", "script", "--action", "diagnose", "--input", "script.md", "--output", "out/script-diagnosis.json"],
+    "image-prompt": ["do", "image", "--action", "prompt", "--brief", "A continuity-safe cinematic still", "--provider", "generic", "--output", "out/image-prompt.json"],
+    "video-shot": ["do", "video", "--action", "shot", "--brief", "A continuity-safe cinematic shot", "--provider", "generic", "--output", "out/video-shot.json"],
     "verify": ["do", "check", "--action", "smoke"]
   },
   "providers": ["generic", "flux", "sd3", "midjourney", "grok-imagine"],
-  "artifact_types": ["symbolic-architecture", "motif-structure-graph", "project-symbolic-ledger", "storyboard-symbolic-state", "model-adapter-packet", "visual-observation", "visual-fidelity-report", "correction-iteration-receipt", "pattern-use-receipt", "pattern-evolution-proposal", "multi-signal-evolution-receipt", "forge-signal-bundle", "design-specification"],
+  "artifact_types": ["symbolic-architecture", "motif-structure-graph", "project-symbolic-ledger", "storyboard-symbolic-state", "model-adapter-packet", "visual-observation", "visual-fidelity-report", "correction-iteration-receipt", "pattern-use-receipt", "pattern-evolution-proposal", "multi-signal-evolution-receipt", "forge-signal-bundle", "design-specification", "design-revision", "script-package", "script-diagnostic", "image-prompt-package", "image-sequence-package", "video-shot-contract", "video-sequence-package", "production-surface-receipt"],
   "schemas": ["schemas/diagnostic.schema.json", "schemas/provider-preservation-report.schema.json", "schemas/symbolic-architecture.schema.json", "schemas/motif-structure-graph.schema.yaml", "schemas/project-symbolic-ledger.schema.yaml", "schemas/storyboard-symbolic-state.schema.yaml", "schemas/model-adapter-packet.schema.yaml", "schemas/visual-observation.schema.yaml", "schemas/visual-fidelity-report.schema.yaml", "schemas/correction-iteration-receipt.schema.yaml", "schemas/pattern-use-receipt.schema.yaml", "schemas/pattern-evolution-proposal.schema.yaml", "schemas/multi-signal-evolution-receipt.schema.yaml", "schemas/forge-signal-bundle.schema.yaml", "schemas/design-specification.schema.yaml"],
   "optional_integrations": ["continuity-forge", "mcp", "model-apis", "vision-apis"],
   "authority_classes": ["PROPOSED", "OBSERVATION", "NOT_COMPUTABLE", "AUTHORITATIVE_EXTERNAL"],
