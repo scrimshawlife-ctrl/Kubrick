@@ -20,6 +20,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS = Path(__file__).resolve().parent
 PY = sys.executable
+FIRST_CLASS_PRODUCTION_SURFACES = {"design", "script", "image", "video"}
 
 sys.path.insert(0, str(SCRIPTS))
 import intent_router as ir  # noqa: E402
@@ -57,10 +58,22 @@ def _dispatch_smoke(call: ir.IntentCall) -> None:
     raise SystemExit(0)
 
 
+def _execution_argv(call: ir.IntentCall) -> list[str]:
+    """Build implementation argv without leaking router-only semantics.
+
+    First-class production surfaces intentionally route multiple actions to one
+    deterministic runtime. Forward the resolved action as an explicit internal
+    flag so the implementation never has to infer operator intent.
+    """
+    argv = list(call.argv)
+    if call.intent in FIRST_CLASS_PRODUCTION_SURFACES:
+        argv = ["--surface-action", call.action, *argv]
+    return argv
+
+
 def main() -> None:
     argv = sys.argv[1:]
 
-    # Top-level help (prefer entrypoint handling; avoid RouterError("HELP") path)
     if not argv or (argv[0] in {"-h", "--help", "help"} and len(argv) == 1):
         sys.stdout.write(ir.format_top_level_help())
         raise SystemExit(0)
@@ -84,7 +97,6 @@ def main() -> None:
         except ir.RouterError as e:
             _abort_router(e)
 
-    # do <intent> --help / -h → intent help (do not pass --help into scripts)
     if (
         len(argv) >= 2
         and argv[0] == "do"
@@ -118,7 +130,10 @@ def main() -> None:
     if call.intent == "check" and call.action == "smoke":
         _dispatch_smoke(call)
 
-    result = subprocess.run([PY, str(call.script), *call.argv], cwd=ROOT)
+    result = subprocess.run(
+        [PY, str(call.script), *_execution_argv(call)],
+        cwd=ROOT,
+    )
     raise SystemExit(result.returncode)
 
 
