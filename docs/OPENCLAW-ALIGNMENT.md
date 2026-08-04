@@ -1,5 +1,10 @@
 # OpenClaw alignment checklist (v0.15)
 
+## Status
+
+**Ported on branch `cursor/openclaw-v015-parity-44a4`.** Doctor, smoke, surface, and cross-surface acceptance tests pass. Installer/state/doctor packaging preserved.
+
+
 Track issue: https://github.com/scrimshawlife-ctrl/Kubrick/issues/32
 
 Bring the permanent `openclaw` branch to Hermes `main` contracts without erasing

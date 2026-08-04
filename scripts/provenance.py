@@ -11,6 +11,7 @@ from typing import Any, Iterable
 # Stable collision taxonomy (extend only with regression coverage).
 COLLISION_TYPES = frozenset(
     {
+        "PROHIBITED",
         "REDUNDANT",
         "CONTRADICTORY",
         "CULTURALLY_INCOMPATIBLE",
@@ -26,6 +27,7 @@ COLLISION_TYPES = frozenset(
 
 HARD_FAIL_COLLISIONS = frozenset(
     {
+        "PROHIBITED",
         "CONTRADICTORY",
         "CULTURALLY_INCOMPATIBLE",
         "OWNERSHIP_CONFLICT",
