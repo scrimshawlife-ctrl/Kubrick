@@ -153,6 +153,13 @@ def test_end_to_end_surfaces() -> None:
         receipt_data = json.loads(design_receipt.read_text(encoding="utf-8"))
         assert receipt_data["artifact_type"] == "design-revision-receipt"
         assert isinstance(receipt_data["result"].get("diff"), list)
+        # Schema validation requires the validation profile (PyYAML + jsonschema).
+        try:
+            import jsonschema  # noqa: F401
+            import yaml  # noqa: F401
+        except ImportError:
+            print("skip artifact schema validation (validation profile not installed)")
+            return
         for artifact, schema in (
             (design_receipt, "schemas/design-revision-receipt.schema.json"),
             (image, "schemas/image-prompt-packet.schema.json"),
