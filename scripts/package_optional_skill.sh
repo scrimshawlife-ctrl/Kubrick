@@ -28,13 +28,18 @@ if command -v rsync >/dev/null 2>&1; then
     --exclude '**/__pycache__/' \
     --exclude '*.pyc' \
     --exclude '.pytest_cache/' \
+    --exclude '.mypy_cache/' \
+    --exclude '.ruff_cache/' \
     --exclude 'docs/superpowers/' \
     --exclude 'docs/ROADMAP-v0.11.md' \
     --exclude 'docs/ROADMAP-v0.12.md' \
     --exclude 'docs/RELEASE-CHECKLIST-v0.12.md' \
     --exclude 'docs/RELEASE-NOTES-v0.12.md' \
     --exclude 'PR_BODY.md' \
+    --exclude 'PR_BODY_HARDENING.md' \
+    --exclude 'PUSH_INSTRUCTIONS.md' \
     --exclude 'scripts/package_optional_skill.sh' \
+    --exclude 'scripts/sync_hub_skill.sh' \
     --exclude 'tests/' \
     --exclude 'skills/' \
     --exclude 'skills.sh.json' \
@@ -50,13 +55,18 @@ else
     --exclude '__pycache__' \
     --exclude '*.pyc' \
     --exclude '.pytest_cache' \
+    --exclude '.mypy_cache' \
+    --exclude '.ruff_cache' \
     --exclude 'docs/superpowers' \
     --exclude 'docs/ROADMAP-v0.11.md' \
     --exclude 'docs/ROADMAP-v0.12.md' \
     --exclude 'docs/RELEASE-CHECKLIST-v0.12.md' \
     --exclude 'docs/RELEASE-NOTES-v0.12.md' \
     --exclude 'PR_BODY.md' \
+    --exclude 'PR_BODY_HARDENING.md' \
+    --exclude 'PUSH_INSTRUCTIONS.md' \
     --exclude 'scripts/package_optional_skill.sh' \
+    --exclude 'scripts/sync_hub_skill.sh' \
     --exclude 'tests' \
     --exclude 'skills' \
     --exclude 'skills.sh.json' \

@@ -29,7 +29,7 @@ def test_end_to_end_surfaces() -> None:
         improved = out / "design-improved.md"
         script = out / "script.md"
         image = out / "image.json"
-        shot = out / "shot.yaml"
+        shot = out / "shot.json"
         reconcile = out / "reconcile.json"
 
         steps = [
@@ -110,8 +110,9 @@ def test_end_to_end_surfaces() -> None:
         assert image_data["shared_invariants"]["preserve_identity"] is True
         assert image_data.get("source_design_revision", "").startswith("r-")
 
-        # shot yaml should include temporal contract fields + design revision link
-        shot_text = shot.read_text(encoding="utf-8")
+        # JSON output is the full artifact envelope; schema expects the inner shot.
+        shot_envelope = json.loads(shot.read_text(encoding="utf-8"))
+        shot_obj = shot_envelope.get("result", {}).get("shot") or shot_envelope
         for key in (
             "shot_id",
             "start_state",
@@ -120,13 +121,31 @@ def test_end_to_end_surfaces() -> None:
             "continuity_invariants",
             "source_design_revision",
         ):
-            assert key in shot_text, key
+            assert key in shot_obj, key
+        shot_contract = out / "shot-contract.json"
+        shot_contract.write_text(
+            json.dumps(shot_obj, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
 
         recon = json.loads(reconcile.read_text(encoding="utf-8"))
         assert recon["artifact_type"] == "media-reconciliation-report"
         assert "result" in recon
 
-        # Provider adapt preservation report (criteria #8)
+        design_receipt = improved.with_name(improved.stem + ".receipt.json")
+        assert design_receipt.is_file()
+        receipt_data = json.loads(design_receipt.read_text(encoding="utf-8"))
+        assert receipt_data["artifact_type"] == "design-revision-receipt"
+        assert isinstance(receipt_data["result"].get("diff"), list)
+
+        # Provider adapt + artifact schema validation need the validation profile.
+        try:
+            import jsonschema  # noqa: F401
+            import yaml  # noqa: F401
+        except ImportError:
+            print("skip adapt/schema checks (validation profile not installed)")
+            return
+
         adapted = out / "image-adapted.json"
         proc = run(
             [
@@ -141,16 +160,10 @@ def test_end_to_end_surfaces() -> None:
         report = adapted_data["result"]["preservation_report"]
         assert report.get("critical_invariants_preserved") is True or report.get("status") == "VALID"
 
-        # Schema validation for design revision receipt + image packet (criteria #11)
-        design_receipt = improved.with_name(improved.stem + ".receipt.json")
-        assert design_receipt.is_file()
-        receipt_data = json.loads(design_receipt.read_text(encoding="utf-8"))
-        assert receipt_data["artifact_type"] == "design-revision-receipt"
-        assert isinstance(receipt_data["result"].get("diff"), list)
         for artifact, schema in (
             (design_receipt, "schemas/design-revision-receipt.schema.json"),
             (image, "schemas/image-prompt-packet.schema.json"),
-            (shot, "schemas/shot-contract.schema.json"),
+            (shot_contract, "schemas/shot-contract.schema.json"),
         ):
             v = subprocess.run(
                 [

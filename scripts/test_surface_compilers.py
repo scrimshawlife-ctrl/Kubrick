@@ -132,7 +132,19 @@ def test_cli_image_and_script() -> None:
         assert "Dramatic intent" in script.read_text(encoding="utf-8")
 
 
+def _has_yaml() -> bool:
+    try:
+        import yaml  # noqa: F401
+    except ImportError:
+        return False
+    return True
+
+
 def test_yaml_brief_enriches_design_and_improve() -> None:
+    # List / nested YAML fields need PyYAML; stdlib CI falls back to line parsing only.
+    if not _has_yaml():
+        print("skip test_yaml_brief_enriches_design_and_improve (PyYAML not installed)")
+        return
     brief = (ROOT / "examples/authority-transfer-storyboard/brief.yaml").read_text(encoding="utf-8")
     created = sc.design_create(brief, None, "authority-transfer")
     md = created["result"]["document_markdown"]

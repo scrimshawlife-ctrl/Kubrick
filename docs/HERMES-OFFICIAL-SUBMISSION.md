@@ -100,7 +100,7 @@ hermes chat --toolsets skills -q \
   "Calculate the SHA-256 checksum of README.md."
 ```
 
-Record outcomes in `PR_BODY.md` before opening the upstream PR.
+Record activation outcomes in the upstream PR body (see template below) before opening the PR.
 
 ## Community layout note
 
@@ -149,10 +149,38 @@ git add optional-skills/creative/kubrick
 git commit -m "feat(skills): add Kubrick cinematic design skill v0.16"
 git push -u origin feat/add-kubrick-skill-v016
 
+# Draft the PR body from the template below, then:
 gh pr create \
   --repo NousResearch/hermes-agent \
   --title "feat(skills): add Kubrick cinematic design skill (v0.16)" \
-  --body-file /path/to/Kubrick/PR_BODY.md
+  --body-file /tmp/kubrick-hermes-pr-body.md
+```
+
+### Upstream PR body template
+
+Draft locally (do **not** commit scratch PR bodies into this repo):
+
+```markdown
+## Summary
+
+Adds `kubrick` **v0.16.0** under `optional-skills/creative/kubrick/`.
+
+## Why optional-skills
+
+Specialized cinematic continuity / production handoff — useful, not default-bundled.
+
+## Validation
+
+- [ ] Local Hermes detection (`~/.hermes/skills/kubrick`)
+- [ ] `python3 scripts/kubrick.py do check --action skill`
+- [ ] `python3 scripts/kubrick.py do check --action smoke`
+- [ ] `python3 scripts/audit_release_version.py --strict`
+- [ ] Positive activation (cinematic / screenplay prompt)
+- [ ] Negative activation (unrelated checksum prompt)
+
+## Notes
+
+Stdlib-first helpers; optional `pyyaml` / `jsonschema` with degraded paths.
 ```
 
 ### Package dry-run (no fork / no PR)
@@ -191,4 +219,5 @@ and leave extended historical docs in the standalone GitHub repo.
 - `.git/`, `.github/`
 - local `out/`, caches, secrets
 - machine-specific install notes
+- ephemeral agent scratch (`PR_BODY*.md`, `PUSH_INSTRUCTIONS.md`)
 - OpenClaw-only packaging (lives on branch `openclaw` in the standalone repo)
