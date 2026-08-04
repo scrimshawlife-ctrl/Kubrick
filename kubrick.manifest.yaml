@@ -481,6 +481,7 @@
     "schemas/continuity-forge-symbolic-export.schema.json",
     "schemas/correction-iteration-receipt.schema.yaml",
     "schemas/design-document.schema.json",
+    "schemas/design-revision-receipt.schema.json",
     "schemas/design-specification.schema.yaml",
     "schemas/diagnostic.schema.json",
     "schemas/forge-signal-bundle.schema.yaml",

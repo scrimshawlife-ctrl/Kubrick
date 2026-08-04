@@ -95,6 +95,10 @@ def run(surface: str, actions: set[str]) -> int:
     parser.add_argument("--brief")
     parser.add_argument("--input")
     parser.add_argument("--evidence")
+    parser.add_argument(
+        "--design",
+        help="Optional design.md path for revision linkage on script/image/video compiles",
+    )
     parser.add_argument("--provider", default="generic")
     parser.add_argument("--project-id", default="local-project")
     parser.add_argument("--output")
@@ -105,6 +109,7 @@ def run(surface: str, actions: set[str]) -> int:
     try:
         loaded_input = _load_optional(args.input)
         loaded_evidence = _load_optional(args.evidence)
+        loaded_design = _load_optional(getattr(args, "design", None))
         # Allow --brief to be either inline text or a path to a brief file.
         if args.brief:
             brief_path = Path(args.brief)
@@ -118,6 +123,7 @@ def run(surface: str, actions: set[str]) -> int:
                     pass  # treat as literal brief text
         setattr(args, "_loaded_input", loaded_input)
         setattr(args, "_loaded_evidence", loaded_evidence)
+        setattr(args, "_loaded_design", loaded_design)
         # design create may also treat --input as evidence seed
         if surface == "design" and args.surface_action in {"create", "build"}:
             if not args.brief and not loaded_evidence and loaded_input:

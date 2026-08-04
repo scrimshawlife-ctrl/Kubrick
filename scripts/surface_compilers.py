@@ -82,24 +82,78 @@ def _claim(text: str, label: str = "PROPOSED") -> str:
     return f"- [{label}] {text}"
 
 
-def _extract_brief_fields(brief: str | None, evidence: str | None) -> dict[str, str]:
+def _as_str_list(value: Any) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, str):
+        text = value.strip()
+        return [text] if text else []
+    if isinstance(value, (list, tuple)):
+        out: list[str] = []
+        for item in value:
+            if isinstance(item, str) and item.strip():
+                out.append(item.strip())
+            elif isinstance(item, dict):
+                # relation / transformation rows
+                for key in ("transformation", "relation", "summary", "text"):
+                    if isinstance(item.get(key), str) and item[key].strip():
+                        out.append(item[key].strip())
+                        break
+        return out
+    return [str(value)]
+
+
+def _extract_brief_fields(brief: str | None, evidence: str | None) -> dict[str, Any]:
     blob = "\n".join(x for x in (brief, evidence) if x).strip()
-    fields = {
+    fields: dict[str, Any] = {
         "dramatic_problem": "",
         "desired_state_change": "",
         "character_pressure": "",
         "format": "unspecified",
+        "observable_evidence": [],
+        "geometry": [],
+        "residue": [],
+        "production_constraints": [],
+        "causal_actions": [],
+        "convergence_effect": "",
+        "cinematic_channel": [],
         "raw": blob,
     }
     if not blob:
         return fields
-    # YAML-ish key: value lines
-    for key in ("dramatic_problem", "desired_state_change", "character_pressure", "format"):
-        match = re.search(rf"^{key}\s*:\s*(.+)$", blob, re.MULTILINE)
-        if match:
-            fields[key] = match.group(1).strip().strip("\"'")
+
+    parsed: dict[str, Any] | None = None
+    try:
+        import yaml  # type: ignore[import-untyped]
+
+        loaded = yaml.safe_load(blob)
+        if isinstance(loaded, dict):
+            parsed = loaded
+    except Exception:  # noqa: BLE001 — fall back to line parsing
+        parsed = None
+
+    if parsed is not None:
+        for key in ("dramatic_problem", "desired_state_change", "character_pressure", "format", "convergence_effect"):
+            val = parsed.get(key)
+            if isinstance(val, str) and val.strip():
+                fields[key] = val.strip()
+        for key in ("observable_evidence", "geometry", "residue", "production_constraints", "causal_actions"):
+            fields[key] = _as_str_list(parsed.get(key))
+        channels = parsed.get("symbolic_channels")
+        if isinstance(channels, dict):
+            fields["cinematic_channel"] = _as_str_list(channels.get("cinematic"))
+        relations = parsed.get("relations")
+        if isinstance(relations, list):
+            fields["causal_actions"] = list(
+                dict.fromkeys(fields["causal_actions"] + _as_str_list(relations))
+            )
+    else:
+        for key in ("dramatic_problem", "desired_state_change", "character_pressure", "format"):
+            match = re.search(rf"^{key}\s*:\s*(.+)$", blob, re.MULTILINE)
+            if match:
+                fields[key] = match.group(1).strip().strip("\"'")
+
     if not fields["dramatic_problem"]:
-        # First non-empty line as objective when freeform
         for line in blob.splitlines():
             line = line.strip()
             if line and not line.startswith("#") and ":" not in line[:40]:
@@ -108,6 +162,67 @@ def _extract_brief_fields(brief: str | None, evidence: str | None) -> dict[str, 
         if not fields["dramatic_problem"]:
             fields["dramatic_problem"] = blob.splitlines()[0].strip()[:240]
     return fields
+
+
+def _claims_from_list(items: list[str], label: str = "OBSERVED", limit: int = 6) -> str:
+    lines = [_claim(item, label) for item in items[:limit] if item.strip()]
+    return "\n".join(lines)
+
+
+def _is_placeholder_section(body: str) -> bool:
+    """True when section is empty or only a generic NOT_COMPUTABLE stub."""
+    text = (body or "").strip()
+    if not text:
+        return True
+    if "insufficient evidence for this section" in text.lower():
+        return True
+    # Single-line NOT_COMPUTABLE awaiting evidence — replaceable when brief arrives.
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    if len(lines) == 1 and "NOT_COMPUTABLE" in lines[0] and "Awaiting evidence" in lines[0]:
+        return True
+    return False
+
+
+def resolve_design_text(
+    explicit: str | None = None,
+    input_text: str | None = None,
+    evidence_text: str | None = None,
+    *,
+    auto_discover: bool = True,
+) -> str | None:
+    """Resolve design.md text from explicit flag, input/evidence, or project files."""
+    if explicit and explicit.strip():
+        return explicit
+    for candidate in (input_text, evidence_text):
+        if not candidate:
+            continue
+        head = candidate.lstrip()[:400]
+        if head.startswith("# Design") or "Revision:" in head or "## Dramatic engine" in candidate:
+            return candidate
+    if not auto_discover:
+        return None
+    import os
+    from pathlib import Path
+
+    roots: list[Path] = []
+    project_dir = os.environ.get("KUBRICK_PROJECT_DIR")
+    if project_dir:
+        roots.append(Path(project_dir))
+    roots.append(Path.cwd())
+    seen: set[Path] = set()
+    for root in roots:
+        root = root.resolve()
+        if root in seen:
+            continue
+        seen.add(root)
+        for rel in ("design.md", "out/design.md", "docs/design.md"):
+            path = root / rel
+            if path.is_file():
+                try:
+                    return path.read_text(encoding="utf-8")
+                except OSError:
+                    continue
+    return None
 
 
 def parse_design_md(text: str) -> dict[str, str]:
@@ -234,9 +349,47 @@ def design_create(brief: str | None, evidence: str | None, project_id: str) -> d
             ),
         ]
     )
+    if fields.get("character_pressure"):
+        sections["audience-experience"] = _claim(
+            f"Audience tracks pressure: {fields['character_pressure']}",
+            "OBSERVED",
+        )
+        sections["character-architecture"] = _claim(fields["character_pressure"], "OBSERVED")
+    if fields.get("geometry") or fields.get("cinematic_channel"):
+        sections["visual-grammar"] = _claims_from_list(
+            list(fields.get("geometry") or []) + list(fields.get("cinematic_channel") or [])
+        ) or _claim("NOT_COMPUTABLE — visual grammar not evidenced", "NOT_COMPUTABLE")
+        sections["composition-camera"] = _claims_from_list(list(fields.get("cinematic_channel") or [])) or _claim(
+            "NOT_COMPUTABLE — camera language not evidenced",
+            "NOT_COMPUTABLE",
+        )
+    if fields.get("observable_evidence") or fields.get("residue"):
+        sections["material-continuity"] = _claims_from_list(
+            list(fields.get("observable_evidence") or []) + list(fields.get("residue") or [])
+        )
+    if fields.get("production_constraints") or fields.get("geometry"):
+        sections["environment-production"] = _claims_from_list(
+            list(fields.get("production_constraints") or []) + list(fields.get("geometry") or [])
+        )
+    if fields.get("causal_actions") or fields.get("convergence_effect"):
+        motion_bits = list(fields.get("causal_actions") or [])
+        if fields.get("convergence_effect"):
+            motion_bits.append(str(fields["convergence_effect"]))
+        sections["motion-behavior"] = _claims_from_list(motion_bits)
+    if fields.get("production_constraints"):
+        sections["image-rules"] = _claims_from_list(
+            list(fields["production_constraints"]),
+            "PROPOSED",
+        )
+        sections["video-rules"] = _claims_from_list(
+            list(fields["production_constraints"])
+            + (["end state must be observable"] if fields.get("desired_state_change") else []),
+            "PROPOSED",
+        )
     sections["continuity-invariants"] = "\n".join(
         [
             _claim("Preserve identity, ownership, chronology, geometry, material state, residue", "PROPOSED"),
+            *([_claim(item, "OBSERVED") for item in (fields.get("residue") or [])[:3]]),
         ]
     )
     sections["negative-constraints"] = "\n".join(
@@ -245,9 +398,15 @@ def design_create(brief: str | None, evidence: str | None, project_id: str) -> d
             _claim("Do not invent unsupported production detail", "PROPOSED"),
         ]
     )
-    sections["open-questions"] = _claim(
-        "Fill visual grammar, camera, lighting, and motion sections from further evidence",
-        "NOT_COMPUTABLE",
+    open_q = []
+    if not fields.get("geometry"):
+        open_q.append("visual grammar / geometry not fully evidenced")
+    if not fields.get("desired_state_change"):
+        open_q.append("desired state change missing")
+    sections["open-questions"] = (
+        _claims_from_list(open_q, "NOT_COMPUTABLE")
+        if open_q
+        else _claim("No blocking open questions from brief seed", "PROPOSED")
     )
     sections["provenance-map"] = _claim("Seeded from brief/evidence strings supplied to design create", "OBSERVED")
     sections["revision-history"] = _claim(f"{revision} created at {_now()}", "PROPOSED")
@@ -278,38 +437,163 @@ def design_improve(existing: str, evidence: str | None, project_id: str) -> dict
     fields = _extract_brief_fields(None, evidence)
     diffs: list[dict[str, str]] = []
 
-    # Strengthen empty production-critical sections only; never wipe valid text.
-    critical = [
-        "dramatic-engine",
-        "visual-grammar",
-        "continuity-invariants",
-        "negative-constraints",
-        "open-questions",
-    ]
-    for sid in critical:
-        if sections.get(sid, "").strip():
+    # Fill empty / placeholder sections from evidenced brief YAML; never wipe LOCKED/OBSERVED text.
+    def _needs_fill(sid: str) -> bool:
+        return _is_placeholder_section(sections.get(sid, ""))
+
+    fill_plan: list[tuple[str, str, str]] = []  # sid, body, reason
+    if _needs_fill("dramatic-engine") and fields["dramatic_problem"]:
+        fill_plan.append(
+            (
+                "dramatic-engine",
+                "\n".join(
+                    [
+                        _claim(fields["dramatic_problem"], "OBSERVED"),
+                        _claim(
+                            fields["desired_state_change"] or "NOT_COMPUTABLE — desired state change not evidenced",
+                            "OBSERVED" if fields["desired_state_change"] else "NOT_COMPUTABLE",
+                        ),
+                        _claim(
+                            fields["character_pressure"] or "NOT_COMPUTABLE — character pressure not evidenced",
+                            "OBSERVED" if fields["character_pressure"] else "NOT_COMPUTABLE",
+                        ),
+                    ]
+                ),
+                "seeded dramatic engine from brief evidence",
+            )
+        )
+    if _needs_fill("audience-experience") and fields.get("character_pressure"):
+        fill_plan.append(
+            (
+                "audience-experience",
+                _claim(f"Audience tracks pressure: {fields['character_pressure']}", "OBSERVED"),
+                "character pressure evidenced",
+            )
+        )
+    if _needs_fill("character-architecture") and fields.get("character_pressure"):
+        fill_plan.append(
+            (
+                "character-architecture",
+                _claim(fields["character_pressure"], "OBSERVED"),
+                "character pressure evidenced",
+            )
+        )
+    visual_bits = list(fields.get("geometry") or []) + list(fields.get("cinematic_channel") or [])
+    if _needs_fill("visual-grammar"):
+        if visual_bits:
+            fill_plan.append(
+                ("visual-grammar", _claims_from_list(visual_bits), "geometry/cinematic channel evidenced")
+            )
+        elif not sections.get("visual-grammar", "").strip():
+            fill_plan.append(
+                (
+                    "visual-grammar",
+                    _claim(
+                        "NOT_COMPUTABLE — visual grammar not evidenced; refuse invented shot language",
+                        "NOT_COMPUTABLE",
+                    ),
+                    "missing production-critical section",
+                )
+            )
+    if _needs_fill("composition-camera") and fields.get("cinematic_channel"):
+        fill_plan.append(
+            (
+                "composition-camera",
+                _claims_from_list(list(fields["cinematic_channel"])),
+                "cinematic channel evidenced",
+            )
+        )
+    if _needs_fill("material-continuity") and (
+        fields.get("observable_evidence") or fields.get("residue")
+    ):
+        fill_plan.append(
+            (
+                "material-continuity",
+                _claims_from_list(
+                    list(fields.get("observable_evidence") or []) + list(fields.get("residue") or [])
+                ),
+                "observable evidence / residue present",
+            )
+        )
+    if _needs_fill("environment-production") and (
+        fields.get("production_constraints") or fields.get("geometry")
+    ):
+        fill_plan.append(
+            (
+                "environment-production",
+                _claims_from_list(
+                    list(fields.get("production_constraints") or []) + list(fields.get("geometry") or [])
+                ),
+                "production constraints / geometry evidenced",
+            )
+        )
+    if _needs_fill("motion-behavior") and (
+        fields.get("causal_actions") or fields.get("convergence_effect")
+    ):
+        motion_bits = list(fields.get("causal_actions") or [])
+        if fields.get("convergence_effect"):
+            motion_bits.append(str(fields["convergence_effect"]))
+        fill_plan.append(
+            ("motion-behavior", _claims_from_list(motion_bits), "causal actions evidenced")
+        )
+    if _needs_fill("image-rules") and fields.get("production_constraints"):
+        fill_plan.append(
+            (
+                "image-rules",
+                _claims_from_list(list(fields["production_constraints"]), "PROPOSED"),
+                "production constraints evidenced",
+            )
+        )
+    if _needs_fill("video-rules") and (
+        fields.get("production_constraints") or fields.get("desired_state_change")
+    ):
+        bits = list(fields.get("production_constraints") or [])
+        if fields.get("desired_state_change"):
+            bits.append(f"end state must realize: {fields['desired_state_change']}")
+        fill_plan.append(
+            ("video-rules", _claims_from_list(bits, "PROPOSED"), "video constraints evidenced")
+        )
+    if _needs_fill("continuity-invariants"):
+        fill_plan.append(
+            (
+                "continuity-invariants",
+                "\n".join(
+                    [
+                        _claim(
+                            "Preserve identity, ownership, chronology, geometry, material state, residue",
+                            "PROPOSED",
+                        ),
+                        *([_claim(item, "OBSERVED") for item in (fields.get("residue") or [])[:3]]),
+                    ]
+                ),
+                "missing production-critical section",
+            )
+        )
+    if _needs_fill("negative-constraints"):
+        fill_plan.append(
+            (
+                "negative-constraints",
+                _claim(
+                    "No named esoterica in audience-facing prompts unless explicitly requested",
+                    "PROPOSED",
+                ),
+                "missing production-critical section",
+            )
+        )
+    if _needs_fill("open-questions") and not sections.get("open-questions", "").strip():
+        fill_plan.append(
+            ("open-questions", _claim("Awaiting evidence", "NOT_COMPUTABLE"), "missing production-critical section")
+        )
+
+    for sid, new_body, reason in fill_plan:
+        if not _needs_fill(sid):
             continue
-        if sid == "dramatic-engine" and fields["dramatic_problem"]:
-            new_body = _claim(fields["dramatic_problem"], "OBSERVED")
-        elif sid == "visual-grammar":
-            new_body = _claim(
-                "NOT_COMPUTABLE — visual grammar not evidenced; refuse invented shot language",
-                "NOT_COMPUTABLE",
-            )
-        elif sid == "continuity-invariants":
-            new_body = _claim(
-                "Preserve identity, ownership, chronology, geometry, material state, residue",
-                "PROPOSED",
-            )
-        elif sid == "negative-constraints":
-            new_body = _claim(
-                "No named esoterica in audience-facing prompts unless explicitly requested",
-                "PROPOSED",
-            )
-        else:
-            new_body = _claim("Awaiting evidence", "NOT_COMPUTABLE")
+        # Never overwrite LOCKED claims even if somehow marked placeholder.
+        if "[LOCKED]" in sections.get(sid, ""):
+            continue
+        change = "filled_empty" if not sections.get(sid, "").strip() else "replaced_placeholder"
         sections[sid] = new_body
-        diffs.append({"section": sid, "change": "filled_empty", "reason": "missing production-critical section"})
+        diffs.append({"section": sid, "change": change, "reason": reason})
 
     # Append evidence note without rewriting preserved sections.
     if fields["raw"]:
@@ -328,9 +612,18 @@ def design_improve(existing: str, evidence: str | None, project_id: str) -> dict
     meta["result"] = {
         "implementation_state": "DOMAIN",
         "revision": revision,
+        "parent_revision": _design_revision(existing),
         "document_markdown": markdown,
         "diff": diffs,
         "preserved_section_count": len(preserved),
+        "invariant_impact": {
+            "sections_filled": [
+                d["section"]
+                for d in diffs
+                if d.get("change") in {"filled_empty", "replaced_placeholder"}
+            ],
+            "authority_promotions": [],
+        },
     }
     meta["artifact_type"] = "design-revision-receipt"
     return meta
@@ -696,24 +989,33 @@ def script_handoff(existing: str, project_id: str) -> dict[str, Any]:
 
 def _neutral_frame_from_text(text: str, provider: str) -> dict[str, Any]:
     fields = _extract_brief_fields(text, None)
-    prompt = fields["dramatic_problem"] or text.strip().splitlines()[0][:280]
+    parts = [fields["dramatic_problem"] or text.strip().splitlines()[0][:280]]
+    for item in (fields.get("geometry") or [])[:2]:
+        parts.append(item)
+    for item in (fields.get("cinematic_channel") or [])[:1]:
+        parts.append(item)
+    for item in (fields.get("residue") or [])[:1]:
+        parts.append(f"residue: {item}")
+    prompt = "; ".join(p for p in parts if p)
     negatives = [
         "named occult labels",
         "unsupported location changes",
         "identity reset",
         "residue erasure",
     ]
+    constraints = [
+        c
+        for c in (
+            fields["desired_state_change"],
+            fields["character_pressure"],
+            *(fields.get("observable_evidence") or [])[:2],
+        )
+        if c
+    ]
     return {
         "frame_id": f"frame-{_digest(prompt)}",
         "prompt": prompt,
-        "state_constraints": [
-            c
-            for c in (
-                fields["desired_state_change"],
-                fields["character_pressure"],
-            )
-            if c
-        ],
+        "state_constraints": constraints,
         "continuity_from_previous": [],
         "negative_constraints": negatives,
         "provider": provider,
@@ -922,7 +1224,13 @@ def image_adapt(packet_text: str | None, project_id: str, provider: str) -> dict
     return meta
 
 
-def video_shot(brief: str | None, evidence: str | None, project_id: str, duration: float = 8.0) -> dict[str, Any]:
+def video_shot(
+    brief: str | None,
+    evidence: str | None,
+    project_id: str,
+    duration: float = 8.0,
+    design_text: str | None = None,
+) -> dict[str, Any]:
     fields = _extract_brief_fields(brief, evidence)
     if not fields["raw"]:
         return {
@@ -932,6 +1240,14 @@ def video_shot(brief: str | None, evidence: str | None, project_id: str, duratio
             "action": "shot",
             "diagnostic": {"code": "INSUFFICIENT_EVIDENCE", "message": "Provide --brief or --evidence"},
         }
+    design_rev = _design_revision(design_text)
+    cinematic = list(fields.get("cinematic_channel") or [])
+    if cinematic:
+        framing = cinematic[0]
+    elif "camera" in fields["raw"].lower():
+        framing = "evidenced framing"
+    else:
+        framing = "NOT_COMPUTABLE"
     shot = {
         "shot_id": f"shot-{_digest(fields)}",
         "source_state_id": f"state-{_digest(project_id)}",
@@ -939,14 +1255,16 @@ def video_shot(brief: str | None, evidence: str | None, project_id: str, duratio
         "start_state": {
             "summary": "pre-action institutional arrangement",
             "observable": fields["dramatic_problem"],
+            "evidence": list(fields.get("observable_evidence") or [])[:4],
         },
         "action": {
             "subject": "primary figure",
             "verb": "transfers" if "transfer" in fields["raw"].lower() else "changes",
             "path_or_change": fields["desired_state_change"] or "NOT_COMPUTABLE",
+            "causal_actions": list(fields.get("causal_actions") or [])[:3],
         },
         "camera": {
-            "framing": "NOT_COMPUTABLE" if "camera" not in fields["raw"].lower() else "evidenced framing",
+            "framing": framing,
             "position": "NOT_COMPUTABLE",
             "movement": "static unless evidenced",
             "lens_behavior": "NOT_COMPUTABLE",
@@ -954,6 +1272,7 @@ def video_shot(brief: str | None, evidence: str | None, project_id: str, duratio
         "physics": {"required": [], "forbidden": ["teleportation", "identity swap"]},
         "end_state": {
             "summary": fields["desired_state_change"] or "NOT_COMPUTABLE",
+            "residue": list(fields.get("residue") or [])[:3],
         },
         "continuity_invariants": [
             "preserve_identity",
@@ -966,6 +1285,8 @@ def video_shot(brief: str | None, evidence: str | None, project_id: str, duratio
             "residue erasure",
         ],
     }
+    if design_rev:
+        shot["source_design_revision"] = design_rev
     if shot["end_state"]["summary"] == "NOT_COMPUTABLE":
         return {
             "status": "NOT_COMPUTABLE",
@@ -981,8 +1302,7 @@ def video_shot(brief: str | None, evidence: str | None, project_id: str, duratio
     meta = _base_meta("video", "shot", project_id, fields)
     meta["result"] = {"implementation_state": "DOMAIN", "shot": shot}
     meta["artifact_type"] = "shot-contract"
-    # evidence may carry design.md when callers pass --evidence design.md
-    return meta
+    return _attach_design_revision(meta, design_text)
 
 
 def video_motion(brief: str | None, project_id: str) -> dict[str, Any]:
@@ -1079,6 +1399,15 @@ def video_qa(expected: str | None, observation: str | None, project_id: str) -> 
     return result
 
 
+def _design_for_args(a: Any) -> str | None:
+    return resolve_design_text(
+        _read(a, "design"),
+        _read(a, "input"),
+        _read(a, "evidence"),
+        auto_discover=True,
+    )
+
+
 COMPILERS: dict[tuple[str, str], Any] = {
     ("design", "create"): lambda a: design_create(a.brief, _read(a, "evidence"), a.project_id),
     ("design", "build"): lambda a: design_create(a.brief, _read(a, "evidence"), a.project_id),
@@ -1092,27 +1421,36 @@ COMPILERS: dict[tuple[str, str], Any] = {
         _read(a, "evidence"),
         a.project_id,
         getattr(a, "format", "markdown"),
-        design_text=_read(a, "input"),
+        design_text=_design_for_args(a),
     ),
     ("script", "improve"): lambda a: script_improve(_read(a, "input") or "", a.project_id),
     ("script", "diagnose"): lambda a: script_diagnose(_read(a, "input") or "", a.project_id),
     ("script", "adapt"): lambda a: script_adapt(_read(a, "input") or "", a.project_id),
     ("script", "continuity-check"): lambda a: script_continuity(_read(a, "input") or "", a.project_id),
     ("script", "handoff"): lambda a: script_handoff(_read(a, "input") or "", a.project_id),
-    ("image", "prompt"): lambda a: image_prompt(a.brief, _read(a, "evidence"), _read(a, "input"), a.project_id, a.provider),
+    ("image", "prompt"): lambda a: image_prompt(
+        a.brief,
+        _read(a, "evidence"),
+        _design_for_args(a) or _read(a, "input"),
+        a.project_id,
+        a.provider,
+    ),
     ("image", "sequence"): lambda a: image_sequence(a.brief, _read(a, "evidence"), a.project_id, a.provider),
     ("image", "reference"): lambda a: image_reference(a.brief or _read(a, "input"), a.project_id, a.provider),
     ("image", "negative"): lambda a: image_negative(a.brief or _read(a, "input"), a.project_id),
     ("image", "adapt"): lambda a: image_adapt(_read(a, "input"), a.project_id, a.provider),
     ("image", "qa"): lambda a: image_qa(_read(a, "input"), _read(a, "evidence"), a.project_id),
-    ("video", "shot"): lambda a: _attach_design_revision(
-        video_shot(a.brief, _read(a, "evidence"), a.project_id),
-        _read(a, "input") if (_read(a, "input") or "").lstrip().startswith("# Design") else _read(a, "evidence"),
+    ("video", "shot"): lambda a: video_shot(
+        a.brief,
+        _read(a, "evidence"),
+        a.project_id,
+        getattr(a, "duration", 8.0),
+        design_text=_design_for_args(a),
     ),
     ("video", "motion"): lambda a: video_motion(a.brief or _read(a, "input"), a.project_id),
     ("video", "sequence"): lambda a: _attach_design_revision(
         video_sequence(a.brief, _read(a, "evidence"), a.project_id),
-        _read(a, "input") if (_read(a, "input") or "").lstrip().startswith("# Design") else None,
+        _design_for_args(a),
     ),
     ("video", "adapt"): lambda a: video_adapt(_read(a, "input"), a.project_id, a.provider),
     ("video", "qa"): lambda a: video_qa(_read(a, "input"), _read(a, "evidence"), a.project_id),

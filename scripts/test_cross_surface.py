@@ -110,13 +110,17 @@ def test_end_to_end_surfaces() -> None:
         assert image_data["shared_invariants"]["preserve_identity"] is True
         assert image_data.get("source_design_revision", "").startswith("r-")
 
-        # shot yaml should include temporal contract fields
+        # shot yaml should include temporal contract fields + design revision link
         shot_text = shot.read_text(encoding="utf-8")
-        for key in ("shot_id", "start_state", "end_state", "camera", "continuity_invariants"):
+        for key in (
+            "shot_id",
+            "start_state",
+            "end_state",
+            "camera",
+            "continuity_invariants",
+            "source_design_revision",
+        ):
             assert key in shot_text, key
-        # receipt sidecar carries design revision when design.md was provided
-        shot_receipt = shot.with_name(shot.stem + ".receipt.json")
-        # YAML outputs don't write receipt; verify via image adapt + schema instead
 
         recon = json.loads(reconcile.read_text(encoding="utf-8"))
         assert recon["artifact_type"] == "media-reconciliation-report"
@@ -137,22 +141,17 @@ def test_end_to_end_surfaces() -> None:
         report = adapted_data["result"]["preservation_report"]
         assert report.get("critical_invariants_preserved") is True or report.get("status") == "VALID"
 
-        # Schema validation for design receipt + image packet (criteria #11)
+        # Schema validation for design revision receipt + image packet (criteria #11)
         design_receipt = improved.with_name(improved.stem + ".receipt.json")
         assert design_receipt.is_file()
+        receipt_data = json.loads(design_receipt.read_text(encoding="utf-8"))
+        assert receipt_data["artifact_type"] == "design-revision-receipt"
+        assert isinstance(receipt_data["result"].get("diff"), list)
         for artifact, schema in (
-            (design_receipt, "schemas/design-document.schema.json"),
+            (design_receipt, "schemas/design-revision-receipt.schema.json"),
             (image, "schemas/image-prompt-packet.schema.json"),
+            (shot, "schemas/shot-contract.schema.json"),
         ):
-            # design improve emits design-revision-receipt; accept either design schema family
-            schema_path = ROOT / schema
-            if artifact == design_receipt:
-                data = json.loads(artifact.read_text(encoding="utf-8"))
-                assert data["artifact_type"] in {
-                    "design-document",
-                    "design-revision-receipt",
-                }
-                continue
             v = subprocess.run(
                 [
                     PY,
@@ -160,7 +159,7 @@ def test_end_to_end_surfaces() -> None:
                     "--artifact",
                     str(artifact),
                     "--schema",
-                    str(schema_path),
+                    str(ROOT / schema),
                 ],
                 cwd=ROOT,
                 text=True,

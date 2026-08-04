@@ -8,10 +8,9 @@
 - Ported path/intake hardening (`io_safety`), provenance taxonomy, and production-surface domain compilers.
 - First-class `design` / `script` / `image` / `video` surfaces available on OpenClaw.
 - Preserved OpenClaw installer, external state dir, doctor, and ClawHub packaging.
-
- — Kubrick
-
-Kubrick is the primary symbolic cinematic narrative engineering skill. It replaces the earlier scriptwriting skill as the recommended system for premise-to-production development with deep motif, geometric, cinematic, storyboard, and visual-fidelity encoding.
+- YAML brief intake enriches design create/improve; placeholders replaceable without wiping LOCKED sections.
+- `--design` / project `design.md` auto-discovery; shot YAML embeds `source_design_revision`.
+- `schemas/design-revision-receipt.schema.json` + adapt preservation regression tests.
 
 ## [Unreleased]
 

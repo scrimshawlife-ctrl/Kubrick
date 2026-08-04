@@ -132,8 +132,85 @@ def test_cli_image_and_script() -> None:
         assert "Dramatic intent" in script.read_text(encoding="utf-8")
 
 
+def test_yaml_brief_enriches_design_and_improve() -> None:
+    brief = (ROOT / "examples/authority-transfer-storyboard/brief.yaml").read_text(encoding="utf-8")
+    created = sc.design_create(brief, None, "authority-transfer")
+    md = created["result"]["document_markdown"]
+    assert "empty command chair" in md or "repeated work cells" in md
+    assert "Visual grammar" in md
+    # Start from thin design and improve with full YAML evidence
+    thin = sc.design_create(
+        "dramatic_problem: authority remains\ndesired_state_change: badge transfers\ncharacter_pressure: subordinate waits",
+        None,
+        "authority-transfer",
+    )
+    # Clear visual-grammar to force fill from evidence
+    sections = sc.parse_design_md(thin["result"]["document_markdown"])
+    sections["visual-grammar"] = ""
+    sections["material-continuity"] = ""
+    thin_md = sc.render_design_md(sections, project_id="authority-transfer", revision="r-thin")
+    improved = sc.design_improve(thin_md, brief, "authority-transfer")
+    assert improved["artifact_type"] == "design-revision-receipt"
+    assert improved["result"].get("parent_revision")
+    filled = {
+        d["section"]
+        for d in improved["result"]["diff"]
+        if d["change"] in {"filled_empty", "replaced_placeholder"}
+    }
+    assert "visual-grammar" in filled or "material-continuity" in filled
+    body = improved["result"]["document_markdown"]
+    assert "cracked" in body.lower() or "badge" in body.lower()
+    # LOCKED visual grammar must survive improve even when YAML evidence exists
+    sections = sc.parse_design_md(body)
+    sections["visual-grammar"] = "- [LOCKED] one-point empty center framing"
+    locked_md = sc.render_design_md(sections, project_id="authority-transfer", revision="r-locked")
+    locked_improved = sc.design_improve(locked_md, brief, "authority-transfer")
+    assert "one-point empty center framing" in locked_improved["result"]["document_markdown"]
+
+
+def test_video_shot_embeds_design_revision() -> None:
+    design = sc.design_create(
+        "dramatic_problem: authority remains\ndesired_state_change: access transfers\ncharacter_pressure: subordinate waits",
+        None,
+        "p",
+    )
+    design_md = design["result"]["document_markdown"]
+    shot = sc.video_shot(
+        "dramatic_problem: authority remains\ndesired_state_change: access transfers",
+        None,
+        "p",
+        design_text=design_md,
+    )
+    assert shot["status"] == "PROPOSED"
+    assert shot["result"]["shot"]["source_design_revision"].startswith("r-")
+    assert shot.get("source_design_revision", "").startswith("r-")
+
+
+def test_resolve_design_auto_discover(monkeypatch=None) -> None:
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        design = root / "design.md"
+        design.write_text("# Design — demo\n\nRevision: `r-abc123`\n\n## Creative objective\n- hi\n", encoding="utf-8")
+        import os
+
+        old = os.environ.get("KUBRICK_PROJECT_DIR")
+        os.environ["KUBRICK_PROJECT_DIR"] = str(root)
+        try:
+            found = sc.resolve_design_text(None, None, None, auto_discover=True)
+            assert found is not None
+            assert "r-abc123" in found
+        finally:
+            if old is None:
+                os.environ.pop("KUBRICK_PROJECT_DIR", None)
+            else:
+                os.environ["KUBRICK_PROJECT_DIR"] = old
+
+
 def main() -> None:
     test_design_create_and_improve_preserves_sections()
+    test_yaml_brief_enriches_design_and_improve()
+    test_video_shot_embeds_design_revision()
+    test_resolve_design_auto_discover()
     test_video_sequence_transition_compatible()
     test_video_shot_fails_without_end_state()
     test_cli_design_create_writes_markdown()
