@@ -39,6 +39,8 @@ COMPARE_ROOTS = [
 EXCLUDE_DIR_NAMES = {
     "__pycache__",
     ".pytest_cache",
+    ".mypy_cache",
+    ".ruff_cache",
     ".git",
     ".github",
     "out",

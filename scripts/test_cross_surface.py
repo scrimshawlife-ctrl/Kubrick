@@ -29,7 +29,7 @@ def test_end_to_end_surfaces() -> None:
         improved = out / "design-improved.md"
         script = out / "script.md"
         image = out / "image.json"
-        shot = out / "shot.yaml"
+        shot = out / "shot.json"
         reconcile = out / "reconcile.json"
 
         steps = [
@@ -110,8 +110,9 @@ def test_end_to_end_surfaces() -> None:
         assert image_data["shared_invariants"]["preserve_identity"] is True
         assert image_data.get("source_design_revision", "").startswith("r-")
 
-        # shot yaml should include temporal contract fields + design revision link
-        shot_text = shot.read_text(encoding="utf-8")
+        # JSON output is the full artifact envelope; schema expects the inner shot.
+        shot_envelope = json.loads(shot.read_text(encoding="utf-8"))
+        shot_obj = shot_envelope.get("result", {}).get("shot") or shot_envelope
         for key in (
             "shot_id",
             "start_state",
@@ -120,7 +121,12 @@ def test_end_to_end_surfaces() -> None:
             "continuity_invariants",
             "source_design_revision",
         ):
-            assert key in shot_text, key
+            assert key in shot_obj, key
+        shot_contract = out / "shot-contract.json"
+        shot_contract.write_text(
+            json.dumps(shot_obj, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
 
         recon = json.loads(reconcile.read_text(encoding="utf-8"))
         assert recon["artifact_type"] == "media-reconciliation-report"
@@ -150,7 +156,7 @@ def test_end_to_end_surfaces() -> None:
         for artifact, schema in (
             (design_receipt, "schemas/design-revision-receipt.schema.json"),
             (image, "schemas/image-prompt-packet.schema.json"),
-            (shot, "schemas/shot-contract.schema.json"),
+            (shot_contract, "schemas/shot-contract.schema.json"),
         ):
             v = subprocess.run(
                 [

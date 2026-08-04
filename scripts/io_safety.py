@@ -247,7 +247,7 @@ def write_structured(
         )
         return resolved
     try:
-        import yaml  # type: ignore[import-untyped]
+        import yaml
     except ImportError as exc:
         raise IntakeError(
             "PyYAML is required to write YAML artifacts; install the validation profile"

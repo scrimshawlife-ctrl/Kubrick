@@ -28,6 +28,8 @@ if command -v rsync >/dev/null 2>&1; then
     --exclude '**/__pycache__/' \
     --exclude '*.pyc' \
     --exclude '.pytest_cache/' \
+    --exclude '.mypy_cache/' \
+    --exclude '.ruff_cache/' \
     --exclude 'docs/superpowers/' \
     --exclude 'docs/ROADMAP-v0.11.md' \
     --exclude 'docs/ROADMAP-v0.12.md' \
@@ -53,6 +55,8 @@ else
     --exclude '__pycache__' \
     --exclude '*.pyc' \
     --exclude '.pytest_cache' \
+    --exclude '.mypy_cache' \
+    --exclude '.ruff_cache' \
     --exclude 'docs/superpowers' \
     --exclude 'docs/ROADMAP-v0.11.md' \
     --exclude 'docs/ROADMAP-v0.12.md' \
