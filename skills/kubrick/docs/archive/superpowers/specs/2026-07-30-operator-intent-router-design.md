@@ -213,7 +213,7 @@ Optional later: thin per-intent tools that still call `do` (not required for v1)
 - `QUICKSTART.md` — reorganize around intents + recipes
 - `README.md` — operator commands table
 - `scripts/mcp_kubrick_server.py` — tool surface
-- `docs/ROADMAP-v0.13.md` or a short note in changelog under Unreleased / next patch
+- `docs/archive/releases/ROADMAP-v0.13.md` or a short note in changelog under Unreleased / next patch
 
 ## Risks and mitigations
 

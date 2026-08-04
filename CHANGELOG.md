@@ -93,7 +93,7 @@ Kubrick is the primary symbolic cinematic narrative engineering skill. It replac
 - Help lists intents only; sugar includes `help`, `recipe`, and `aliases`.
 - Recipes: `recipe storyboard-example`, `recipe verify`.
 - MCP: single tool `kubrick_do` over the same router (never authoritative).
-- Implementation: `scripts/intent_router.py`; design/plan under `docs/superpowers/`.
+- Implementation: `scripts/intent_router.py`; design/plan under `docs/archive/superpowers/`.
 
 ### Documentation — OpenClaw edition pointer
 

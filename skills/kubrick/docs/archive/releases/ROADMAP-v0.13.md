@@ -21,8 +21,8 @@ Simplifies the Hermes/human CLI from ~29 flat peers to **`kubrick do <intent>`**
 
 | Tracking | Status |
 |---|---|
-| Design | [`docs/superpowers/specs/2026-07-30-operator-intent-router-design.md`](../superpowers/specs/2026-07-30-operator-intent-router-design.md) |
-| Plan | [`docs/superpowers/plans/2026-07-30-operator-intent-router.md`](../superpowers/plans/2026-07-30-operator-intent-router.md) |
+| Design | [`docs/archive/superpowers/specs/2026-07-30-operator-intent-router-design.md`](../superpowers/specs/2026-07-30-operator-intent-router-design.md) |
+| Plan | [`docs/archive/superpowers/plans/2026-07-30-operator-intent-router.md`](../superpowers/plans/2026-07-30-operator-intent-router.md) |
 | Implementation | [PR #28](https://github.com/scrimshawlife-ctrl/Kubrick/pull/28) **Merged** |
 
 | Tracking (0.13) | Status |

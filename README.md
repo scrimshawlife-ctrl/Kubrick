@@ -27,7 +27,7 @@
 
 It converts dramatic pressure into observable geometry, behavior, rhythm, material state, light, sound, convergence, and residue. Esoteric and archetypal source systems remain latent by default: audience-facing packets expose enforceable cinematic constraints rather than named occult concepts.
 
-Security and threat model: [`SECURITY.md`](SECURITY.md). Windows install: `install.ps1`.
+Security and threat model: [`SECURITY.md`](SECURITY.md). Contributing: [`CONTRIBUTING.md`](CONTRIBUTING.md). Windows install: `install.ps1`.
 
 ## How to use
 
@@ -156,7 +156,7 @@ Upstream PR (history): https://github.com/scrimshawlife-ctrl/Kubrick/pull/1
 | Official / community Hermes publication | [`docs/HERMES-OFFICIAL-SUBMISSION.md`](docs/HERMES-OFFICIAL-SUBMISSION.md) |
 | OpenClaw edition (Prabu) | [`docs/OPENCLAW.md`](docs/OPENCLAW.md) |
 | Full command table | [Operator Commands](#operator-commands) |
-| Design of the command surface | [`docs/superpowers/specs/2026-07-30-operator-intent-router-design.md`](docs/superpowers/specs/2026-07-30-operator-intent-router-design.md) |
+| Design of the command surface | [`docs/archive/superpowers/specs/2026-07-30-operator-intent-router-design.md`](docs/archive/superpowers/specs/2026-07-30-operator-intent-router-design.md) |
 
 ## 0.14.0 Highlights
 
@@ -382,7 +382,7 @@ CI (`.github/workflows/hermes-evals.yml`) runs Hermes evals, outcome governance,
 | [`docs/RELEASE-CHECKLIST-v0.16.md`](docs/RELEASE-CHECKLIST-v0.16.md) | Release gates and procedure |
 | [`docs/README.md`](docs/README.md) | Docs index (incl. intent-router design/plan) |
 | [`docs/OPENCLAW.md`](docs/OPENCLAW.md) | OpenClaw Agent Skill edition (Prabu; branch `openclaw`) |
-| [`docs/superpowers/specs/2026-07-30-operator-intent-router-design.md`](docs/superpowers/specs/2026-07-30-operator-intent-router-design.md) | Operator intent-router design |
+| [`docs/archive/superpowers/specs/2026-07-30-operator-intent-router-design.md`](docs/archive/superpowers/specs/2026-07-30-operator-intent-router-design.md) | Operator intent-router design |
 | [`references/hermes-runtime-contract.md`](references/hermes-runtime-contract.md) | Runtime, dependency, artifact, and canon policy |
 | [`references/hermes-model-adapters.md`](references/hermes-model-adapters.md) | Provider adapter contract |
 | [`references/hermes-visual-qa.md`](references/hermes-visual-qa.md) | Visual QA contract |

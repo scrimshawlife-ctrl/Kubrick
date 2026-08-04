@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3.12 stdlib + existing pyyaml/jsonschema for regression tests; subprocess dispatch unchanged; no new runtime dependencies.
 
-**Spec:** `docs/superpowers/specs/2026-07-30-operator-intent-router-design.md`
+**Spec:** `docs/archive/superpowers/specs/2026-07-30-operator-intent-router-design.md`
 
 ## Global Constraints
 
