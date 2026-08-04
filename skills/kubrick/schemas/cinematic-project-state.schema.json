@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kubrick.local/schemas/cinematic-project-state.schema.json",
+  "title": "Kubrick cinematic project state",
+  "type": "object",
+  "required": ["project_id", "schema_version", "locked_invariants"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "project_id": {"type": "string"},
+    "source_design_revision": {"type": "string"},
+    "source_script_revision": {"type": "string"},
+    "source_state_id": {"type": "string"},
+    "locked_invariants": {
+      "type": "object",
+      "additionalProperties": {"type": "boolean"}
+    },
+    "dramatic_pressure": {"type": "string"},
+    "visual_grammar": {"type": "array", "items": {"type": "string"}},
+    "provider_independent_negatives": {"type": "array", "items": {"type": "string"}},
+    "not_computable": {"type": "array", "items": {"type": "string"}}
+  }
+}

@@ -85,6 +85,39 @@ def main() -> None:
             _abort_router(e)
         raise SystemExit(0)
 
+    if argv[0] == "receipts":
+        raise SystemExit(subprocess.call([PY, str(SCRIPTS / "list_receipts.py"), *argv[1:]], cwd=ROOT))
+
+    if argv[0] == "qa" and len(argv) >= 2:
+        # sugar: kubrick qa <surface> ... → do <surface> --action qa ...
+        surface = argv[1]
+        if surface in FIRST_CLASS_PRODUCTION_SURFACES:
+            argv = ["do", surface, "--action", "qa", *argv[2:]]
+        else:
+            _abort_router(ir.RouterError("usage: kubrick qa <design|script|image|video> ..."))
+
+    if argv[0] == "validate" and len(argv) >= 2:
+        # sugar: kubrick validate design|script → surface validate/diagnose
+        surface = argv[1]
+        if surface == "design":
+            argv = ["do", "design", "--action", "validate", *argv[2:]]
+        elif surface == "script":
+            argv = ["do", "script", "--action", "diagnose", *argv[2:]]
+        elif surface in {"image", "video"}:
+            argv = ["do", surface, "--action", "qa", *argv[2:]]
+        else:
+            _abort_router(ir.RouterError("usage: kubrick validate <design|script|image|video> ..."))
+
+    if argv[0] in FIRST_CLASS_PRODUCTION_SURFACES and (len(argv) == 1 or not argv[1].startswith("-") and argv[1] != "do"):
+        # sugar: kubrick design create ... → do design --action create ...
+        surface = argv[0]
+        rest = argv[1:]
+        action = None
+        if rest and not rest[0].startswith("-"):
+            action = rest[0]
+            rest = rest[1:]
+        argv = ["do", surface, *(["--action", action] if action else []), *rest]
+
     if argv[0] == "aliases":
         sys.stdout.write(ir.format_aliases())
         raise SystemExit(0)

@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Hermes-Native Symbolic Cinematic Engineering</strong><br>
-  <em>0.14.0 — Deterministic Contract Consolidation</em>
+  <em>0.15.0 — Deterministic Contract Consolidation</em>
 </p>
 
 <p align="center">
@@ -26,6 +26,8 @@
 **Kubrick** is a self-contained Hermes skill for screenplay development, scene diagnosis, motif engineering, cinematic encoding, storyboard continuity, generative prompt construction, closed-loop visual QA, multi-signal outcome learning, and governed design-specification compilation.
 
 It converts dramatic pressure into observable geometry, behavior, rhythm, material state, light, sound, convergence, and residue. Esoteric and archetypal source systems remain latent by default: audience-facing packets expose enforceable cinematic constraints rather than named occult concepts.
+
+Security and threat model: [`SECURITY.md`](SECURITY.md). Windows install: `install.ps1`.
 
 ## How to use
 
@@ -375,8 +377,8 @@ CI (`.github/workflows/hermes-evals.yml`) runs Hermes evals, outcome governance,
 | [`SKILL.md`](SKILL.md) | Canonical Hermes operating contract |
 | [`QUICKSTART.md`](QUICKSTART.md) | Installation and command routing |
 | [`CHANGELOG.md`](CHANGELOG.md) | Release history |
-| [`docs/ROADMAP-v0.14.md`](docs/ROADMAP-v0.14.md) | Current roadmap and next priorities |
-| [`docs/RELEASE-NOTES-v0.14.md`](docs/RELEASE-NOTES-v0.14.md) | v0.14 release notes |
+| [`docs/ROADMAP-v0.15.md`](docs/ROADMAP-v0.15.md) | Current roadmap and next priorities |
+| [`docs/RELEASE-NOTES-v0.15.md`](docs/RELEASE-NOTES-v0.15.md) | v0.14 release notes |
 | [`docs/RELEASE-CHECKLIST-v0.14.md`](docs/RELEASE-CHECKLIST-v0.14.md) | Release gates and procedure |
 | [`docs/README.md`](docs/README.md) | Docs index (incl. intent-router design/plan) |
 | [`docs/OPENCLAW.md`](docs/OPENCLAW.md) | OpenClaw Agent Skill edition (Prabu; branch `openclaw`) |
@@ -421,7 +423,7 @@ CI (`.github/workflows/hermes-evals.yml`) runs Hermes evals, outcome governance,
 
 ## Version
 
-**0.14.0 — Deterministic Contract Consolidation**
+**0.15.0 — Production Surfaces + Hardening**
 
 This release unifies the Hermes runtime contract, reproducibility identities, failure diagnostics, provider preservation, installer safety, and official-skill packaging. See the v0.14 release notes for verified gates and remaining post-release work.
 

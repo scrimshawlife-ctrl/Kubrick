@@ -1,7 +1,7 @@
 ---
 name: kubrick
 description: Builds continuity-safe cinematic stories and visuals.
-version: 0.14.0
+version: 0.16.0
 author: Daniel Meyer (@scrimshawlife-ctrl) / Applied Alchemy Labs
 license: MIT
 platforms: [linux, macos, windows]
@@ -99,15 +99,20 @@ one proposal-only tool, `kubrick_do`, through the same intent router.
 | `compile` | Turn a brief and optional ledger into cinematic artifacts |
 | `retrieve` | Rank executable patterns with exclusions and provenance |
 | `ledger` | Initialize, audit, mutate, or rehydrate project continuity |
-| `design` | Compile evidence into a design specification |
+| `design` | First-class design.md lifecycle (create/improve/audit/reconcile/update/validate) |
+| `script` | First-class script development, diagnosis, and continuity handoff |
+| `image` | First-class still-image prompt engineering and QA |
+| `video` | First-class temporal shot/motion/sequence prompting and QA |
 | `storyboard` | Propagate or compare state across frames |
 | `adapt` | Build neutral packets and provider-specific syntax |
 | `visual` | Normalize, compare, correct, and govern visual QA |
 | `learn` | Record outcomes and produce proposal-only evolution |
-| `check` | Validate the skill, corpus, artifacts, and repeatability |
+| `check` | Validate the skill, corpus, artifacts, hub sync, and repeatability |
 | `operate` | Run graph and ledger operators |
 | `mcp` | Serve the optional MCP adapter |
 | `bundle` | Build a Grok review bundle |
+
+Task aliases: `create` → compile, `revise` → design improve, `inspect` → operate, `validate` → check smoke.
 
 Providers: `none`, `generic`, `grok-imagine`, `flux`, `sd3`, and `midjourney`.
 
@@ -225,5 +230,5 @@ python3 "$HERMES_SKILL_DIR/scripts/kubrick.py" do check --action eval
 A valid delivery states what was produced, what was preserved, what was not
 computable, and which optional integration or human authority is required next.
 
-Current release context: `docs/ROADMAP-v0.14.md` and
-`docs/RELEASE-NOTES-v0.14.md`.
+Current release context: `docs/ROADMAP-v0.15.md` and
+`docs/RELEASE-NOTES-v0.15.md`.

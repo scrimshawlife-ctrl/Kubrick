@@ -4,6 +4,67 @@ Kubrick is the primary symbolic cinematic narrative engineering skill. It replac
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-08-04
+
+### Added — Canonical production engine
+
+- `scripts/cinematic_project_state.py` shared state helper + `evals/golden/v016/` fixtures.
+
+- Shared `ProductionSurface` / `ProductionRequest` / `ProductionResult` / `ProductionArtifact` / `ProductionContext` / `ProductionValidator` / `ProductionReceipt` in `scripts/production_engine.py`.
+- All design/script/image/video actions execute through one validate→compile→receipt lifecycle.
+- Expanded surface actions (design expand/summarize/qa; script rewrite/expand/compress/scene/beat/character/dialog/genre/qa; image generate/improve/analysis/batch; video blocking/transition/animation/timeline/continuity).
+- Shared QA on every surface; `kubrick qa <surface>` sugar; `kubrick receipts`.
+- Canonical artifact tree writer (`receipts/`, `artifacts/`, `validation/`, `qa/`, `timeline/`, `metadata/`).
+- Docs: `docs/ARCHITECTURE-v0.16.md`.
+
+### Changed
+
+- Skill version advanced to `0.16.0`.
+- Production envelopes use `schema_version: 0.16.0`.
+
+
+
+## [0.15.0] - 2026-08-04
+
+### Added — First-class production surfaces (foundation)
+
+- Domain compilers for design.md lifecycle, script packets, image prompts, and video shot/sequence contracts (`scripts/surface_compilers.py`).
+- `design improve` preserves valid sections and emits bounded diffs; video sequences fail closed on incompatible transitions.
+- Example workflow: `examples/production-surfaces/`.
+- Cross-surface acceptance tests and prohibited-pattern rejection receipts.
+- Image/video `adapt` routes through provider adapters with preservation reports; script/image/video carry `source_design_revision` when design.md is supplied.
+- Schemas for design-document, design-revision-receipt, shot-contract, and image-prompt-packet receipts.
+- YAML brief intake enriches design create/improve (geometry, residue, production constraints, cinematic channel); placeholders are replaceable without wiping LOCKED sections.
+- `--design` flag plus project `design.md` auto-discovery for revision linkage; shot YAML embeds `source_design_revision`.
+- Fountain/beat-sheet script formats; authority-tagged `claims` on script/image/video packets.
+- `design drift` project-wide reconciliation over artifact files or directories; `examples/production-surfaces/run_demo.sh`.
+- `schemas/media-reconciliation-report.schema.json`.
+- Provider capability declarations (`scripts/provider_capabilities.py`); video adapt fail-closed on image-only providers.
+- Neutral `video prompt` packet + richer video QA dimensions; `schemas/video-prompt-packet.schema.json`.
+
+- Registered peer intents `design`, `script`, `image`, and `video` with lifecycle actions.
+- Added `scripts/production_surface.py` foundation runtime and surface entrypoints.
+- Documented the v0.15 contract in `docs/FIRST-CLASS-PRODUCTION-SURFACES.md`.
+
+### Added — Hardening
+
+- Path containment and bounded YAML/JSON intake (`scripts/io_safety.py`).
+- MCP `kubrick_do` intent/action allowlisting, flag validation, and path policy.
+- Complete on-disk schema registry enforcement in the canonical manifest.
+- Hub mirror drift gate (`scripts/check_hub_sync.py` / `check hub-sync`).
+- Claim-level provenance helpers and expanded collision taxonomy (`scripts/provenance.py`).
+- Frozen TypedDict contracts for high-risk artifacts (`scripts/typed_models.py`).
+- `SECURITY.md` threat model; Windows `install.ps1` installer parity.
+- Task aliases: `create`, `revise`, `inspect`, `validate`.
+- Adversarial governance eval fixtures under `evals/adversarial/`.
+- CI pins + ruff/mypy/pytest/hub-sync jobs.
+
+### Changed
+
+- Skill version advanced to `0.15.0`.
+- Provider adapters and compile path use bounded IO helpers.
+- OpenClaw alignment checklist published for v0.15 parity work.
+
 ## [0.14.0] - 2026-07-30
 
 ### Added — Deterministic contract consolidation
