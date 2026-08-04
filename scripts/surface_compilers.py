@@ -255,8 +255,6 @@ def resolve_design_text(
 def parse_design_md(text: str) -> dict[str, str]:
     """Parse a design.md into section_id -> body (best-effort, stable IDs)."""
     titles = {title.lower(): sid for sid, title in DESIGN_SECTIONS}
-    parts = SECTION_RE.split(text)
-    # parts: preamble, title1, body1, title2, body2, ...
     sections: dict[str, str] = {sid: "" for sid, _ in DESIGN_SECTIONS}
     if text.strip() and not SECTION_RE.search(text):
         sections["creative-objective"] = text.strip()
@@ -818,7 +816,7 @@ def script_create(
         body = "\n".join(
             [
                 f"Title: {project_id}",
-                f"Credit: Kubrick PROPOSED package",
+                "Credit: Kubrick PROPOSED package",
                 f"Draft date: {_now()[:10]}",
                 f"Contact: design-revision {design_rev}",
                 "",

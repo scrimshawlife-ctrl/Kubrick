@@ -21,7 +21,7 @@ from production_engine import (  # noqa: E402
     build_surface,
     write_artifact_tree,
 )
-from surface_compilers import COMPILERS, compile_surface  # noqa: E402
+from surface_compilers import compile_surface  # noqa: E402
 
 VALID_SURFACES = {"design", "script", "image", "video"}
 
@@ -35,7 +35,8 @@ def _load_optional(path: str | None) -> str | None:
         for child in sorted(resolved.iterdir()):
             if not child.is_file():
                 continue
-            if child.suffix.lower() not in {".md", ".markdown", ".fountain", ".json", ".yaml", ".yml", ".txt"}:
+            allowed = {".md", ".markdown", ".fountain", ".json", ".yaml", ".yml", ".txt"}
+            if child.suffix.lower() not in allowed:
                 continue
             chunks.append(child.read_text(encoding="utf-8"))
         if not chunks:
@@ -59,17 +60,16 @@ def _write_artifact(artifact: dict[str, Any], output: str | None) -> None:
         if out.exists() and out.is_dir() or str(output).endswith("/"):
             out.mkdir(parents=True, exist_ok=True)
             # Rebuild result object for tree writer via engine envelope already present
-            write_text_bounded(
-                out / "latest.json",
-                json.dumps(artifact, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
-            )
+            payload = json.dumps(artifact, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+            write_text_bounded(out / "latest.json", payload)
             if markdown:
                 write_text_bounded(out / "document.md", markdown)
             if artifact.get("receipt"):
-                write_text_bounded(
-                    out / "receipt.json",
-                    json.dumps(artifact["receipt"], indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+                receipt_json = (
+                    json.dumps(artifact["receipt"], indent=2, sort_keys=True, ensure_ascii=False)
+                    + "\n"
                 )
+                write_text_bounded(out / "receipt.json", receipt_json)
             return
         if markdown and out.suffix.lower() in {".md", ".markdown", ".fountain"}:
             write_text_bounded(out, markdown)
@@ -90,7 +90,12 @@ def _write_artifact(artifact: dict[str, Any], output: str | None) -> None:
                 import yaml  # type: ignore[import-untyped]
             except ImportError as exc:
                 raise SystemExit("PyYAML required for YAML surface outputs") from exc
-            payload = result.get("shot") or result.get("packet") or result.get("motion_contract") or artifact
+            payload = (
+                result.get("shot")
+                or result.get("packet")
+                or result.get("motion_contract")
+                or artifact
+            )
             write_text_bounded(out, yaml.safe_dump(payload, sort_keys=False))
             return
         write_text_bounded(
@@ -187,7 +192,10 @@ def run(surface: str, actions: set[str]) -> int:
                 "authority": "NOT_COMPUTABLE",
                 "surface": surface,
                 "action": args.surface_action,
-                "diagnostic": {"code": "UNKNOWN_ACTION", "message": f"Action not enabled on {surface}"},
+                "diagnostic": {
+                    "code": "UNKNOWN_ACTION",
+                    "message": f"Action not enabled on {surface}",
+                },
             }
             _write_artifact(artifact, args.output)
             return 4
