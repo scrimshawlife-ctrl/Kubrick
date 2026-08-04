@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Hermes-Native Symbolic Cinematic Engineering</strong><br>
-  <em>0.15.0 — Deterministic Contract Consolidation</em>
+  <em>0.16.0 — First-Class Production Surfaces</em>
 </p>
 
 <p align="center">
@@ -377,9 +377,9 @@ CI (`.github/workflows/hermes-evals.yml`) runs Hermes evals, outcome governance,
 | [`SKILL.md`](SKILL.md) | Canonical Hermes operating contract |
 | [`QUICKSTART.md`](QUICKSTART.md) | Installation and command routing |
 | [`CHANGELOG.md`](CHANGELOG.md) | Release history |
-| [`docs/ROADMAP-v0.15.md`](docs/ROADMAP-v0.15.md) | Current roadmap and next priorities |
-| [`docs/RELEASE-NOTES-v0.15.md`](docs/RELEASE-NOTES-v0.15.md) | v0.14 release notes |
-| [`docs/RELEASE-CHECKLIST-v0.14.md`](docs/RELEASE-CHECKLIST-v0.14.md) | Release gates and procedure |
+| [`docs/ROADMAP-v0.16.md`](docs/ROADMAP-v0.16.md) | Current roadmap and next priorities |
+| [`docs/RELEASE-NOTES-v0.16.md`](docs/RELEASE-NOTES-v0.16.md) | v0.16 release notes |
+| [`docs/RELEASE-CHECKLIST-v0.16.md`](docs/RELEASE-CHECKLIST-v0.16.md) | Release gates and procedure |
 | [`docs/README.md`](docs/README.md) | Docs index (incl. intent-router design/plan) |
 | [`docs/OPENCLAW.md`](docs/OPENCLAW.md) | OpenClaw Agent Skill edition (Prabu; branch `openclaw`) |
 | [`docs/superpowers/specs/2026-07-30-operator-intent-router-design.md`](docs/superpowers/specs/2026-07-30-operator-intent-router-design.md) | Operator intent-router design |
@@ -423,9 +423,9 @@ CI (`.github/workflows/hermes-evals.yml`) runs Hermes evals, outcome governance,
 
 ## Version
 
-**0.15.0 — Production Surfaces + Hardening**
+**0.16.0 — First-Class Production Surfaces**
 
-This release unifies the Hermes runtime contract, reproducibility identities, failure diagnostics, provider preservation, installer safety, and official-skill packaging. See the v0.14 release notes for verified gates and remaining post-release work.
+This release promotes design/script/image/video onto a shared production engine with validate→compile→receipt lifecycle, expanded surface actions, golden fixtures, and architecture docs. See the v0.16 release notes for verified gates and remaining post-release work.
 
 See [CHANGELOG.md](CHANGELOG.md) for full release history.
 
