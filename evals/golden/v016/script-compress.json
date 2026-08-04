@@ -1,0 +1,76 @@
+{
+  "action": "compress",
+  "artifact_id": "kubrick-script-compress-fb31c2cfccc31d1a",
+  "artifact_type": "script-development-packet",
+  "authority": "PROPOSED",
+  "generated_at": "FROZEN",
+  "not_computable": [],
+  "project_id": "golden-authority",
+  "provenance": {
+    "external_authoritative": [],
+    "inferred": [],
+    "observed": [
+      "input"
+    ],
+    "speculative": []
+  },
+  "receipt": {
+    "action": "compress",
+    "inputs": {
+      "action": "compress",
+      "brief": "",
+      "design": "",
+      "duration": 8.0,
+      "evidence": "",
+      "format": "markdown",
+      "input": "# Script package \u2014 golden-authority\n\nFormat: markdown\nDesign revision link: r-81a44fd28fa41daf\nScript revision: s-81a44fd28fa41daf\n\n## Dramatic intent\nauthority remains active after the leader exits because access and geometry preserve the system\n\n## Observable action\npersonal command becomes institutional pressure\n\n## Character pressure\na former subordinate receives access while the former authority is excluded\n\n## Dialogue\nNOT_COMPUTABLE \u2014 no dialogue evidenced\n\n## Continuity requirements\n- Preserve identity, ownership, chronology, residue\n\n## Production implications\n- practical office location\n- one badge prop\n",
+      "project_id": "golden-authority",
+      "provider": "generic",
+      "surface": "script"
+    },
+    "outputs": {
+      "artifact_id": "kubrick-script-compress-fb31c2cfccc31d1a",
+      "artifact_type": "script-development-packet",
+      "has_document": true,
+      "status": "PROPOSED"
+    },
+    "provenance": {
+      "external_authoritative": [],
+      "inferred": [],
+      "observed": [
+        "input"
+      ],
+      "speculative": []
+    },
+    "receipt_hash": "d4acb67a4ea2ba2d64918f99a22a478f",
+    "receipt_id": "receipt-140bbd0f053cf3f8",
+    "schema_version": "0.16.0",
+    "surface": "script",
+    "timestamp": "FROZEN",
+    "validation": {
+      "errors": [],
+      "status": "VALID"
+    },
+    "version": "0.16.0",
+    "warnings": []
+  },
+  "result": {
+    "document_markdown": "# Compressed script \u2014 golden-authority\n\nFormat: markdown\nDesign revision link: r-81a44fd28fa41daf\nScript revision: s-81a44fd28fa41daf\nauthority remains active after the leader exits because access and geometry preserve the system\npersonal command becomes institutional pressure\na former subordinate receives access while the former authority is excluded\nNOT_COMPUTABLE \u2014 no dialogue evidenced\n- Preserve identity, ownership, chronology, residue\n- practical office location\n- one badge prop\n\nNOTE: Compression preserves observable action lines; dialogue may be omitted.",
+    "implementation_state": "DOMAIN",
+    "script_revision": "s-fa07b6f0f76851ec"
+  },
+  "schema_version": "0.16.0",
+  "shared_invariants": {
+    "preserve_chronology": true,
+    "preserve_geometry": true,
+    "preserve_identity": true,
+    "preserve_locked_facts": true,
+    "preserve_material_state": true,
+    "preserve_ownership": true,
+    "preserve_residue": true
+  },
+  "source_state_id": "state-5ed8e51192c599da",
+  "status": "PROPOSED",
+  "surface": "script",
+  "warnings": []
+}
