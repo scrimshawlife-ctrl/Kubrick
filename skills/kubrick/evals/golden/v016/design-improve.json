@@ -1,6 +1,6 @@
 {
   "action": "improve",
-  "artifact_id": "kubrick-design-improve-f05fae28ef74e662",
+  "artifact_id": "kubrick-design-improve-30c2359a3dd14a0e",
   "artifact_type": "design-revision-receipt",
   "authority": "PROPOSED",
   "generated_at": "FROZEN",
@@ -30,7 +30,7 @@
       "surface": "design"
     },
     "outputs": {
-      "artifact_id": "kubrick-design-improve-f05fae28ef74e662",
+      "artifact_id": "kubrick-design-improve-30c2359a3dd14a0e",
       "artifact_type": "design-revision-receipt",
       "has_document": true,
       "status": "PROPOSED"
@@ -44,7 +44,7 @@
       ],
       "speculative": []
     },
-    "receipt_hash": "e42ee34f8ea8ce77ec50d89481b4081e",
+    "receipt_hash": "144e995891a161258f7242cfe18542e4",
     "receipt_id": "receipt-9529cbc6014be0d3",
     "schema_version": "0.16.0",
     "surface": "design",
@@ -84,7 +84,7 @@
     "preserve_ownership": true,
     "preserve_residue": true
   },
-  "source_state_id": "state-563b35bf291c92f2",
+  "source_state_id": "state-4e5eeb32ef3e13f5",
   "status": "PROPOSED",
   "surface": "design",
   "warnings": []

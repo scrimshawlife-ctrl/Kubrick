@@ -5,7 +5,8 @@ Track issue: https://github.com/scrimshawlife-ctrl/Kubrick/issues/32
 Bring the permanent `openclaw` branch to Hermes `main` / v0.16 contracts without
 erasing OpenClaw packaging, external state (`KUBRICK_STATE_DIR`), doctor, or overlays.
 
-Local parity branch: `cursor/openclaw-v016-parity-44a4`
+Local parity branch: `cursor/openclaw-v016-parity-44a4`  
+Remote tip (verified 2026-08-04): `origin/openclaw` @ `db695bc`
 
 ## Port these from Hermes main (v0.16)
 
@@ -29,10 +30,15 @@ Local parity branch: `cursor/openclaw-v016-parity-44a4`
 
 ## Acceptance
 
-- `do check --action smoke` passes on OpenClaw edition
-- `python scripts/doctor.py` — prohibited patterns excluded
-- `python scripts/test_v016_phased_acceptance.py` PASS
-- `python scripts/test_golden_v016.py` PASS
-- `pytest evals/test_openclaw_portability.py` PASS
-- No silent authority promotion; `NOT_COMPUTABLE` preserved
-- Retrieve/state paths remain outside the skill package
+- [x] `do check --action smoke` passes on OpenClaw edition (`origin/openclaw` @ `db695bc`)
+- [x] `python scripts/doctor.py` — prohibited patterns excluded
+- [x] `python scripts/test_v016_phased_acceptance.py` PASS
+- [x] `python scripts/test_golden_v016.py` PASS (baseline six fixtures; Hermes main may be ahead on expanded goldens)
+- [ ] `pytest evals/test_openclaw_portability.py` PASS (run when pytest env available)
+- [x] No silent authority promotion; `NOT_COMPUTABLE` preserved
+- [x] Retrieve/state paths remain outside the skill package
+
+## Follow-up
+
+- Port expanded `evals/golden/v016/` fixtures from Hermes `main` when they land.
+- Keep doctor-native retrieve script when merging future Hermes changes.

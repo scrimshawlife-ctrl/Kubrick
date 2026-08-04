@@ -3,6 +3,8 @@
 This document is the operator checklist for getting Kubrick into Nous Research’s
 **official optional skills catalog** while also publishing the community path.
 
+**Target package version:** `0.16.0` (first-class production surfaces + shared engine).
+
 ## Two publication lanes
 
 | Lane | Command / path | Trust |
@@ -22,8 +24,10 @@ Pursue both: community installability first, official PR for catalog trust.
 - [x] Supporting scripts via `${HERMES_SKILL_DIR}`
 - [x] Permissive MIT license + real author attribution
 - [x] Provenance notes in `SKILL.md`
-- [ ] Local Hermes activation test (positive)
-- [ ] Local Hermes negative activation test
+- [x] In-repo validators green on v0.16.0 (`skill` / `smoke` / `validate_hermes_skill` / release audit)
+- [x] Package dry-run path documented (`scripts/package_optional_skill.sh`)
+- [ ] Local Hermes activation test (positive) — requires local `hermes` CLI
+- [ ] Local Hermes negative activation test — requires local `hermes` CLI
 - [ ] Upstream PR opened against `NousResearch/hermes-agent`
 
 ## Frontmatter contract (current)
@@ -38,6 +42,16 @@ metadata.hermes.category: creative
 
 Stable slug: **`kubrick`** — do not rename between releases.
 
+## v0.16 packaging highlights
+
+Ship these in the upstream optional-skill tree:
+
+- Shared production engine (`scripts/production_engine.py`) and domain compilers
+- Surface CLI sugar: `kubrick design|script|image|video|qa|receipts|validate`
+- Schemas for design/script/image/video packets + cinematic project state
+- Golden fixtures under `evals/golden/v016/`
+- Architecture notes: `docs/ARCHITECTURE-v0.16.md` (optional in thin first merge)
+
 ## 1. Validate in-repo
 
 ```bash
@@ -45,6 +59,10 @@ cd /path/to/Kubrick
 python3 scripts/kubrick.py do check --action skill
 python3 scripts/kubrick.py do check --action smoke
 python3 scripts/validate_hermes_skill.py
+python3 scripts/audit_release_version.py --strict
+python3 scripts/test_v016_phased_acceptance.py
+python3 scripts/test_golden_v016.py
+bash scripts/sync_hub_skill.sh && python3 scripts/check_hub_sync.py
 ```
 
 ## 2. Install / sync local Hermes skill
@@ -82,6 +100,8 @@ hermes chat --toolsets skills -q \
   "Calculate the SHA-256 checksum of README.md."
 ```
 
+Record outcomes in `PR_BODY.md` before opening the upstream PR.
+
 ## Community layout note
 
 Hermes GitHub taps default to listing skill directories under `skills/`.
@@ -115,7 +135,7 @@ hermes skills search kubrick --source github
 ```bash
 gh repo fork NousResearch/hermes-agent --clone
 cd hermes-agent
-git checkout -b feat/add-kubrick-skill
+git checkout -b feat/add-kubrick-skill-v016
 
 # From the Kubrick repo:
 /path/to/Kubrick/scripts/package_optional_skill.sh /path/to/hermes-agent
@@ -126,13 +146,21 @@ git diff --check
 git status --short
 
 git add optional-skills/creative/kubrick
-git commit -m "feat(skills): add Kubrick cinematic design skill"
-git push -u origin feat/add-kubrick-skill
+git commit -m "feat(skills): add Kubrick cinematic design skill v0.16"
+git push -u origin feat/add-kubrick-skill-v016
 
 gh pr create \
   --repo NousResearch/hermes-agent \
-  --title "feat(skills): add Kubrick cinematic design skill" \
+  --title "feat(skills): add Kubrick cinematic design skill (v0.16)" \
   --body-file /path/to/Kubrick/PR_BODY.md
+```
+
+### Package dry-run (no fork / no PR)
+
+```bash
+mkdir -p /tmp/hermes-agent-dry
+/path/to/Kubrick/scripts/package_optional_skill.sh /tmp/hermes-agent-dry
+find /tmp/hermes-agent-dry/optional-skills/creative/kubrick -maxdepth 2 -type f | head
 ```
 
 After merge:
@@ -154,7 +182,7 @@ If review asks for a thinner first merge, keep:
 - `SKILL.md`, `LICENSE`, `README.md`, `QUICKSTART.md`
 - `scripts/` (or a documented core subset)
 - `schemas/`, `references/` (corpus + patterns), `templates/`, `examples/`
-- a reduced `evals/` smoke set
+- a reduced `evals/` smoke set (`evals/golden/v016/` + skill validators)
 
 and leave extended historical docs in the standalone GitHub repo.
 

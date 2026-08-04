@@ -53,22 +53,23 @@ from production_engine import (
 
 ## 6. Remaining technical debt
 
-- Golden-output corpus not yet exhaustive for every new action
+- Golden corpus covers core lifecycle + expand/summarize/qa/rewrite/compress/scene/generate/blocking/timeline; not every niche analysis action
 - Coverage tooling (pytest-cov) not wired to enforce >95% numerically
-- OpenClaw parity: `cursor/openclaw-v016-parity-44a4` (local; push pending)
+- CI workflow hardening staged under `docs/ci/` pending `workflow` OAuth scope
 - Some analysis actions (lighting/camera) remain evidence-bounded stubs by design
-- `cinematic-project-state` schema exists; project-state helper + golden fixtures expanding
+- Official Hermes upstream PR still open as operator work (`docs/HERMES-OFFICIAL-SUBMISSION.md`)
 
 ## 7. Future recommendations
 
 - Persist project-level cinematic state ledger between surfaces
-- Expand golden fixtures per action
-- OpenClaw production_engine port on `cursor/openclaw-v016-parity-44a4`
-- Optional Hermes hub submission package for v0.16
+- Apply `docs/ci/hermes-evals.hardened.yml` once `gh auth refresh -s workflow`
+- Keep OpenClaw edition aligned after Hermes golden expansions
+- Open official Hermes optional-skills PR for v0.16.0
 
 ## 8. Test results
 
 - `test_v016_phased_acceptance.py`: PASS (phases 1–6)
+- `test_golden_v016.py`: PASS (15 fixtures)
 - `test_production_engine.py`: PASS
 - `test_surface_compilers.py`: PASS
 - `test_surface_adapt_preservation.py`: PASS
@@ -76,6 +77,7 @@ from production_engine import (
 - `test_intent_router.py`: PASS
 - `test_io_safety.py`: PASS
 - `kubrick do check --action smoke`: PASS
+- OpenClaw `origin/openclaw` @ `db695bc`: smoke / doctor / phased / golden PASS
 - `examples/production-surfaces/run_demo.sh`: PASS
 
 ## 9. Performance considerations

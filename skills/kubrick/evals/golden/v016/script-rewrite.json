@@ -1,0 +1,79 @@
+{
+  "action": "rewrite",
+  "artifact_id": "kubrick-script-improve-fb31c2cfccc31d1a",
+  "artifact_type": "script-development-packet",
+  "authority": "PROPOSED",
+  "generated_at": "FROZEN",
+  "not_computable": [],
+  "project_id": "golden-authority",
+  "provenance": {
+    "external_authoritative": [],
+    "inferred": [],
+    "observed": [
+      "input"
+    ],
+    "speculative": []
+  },
+  "receipt": {
+    "action": "rewrite",
+    "inputs": {
+      "action": "rewrite",
+      "brief": "",
+      "design": "",
+      "duration": 8.0,
+      "evidence": "",
+      "format": "markdown",
+      "input": "# Script package \u2014 golden-authority\n\nFormat: markdown\nDesign revision link: r-81a44fd28fa41daf\nScript revision: s-81a44fd28fa41daf\n\n## Dramatic intent\nauthority remains active after the leader exits because access and geometry preserve the system\n\n## Observable action\npersonal command becomes institutional pressure\n\n## Character pressure\na former subordinate receives access while the former authority is excluded\n\n## Dialogue\nNOT_COMPUTABLE \u2014 no dialogue evidenced\n\n## Continuity requirements\n- Preserve identity, ownership, chronology, residue\n\n## Production implications\n- practical office location\n- one badge prop\n",
+      "project_id": "golden-authority",
+      "provider": "generic",
+      "surface": "script"
+    },
+    "outputs": {
+      "artifact_id": "kubrick-script-improve-fb31c2cfccc31d1a",
+      "artifact_type": "script-development-packet",
+      "has_document": true,
+      "status": "PROPOSED"
+    },
+    "provenance": {
+      "external_authoritative": [],
+      "inferred": [],
+      "observed": [
+        "input"
+      ],
+      "speculative": []
+    },
+    "receipt_hash": "422a443f7a30e3325e404710fc675085",
+    "receipt_id": "receipt-b0331fb23e7426a5",
+    "schema_version": "0.16.0",
+    "surface": "script",
+    "timestamp": "FROZEN",
+    "validation": {
+      "errors": [],
+      "status": "VALID"
+    },
+    "version": "0.16.0",
+    "warnings": []
+  },
+  "result": {
+    "document_markdown": "# Script package \u2014 golden-authority\n\nFormat: markdown\nDesign revision link: r-81a44fd28fa41daf\nScript revision: s-81a44fd28fa41daf\n\n## Dramatic intent\nauthority remains active after the leader exits because access and geometry preserve the system\n\n## Observable action\npersonal command becomes institutional pressure\n\n## Character pressure\na former subordinate receives access while the former authority is excluded\n\n## Dialogue\nNOT_COMPUTABLE \u2014 no dialogue evidenced\n\n## Continuity requirements\n- Preserve identity, ownership, chronology, residue\n\n## Production implications\n- practical office location\n- one badge prop\n\n## Revision notes\n- [s-9bd5127a0a95eaa5] Pressure, observable action, and continuity requirements restated without symbolic lecture.",
+    "implementation_state": "DOMAIN",
+    "rewrite_mode": "causality-pressure-legibility",
+    "script_revision": "s-9bd5127a0a95eaa5",
+    "source_script_revision": "s-388b5afa7ede656f"
+  },
+  "schema_version": "0.16.0",
+  "shared_invariants": {
+    "preserve_chronology": true,
+    "preserve_geometry": true,
+    "preserve_identity": true,
+    "preserve_locked_facts": true,
+    "preserve_material_state": true,
+    "preserve_ownership": true,
+    "preserve_residue": true
+  },
+  "source_script_revision": "s-388b5afa7ede656f",
+  "source_state_id": "state-5ed8e51192c599da",
+  "status": "PROPOSED",
+  "surface": "script",
+  "warnings": []
+}

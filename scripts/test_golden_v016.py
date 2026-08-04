@@ -73,19 +73,39 @@ def _generate() -> dict[str, dict]:
         evidence=BRIEF,
         project_id="golden-authority",
     )
+    design_md = design.document_markdown
+    expanded = run_production(
+        "design", "expand", input_text=design_md, evidence=BRIEF, project_id="golden-authority"
+    )
+    summarized = run_production("design", "summarize", input_text=design_md, project_id="golden-authority")
+    design_qa = run_production("design", "qa", input_text=design_md, project_id="golden-authority")
     script = run_production(
         "script",
         "create",
         brief=BRIEF,
-        design_text=design.document_markdown,
+        design_text=design_md,
         format="markdown",
         project_id="golden-authority",
+    )
+    script_md = script.document_markdown
+    rewritten = run_production("script", "rewrite", input_text=script_md, project_id="golden-authority")
+    compressed = run_production("script", "compress", input_text=script_md, project_id="golden-authority")
+    scene = run_production(
+        "script", "scene-extract", input_text=script_md, project_id="golden-authority"
     )
     image = run_production(
         "image",
         "prompt",
         brief=BRIEF,
-        design_text=design.document_markdown,
+        design_text=design_md,
+        project_id="golden-authority",
+        provider="generic",
+    )
+    image_gen = run_production(
+        "image",
+        "generate",
+        brief=BRIEF,
+        design_text=design_md,
         project_id="golden-authority",
         provider="generic",
     )
@@ -93,23 +113,38 @@ def _generate() -> dict[str, dict]:
         "video",
         "shot",
         brief=BRIEF,
-        design_text=design.document_markdown,
+        design_text=design_md,
         project_id="golden-authority",
         duration=8.0,
     )
+    blocking = run_production(
+        "video", "blocking", brief=BRIEF, design_text=design_md, project_id="golden-authority"
+    )
+    timeline = run_production(
+        "video", "timeline", brief=BRIEF, design_text=design_md, project_id="golden-authority"
+    )
     state = build_cinematic_project_state(
         project_id="golden-authority",
-        design_text=design.document_markdown,
-        script_text=script.document_markdown,
+        design_text=design_md,
+        script_text=script_md,
         brief=BRIEF,
     )
     state["generated_at"] = "FROZEN"
     return {
         "design-create.json": _freeze(design.to_dict()),
         "design-improve.json": _freeze(improved.to_dict()),
+        "design-expand.json": _freeze(expanded.to_dict()),
+        "design-summarize.json": _freeze(summarized.to_dict()),
+        "design-qa.json": _freeze(design_qa.to_dict()),
         "script-create.json": _freeze(script.to_dict()),
+        "script-rewrite.json": _freeze(rewritten.to_dict()),
+        "script-compress.json": _freeze(compressed.to_dict()),
+        "script-scene-extract.json": _freeze(scene.to_dict()),
         "image-prompt.json": _freeze(image.to_dict()),
+        "image-generate.json": _freeze(image_gen.to_dict()),
         "video-shot.json": _freeze(video.to_dict()),
+        "video-blocking.json": _freeze(blocking.to_dict()),
+        "video-timeline.json": _freeze(timeline.to_dict()),
         "cinematic-project-state.json": state,
     }
 
