@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kubrick.local/schemas/design-document.schema.json",
+  "title": "Kubrick design document receipt",
+  "type": "object",
+  "required": ["artifact_id", "artifact_type", "authority", "status", "project_id", "result"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "artifact_id": {"type": "string"},
+    "artifact_type": {"const": "design-document"},
+    "authority": {"type": "string"},
+    "status": {"type": "string"},
+    "project_id": {"type": "string"},
+    "result": {
+      "type": "object",
+      "required": ["revision"],
+      "properties": {
+        "revision": {"type": "string"},
+        "document_markdown": {"type": "string"},
+        "document_path": {"type": "string"}
+      }
+    }
+  }
+}

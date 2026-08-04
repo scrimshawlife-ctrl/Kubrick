@@ -92,3 +92,15 @@ See root [`README.md`](../README.md) and [`QUICKSTART.md`](../QUICKSTART.md).
 - Branch tree: https://github.com/scrimshawlife-ctrl/Kubrick/tree/openclaw
 - PR #1: https://github.com/scrimshawlife-ctrl/Kubrick/pull/1
 - Upstream runtime contract terminology: [`../references/hermes-runtime-contract.md`](../references/hermes-runtime-contract.md)
+
+## v0.15.0 parity status
+
+This branch now carries Hermes v0.15 contracts:
+
+- `kubrick.manifest.yaml` with `host: openclaw`
+- first-class `design` / `script` / `image` / `video` domain compilers
+- MCP allowlisting and `io_safety` path/intake policy
+- OpenClaw installer, `KUBRICK_STATE_DIR`, and `scripts/doctor.py` preserved
+
+See also `docs/OPENCLAW-ALIGNMENT.md`.
+

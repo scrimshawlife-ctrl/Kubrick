@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kubrick.local/schemas/design-revision-receipt.schema.json",
+  "title": "Kubrick design revision receipt",
+  "type": "object",
+  "required": ["artifact_id", "artifact_type", "authority", "status", "project_id", "result"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "artifact_id": {"type": "string"},
+    "artifact_type": {"const": "design-revision-receipt"},
+    "authority": {"type": "string"},
+    "status": {"type": "string"},
+    "project_id": {"type": "string"},
+    "result": {
+      "type": "object",
+      "required": ["revision", "diff", "preserved_section_count"],
+      "properties": {
+        "revision": {"type": "string"},
+        "parent_revision": {"type": ["string", "null"]},
+        "document_markdown": {"type": "string"},
+        "document_path": {"type": "string"},
+        "diff": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["section", "change"],
+            "properties": {
+              "section": {"type": "string"},
+              "change": {"type": "string"},
+              "reason": {"type": "string"}
+            }
+          }
+        },
+        "preserved_section_count": {"type": "integer", "minimum": 0},
+        "invariant_impact": {"type": "object"},
+        "update_mode": {"type": "string"},
+        "implementation_state": {"type": "string"}
+      }
+    }
+  }
+}

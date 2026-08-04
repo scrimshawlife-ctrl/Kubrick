@@ -146,3 +146,8 @@ Evolution and corpus modification are separate from ordinary runtime.
 When `hermes-continuity-forge` is connected, Kubrick may prepare and submit handoff artifacts. The companion owns authorization, leases, ingestion, and canonical receipts.
 
 When it is absent, Kubrick continues locally and labels outputs `PROPOSED`.
+
+
+## Runtime profiles
+
+Kubrick declares `prose`, `stdlib`, `validation`, and `dev` runtime profiles.

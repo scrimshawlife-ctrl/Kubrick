@@ -3,7 +3,7 @@ name: "kubrick"
 description: "OpenClaw-native cinematic engineering, deterministic symbolism, storyboard continuity, provider adaptation, visual QA, and governed learning."
 license: MIT
 metadata:
-  kubrick_version: "0.13.0"
+  kubrick_version: "0.16.0"
   openclaw:
     requires:
       bins:
@@ -23,6 +23,16 @@ Kubrick is a standalone OpenClaw Agent Skill for symbolic cinematic narrative en
 It converts dramatic intent into observable cinematic structure while preserving causality, character agency, continuity, provenance, production feasibility, and a strict boundary between private symbolic reasoning and audience-facing output.
 
 Continuity Forge is optional. It becomes canonical only after an explicit, verified handoff.
+
+## First-class production surfaces (v0.15)
+
+Use `kubrick do <intent>` with peer intents:
+
+`compile` · `retrieve` · `ledger` · `design` · `script` · `image` · `video` · `storyboard` · `adapt` · `visual` · `learn` · `check` · `operate` · `mcp` · `bundle`
+
+Design/script/image/video are domain-compiled production surfaces over shared cinematic state. Local outputs remain `PROPOSED`. Weak evidence returns `NOT_COMPUTABLE`.
+
+Task aliases: `create`, `revise`, `inspect`, `validate`.
 
 ## Governing law
 

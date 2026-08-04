@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Unified OpenClaw-native CLI for Kubrick's deterministic tools.
+"""Unified Hermes-native CLI for Kubrick's deterministic tools.
 
 Primary surface:
   kubrick do <intent> [--action <action>] [flags]
@@ -20,9 +20,23 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS = Path(__file__).resolve().parent
 PY = sys.executable
+FIRST_CLASS_PRODUCTION_SURFACES = {"design", "script", "image", "video"}
 
 sys.path.insert(0, str(SCRIPTS))
 import intent_router as ir  # noqa: E402
+from diagnostics import abort, diagnostic  # noqa: E402
+
+
+def _abort_router(error: ir.RouterError) -> None:
+    abort(
+        diagnostic(
+            status="INVALID_COMMAND",
+            code="ROUTER_ERROR",
+            exit_code=error.exit_code,
+            message=error.message,
+            context={"surface": "kubrick"},
+        )
+    )
 
 
 def _is_agent() -> bool:
@@ -31,8 +45,12 @@ def _is_agent() -> bool:
 
 
 def _dispatch_smoke(call: ir.IntentCall) -> None:
-    """check smoke: validate skill then pattern corpus (composite)."""
-    for script in ("validate_hermes_skill.py", "validate_pattern_corpus.py"):
+    """check smoke: validate manifest, skill, then pattern corpus (composite)."""
+    for script in (
+        "validate_manifest.py",
+        "validate_hermes_skill.py",
+        "validate_pattern_corpus.py",
+    ):
         r = subprocess.run([PY, str(SCRIPTS / script), *call.argv], cwd=ROOT)
         if r.returncode != 0:
             raise SystemExit(r.returncode)
@@ -40,10 +58,22 @@ def _dispatch_smoke(call: ir.IntentCall) -> None:
     raise SystemExit(0)
 
 
+def _execution_argv(call: ir.IntentCall) -> list[str]:
+    """Build implementation argv without leaking router-only semantics.
+
+    First-class production surfaces intentionally route multiple actions to one
+    deterministic runtime. Forward the resolved action as an explicit internal
+    flag so the implementation never has to infer operator intent.
+    """
+    argv = list(call.argv)
+    if call.intent in FIRST_CLASS_PRODUCTION_SURFACES:
+        argv = ["--surface-action", call.action, *argv]
+    return argv
+
+
 def main() -> None:
     argv = sys.argv[1:]
 
-    # Top-level help (prefer entrypoint handling; avoid RouterError("HELP") path)
     if not argv or (argv[0] in {"-h", "--help", "help"} and len(argv) == 1):
         sys.stdout.write(ir.format_top_level_help())
         raise SystemExit(0)
@@ -52,9 +82,41 @@ def main() -> None:
         try:
             sys.stdout.write(ir.format_intent_help(argv[1]))
         except ir.RouterError as e:
-            print(e.message, file=sys.stderr)
-            raise SystemExit(e.exit_code)
+            _abort_router(e)
         raise SystemExit(0)
+
+    if argv[0] == "receipts":
+        raise SystemExit(subprocess.call([PY, str(SCRIPTS / "list_receipts.py"), *argv[1:]], cwd=ROOT))
+
+    if argv[0] == "qa" and len(argv) >= 2:
+        # sugar: kubrick qa <surface> ... → do <surface> --action qa ...
+        surface = argv[1]
+        if surface in FIRST_CLASS_PRODUCTION_SURFACES:
+            argv = ["do", surface, "--action", "qa", *argv[2:]]
+        else:
+            _abort_router(ir.RouterError("usage: kubrick qa <design|script|image|video> ..."))
+
+    if argv[0] == "validate" and len(argv) >= 2:
+        # sugar: kubrick validate design|script → surface validate/diagnose
+        surface = argv[1]
+        if surface == "design":
+            argv = ["do", "design", "--action", "validate", *argv[2:]]
+        elif surface == "script":
+            argv = ["do", "script", "--action", "diagnose", *argv[2:]]
+        elif surface in {"image", "video"}:
+            argv = ["do", surface, "--action", "qa", *argv[2:]]
+        else:
+            _abort_router(ir.RouterError("usage: kubrick validate <design|script|image|video> ..."))
+
+    if argv[0] in FIRST_CLASS_PRODUCTION_SURFACES and (len(argv) == 1 or not argv[1].startswith("-") and argv[1] != "do"):
+        # sugar: kubrick design create ... → do design --action create ...
+        surface = argv[0]
+        rest = argv[1:]
+        action = None
+        if rest and not rest[0].startswith("-"):
+            action = rest[0]
+            rest = rest[1:]
+        argv = ["do", surface, *(["--action", action] if action else []), *rest]
 
     if argv[0] == "aliases":
         sys.stdout.write(ir.format_aliases())
@@ -62,14 +124,12 @@ def main() -> None:
 
     if argv[0] == "recipe":
         if len(argv) < 2:
-            raise SystemExit("usage: kubrick recipe <name>")
+            _abort_router(ir.RouterError("usage: kubrick recipe <name>"))
         try:
             argv = ir.resolve_recipe(argv[1])
         except ir.RouterError as e:
-            print(e.message, file=sys.stderr)
-            raise SystemExit(e.exit_code)
+            _abort_router(e)
 
-    # do <intent> --help / -h → intent help (do not pass --help into scripts)
     if (
         len(argv) >= 2
         and argv[0] == "do"
@@ -78,8 +138,7 @@ def main() -> None:
         try:
             sys.stdout.write(ir.format_intent_help(argv[1]))
         except ir.RouterError as e:
-            print(e.message, file=sys.stderr)
-            raise SystemExit(e.exit_code)
+            _abort_router(e)
         raise SystemExit(0)
 
     try:
@@ -88,8 +147,7 @@ def main() -> None:
         if e.message == "HELP":
             sys.stdout.write(ir.format_top_level_help())
             raise SystemExit(0)
-        print(e.message, file=sys.stderr)
-        raise SystemExit(e.exit_code)
+        _abort_router(e)
 
     if (
         call.legacy_name
@@ -105,7 +163,10 @@ def main() -> None:
     if call.intent == "check" and call.action == "smoke":
         _dispatch_smoke(call)
 
-    result = subprocess.run([PY, str(call.script), *call.argv], cwd=ROOT)
+    result = subprocess.run(
+        [PY, str(call.script), *_execution_argv(call)],
+        cwd=ROOT,
+    )
     raise SystemExit(result.returncode)
 
 

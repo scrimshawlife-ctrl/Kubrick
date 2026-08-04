@@ -1,6 +1,28 @@
-# Changelog — Kubrick
+# Changelog
 
-Kubrick is the primary symbolic cinematic narrative engineering skill. It replaces the earlier scriptwriting skill as the recommended system for premise-to-production development with deep motif, geometric, cinematic, storyboard, and visual-fidelity encoding.
+## [0.16.0] - 2026-08-04
+
+### Added — OpenClaw parity with Hermes v0.16
+
+- Ported canonical `ProductionEngine` lifecycle (Surface/Request/Result/Artifact/Context/Validator/Receipt).
+- Expanded design/script/image/video actions, shared QA, artifact trees, and receipts CLI sugar.
+- Preserved OpenClaw installer, external state dir, doctor, retrieve, and ClawHub packaging.
+
+## [0.15.0] - 2026-08-04
+
+### Added — OpenClaw parity with Hermes v0.15
+
+- Ported canonical manifest (`host: openclaw`), intent router, diagnostics, and MCP allowlisting.
+- Ported path/intake hardening (`io_safety`), provenance taxonomy, and production-surface domain compilers.
+- First-class `design` / `script` / `image` / `video` surfaces available on OpenClaw.
+- Preserved OpenClaw installer, external state dir, doctor, and ClawHub packaging.
+- YAML brief intake enriches design create/improve; placeholders replaceable without wiping LOCKED sections.
+- `--design` / project `design.md` auto-discovery; shot YAML embeds `source_design_revision`.
+- `schemas/design-revision-receipt.schema.json` + adapt preservation regression tests.
+- Fountain/beat-sheet script formats; authority-tagged claims on packets.
+- `design drift` over artifact directories; production-surfaces demo script.
+- Provider capability declarations; video adapt fail-closed on image-only providers.
+- Neutral `video prompt` packet + richer video QA dimensions.
 
 ## [Unreleased]
 
