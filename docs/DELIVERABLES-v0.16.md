@@ -55,15 +55,15 @@ from production_engine import (
 
 - Golden-output corpus not yet exhaustive for every new action
 - Coverage tooling (pytest-cov) not wired to enforce >95% numerically
-- OpenClaw parity: see branch `cursor/openclaw-v016-parity-44a4`
+- OpenClaw parity: `cursor/openclaw-v016-parity-44a4` (local; push pending)
 - Some analysis actions (lighting/camera) remain evidence-bounded stubs by design
-- `cinematic-project-state` schema file still pending as a dedicated JSON Schema
+- `cinematic-project-state` schema exists; project-state helper + golden fixtures expanding
 
 ## 7. Future recommendations
 
 - Persist project-level cinematic state ledger between surfaces
 - Expand golden fixtures per action
-- OpenClaw production_engine port included on openclaw v0.16 branch
+- OpenClaw production_engine port on `cursor/openclaw-v016-parity-44a4`
 - Optional Hermes hub submission package for v0.16
 
 ## 8. Test results
