@@ -1,8 +1,8 @@
 # Kubrick First-Class Production Surfaces
 
-Status: **PROPOSED**  
+Status: **IMPLEMENTED (v0.15.0 foundation + domain compilers)**  
 Target: **v0.15**  
-Scope: Hermes `main` branch
+Scope: Hermes `main` branch (OpenClaw parity on `cursor/openclaw-v015-parity-44a4`)
 
 ## Decision
 

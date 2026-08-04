@@ -46,6 +46,7 @@ SECTION_RE = re.compile(
     r"^##\s+(?P<title>.+?)\s*$",
     re.MULTILINE,
 )
+REVISION_RE = re.compile(r"Revision:\s*`([^`]+)`")
 
 
 def _now() -> str:
@@ -55,6 +56,26 @@ def _now() -> str:
 def _digest(payload: Any) -> str:
     canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False, default=str)
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:16]
+
+
+def _design_revision(design_text: str | None) -> str | None:
+    if not design_text:
+        return None
+    match = REVISION_RE.search(design_text)
+    if match:
+        return match.group(1)
+    # Fallback stable digest of design body for linkage when header missing.
+    return f"r-{_digest(design_text[:2000])}"
+
+
+def _attach_design_revision(meta: dict[str, Any], design_text: str | None) -> dict[str, Any]:
+    rev = _design_revision(design_text)
+    if rev:
+        meta["source_design_revision"] = rev
+        result = meta.setdefault("result", {})
+        if isinstance(result, dict):
+            result["source_design_revision"] = rev
+    return meta
 
 
 def _claim(text: str, label: str = "PROPOSED") -> str:
@@ -452,27 +473,36 @@ def design_update(existing: str, evidence: str | None, project_id: str) -> dict[
     return improved
 
 
-def script_create(brief: str | None, evidence: str | None, project_id: str, fmt: str = "markdown") -> dict[str, Any]:
+def script_create(
+    brief: str | None,
+    evidence: str | None,
+    project_id: str,
+    fmt: str = "markdown",
+    design_text: str | None = None,
+) -> dict[str, Any]:
     fields = _extract_brief_fields(brief, evidence)
-    if not fields["raw"]:
+    if not fields["raw"] and not design_text:
         return {
             "status": "NOT_COMPUTABLE",
             "authority": "NOT_COMPUTABLE",
             "surface": "script",
             "action": "create",
-            "diagnostic": {"code": "INSUFFICIENT_EVIDENCE", "message": "Provide --brief or --evidence"},
+            "diagnostic": {"code": "INSUFFICIENT_EVIDENCE", "message": "Provide --brief, --evidence, or --input design.md"},
         }
+    if not fields["raw"] and design_text:
+        fields = _extract_brief_fields(design_text, None)
     revision = f"s-{_digest(fields)}"
+    design_rev = _design_revision(design_text) or "pending"
     body = "\n".join(
         [
             f"# Script package — {project_id}",
             "",
             f"Format: {fmt}",
-            f"Design revision link: pending",
+            f"Design revision link: {design_rev}",
             f"Script revision: {revision}",
             "",
             "## Dramatic intent",
-            fields["dramatic_problem"],
+            fields["dramatic_problem"] or "NOT_COMPUTABLE",
             "",
             "## Observable action",
             fields["desired_state_change"] or "NOT_COMPUTABLE",
@@ -495,6 +525,7 @@ def script_create(brief: str | None, evidence: str | None, project_id: str, fmt:
     meta["result"] = {
         "implementation_state": "DOMAIN",
         "script_revision": revision,
+        "source_design_revision": design_rev,
         "format": fmt,
         "document_markdown": body,
         "continuity_requirements": [
@@ -505,7 +536,7 @@ def script_create(brief: str | None, evidence: str | None, project_id: str, fmt:
         ],
     }
     meta["artifact_type"] = "script-development-packet"
-    return meta
+    return _attach_design_revision(meta, design_text)
 
 
 def script_diagnose(existing: str, project_id: str) -> dict[str, Any]:
@@ -717,7 +748,7 @@ def image_prompt(brief: str | None, evidence: str | None, design: str | None, pr
         },
     }
     meta["artifact_type"] = "image-prompt-packet"
-    return meta
+    return _attach_design_revision(meta, design)
 
 
 def image_sequence(brief: str | None, evidence: str | None, project_id: str, provider: str) -> dict[str, Any]:
@@ -798,6 +829,58 @@ def image_qa(expected: str | None, observation: str | None, project_id: str) -> 
     return meta
 
 
+def _parse_surface_or_adapter_packet(packet_text: str) -> dict[str, Any]:
+    text = packet_text.strip()
+    data: Any
+    if text.startswith("{"):
+        data = json.loads(text)
+    else:
+        try:
+            import yaml  # type: ignore[import-untyped]
+        except ImportError as exc:
+            raise RuntimeError("PyYAML required to parse YAML packets") from exc
+        data = yaml.safe_load(text) or {}
+    if not isinstance(data, dict):
+        raise ValueError("packet root must be an object")
+    # Unwrap surface receipt → packet
+    if "result" in data and isinstance(data["result"], dict) and "packet" in data["result"]:
+        packet = dict(data["result"]["packet"])
+        packet.setdefault("source_graph_id", data.get("source_state_id") or data.get("artifact_id") or "surface")
+        return packet
+    if "frames" in data:
+        data.setdefault("source_graph_id", data.get("source_graph_id") or "surface")
+        return data
+    raise ValueError("packet must include frames or result.packet")
+
+
+def _to_adapter_packet(packet: dict[str, Any]) -> dict[str, Any]:
+    frames = []
+    for frame in packet.get("frames") or []:
+        frames.append(
+            {
+                "frame_id": frame.get("frame_id"),
+                "prompt": frame.get("prompt", ""),
+                "state_constraints": list(frame.get("state_constraints") or []),
+                "continuity_from_previous": list(frame.get("continuity_from_previous") or []),
+            }
+        )
+    shared = packet.get("shared_constraints") or {}
+    if "negative_constraints" not in shared and packet.get("negative_constraints"):
+        shared = {**shared, "negative_constraints": packet.get("negative_constraints")}
+    return {
+        "source_graph_id": packet.get("source_graph_id") or "surface",
+        "provider": "generic",
+        "frames": frames,
+        "shared_constraints": shared,
+        "validation": {"status": "VALID", "errors": []},
+        "private_state_policy": {
+            "graph_mutation_allowed": False,
+            "pattern_links_exposed": False,
+            "lexicon_links_exposed": False,
+        },
+    }
+
+
 def image_adapt(packet_text: str | None, project_id: str, provider: str) -> dict[str, Any]:
     if not packet_text:
         return {
@@ -807,21 +890,34 @@ def image_adapt(packet_text: str | None, project_id: str, provider: str) -> dict
             "action": "adapt",
             "diagnostic": {"code": "INSUFFICIENT_EVIDENCE", "message": "--input packet is required"},
         }
-    # Syntax-only wrapper: keep content, stamp provider
     meta = _base_meta("image", "adapt", project_id, {"packet": packet_text, "provider": provider})
-    meta["result"] = {
-        "implementation_state": "DOMAIN",
-        "provider": provider,
-        "adapted_text": packet_text,
-        "preservation_report": {
-            "identity_preserved": True,
-            "ownership_preserved": True,
-            "geometry_preserved": True,
-            "residue_preserved": True,
-            "negative_constraints_preserved": True,
-            "status": "VALID",
-        },
-    }
+    try:
+        packet = _parse_surface_or_adapter_packet(packet_text)
+        adapter_packet = _to_adapter_packet(packet)
+        from adapt_provider import adapt  # local import avoids circular startup cost
+
+        adapted = adapt(adapter_packet, provider)
+        report = adapted.get("preservation_report") or adapted.get("validation") or {}
+        status = "VALID"
+        if isinstance(report, dict):
+            status = report.get("status") or adapted.get("validation", {}).get("status") or "VALID"
+        meta["result"] = {
+            "implementation_state": "DOMAIN",
+            "provider": provider,
+            "adapted_packet": adapted,
+            "preservation_report": report
+            if isinstance(report, dict)
+            else {"status": status},
+        }
+        if status != "VALID":
+            meta["status"] = "NOT_COMPUTABLE"
+            meta["authority"] = "NOT_COMPUTABLE"
+            meta["not_computable"] = ["provider_semantic_preservation"]
+    except Exception as exc:  # noqa: BLE001 — surface must fail closed, not crash
+        meta["status"] = "NOT_COMPUTABLE"
+        meta["authority"] = "NOT_COMPUTABLE"
+        meta["diagnostic"] = {"code": "ADAPTER_NOT_COMPUTABLE", "message": str(exc)}
+        meta["result"] = {"implementation_state": "DOMAIN", "provider": provider}
     meta["artifact_type"] = "image-prompt-packet"
     return meta
 
@@ -885,6 +981,7 @@ def video_shot(brief: str | None, evidence: str | None, project_id: str, duratio
     meta = _base_meta("video", "shot", project_id, fields)
     meta["result"] = {"implementation_state": "DOMAIN", "shot": shot}
     meta["artifact_type"] = "shot-contract"
+    # evidence may carry design.md when callers pass --evidence design.md
     return meta
 
 
@@ -958,14 +1055,13 @@ def video_sequence(brief: str | None, evidence: str | None, project_id: str) -> 
 
 def video_adapt(packet_text: str | None, project_id: str, provider: str) -> dict[str, Any]:
     adapted = image_adapt(packet_text, project_id, provider)
-    if adapted.get("status") == "NOT_COMPUTABLE":
-        adapted["surface"] = "video"
-        adapted["action"] = "adapt"
-        return adapted
     adapted["surface"] = "video"
     adapted["action"] = "adapt"
     adapted["artifact_type"] = "video-prompt-packet"
-    adapted["artifact_id"] = f"kubrick-video-adapt-{_digest({'packet': packet_text, 'provider': provider})}"
+    if adapted.get("status") != "NOT_COMPUTABLE":
+        adapted["artifact_id"] = (
+            f"kubrick-video-adapt-{_digest({'packet': packet_text, 'provider': provider})}"
+        )
     return adapted
 
 
@@ -992,7 +1088,11 @@ COMPILERS: dict[tuple[str, str], Any] = {
     ("design", "update"): lambda a: design_update(_read(a, "input") or "", _read(a, "evidence"), a.project_id),
     ("design", "validate"): lambda a: design_validate(_read(a, "input") or "", a.project_id),
     ("script", "create"): lambda a: script_create(
-        a.brief, _read(a, "evidence"), a.project_id, getattr(a, "format", "markdown")
+        a.brief,
+        _read(a, "evidence"),
+        a.project_id,
+        getattr(a, "format", "markdown"),
+        design_text=_read(a, "input"),
     ),
     ("script", "improve"): lambda a: script_improve(_read(a, "input") or "", a.project_id),
     ("script", "diagnose"): lambda a: script_diagnose(_read(a, "input") or "", a.project_id),
@@ -1005,9 +1105,15 @@ COMPILERS: dict[tuple[str, str], Any] = {
     ("image", "negative"): lambda a: image_negative(a.brief or _read(a, "input"), a.project_id),
     ("image", "adapt"): lambda a: image_adapt(_read(a, "input"), a.project_id, a.provider),
     ("image", "qa"): lambda a: image_qa(_read(a, "input"), _read(a, "evidence"), a.project_id),
-    ("video", "shot"): lambda a: video_shot(a.brief, _read(a, "evidence"), a.project_id),
+    ("video", "shot"): lambda a: _attach_design_revision(
+        video_shot(a.brief, _read(a, "evidence"), a.project_id),
+        _read(a, "input") if (_read(a, "input") or "").lstrip().startswith("# Design") else _read(a, "evidence"),
+    ),
     ("video", "motion"): lambda a: video_motion(a.brief or _read(a, "input"), a.project_id),
-    ("video", "sequence"): lambda a: video_sequence(a.brief, _read(a, "evidence"), a.project_id),
+    ("video", "sequence"): lambda a: _attach_design_revision(
+        video_sequence(a.brief, _read(a, "evidence"), a.project_id),
+        _read(a, "input") if (_read(a, "input") or "").lstrip().startswith("# Design") else None,
+    ),
     ("video", "adapt"): lambda a: video_adapt(_read(a, "input"), a.project_id, a.provider),
     ("video", "qa"): lambda a: video_qa(_read(a, "input"), _read(a, "evidence"), a.project_id),
 }
