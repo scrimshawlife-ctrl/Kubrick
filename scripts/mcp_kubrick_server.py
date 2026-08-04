@@ -8,6 +8,9 @@ Primary tool: kubrick_do → python scripts/kubrick.py do <intent> …
 
 Protocol: newline-delimited JSON-RPC 2.0 messages on stdin/stdout.
 Methods: initialize, tools/list, tools/call, ping.
+
+Security: intents/actions are allowlisted from the canonical manifest; args are
+flag-validated and path-containing values are bounded to the project/skill roots.
 """
 from __future__ import annotations
 
@@ -19,18 +22,30 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 PY = sys.executable
+sys.path.insert(0, str(ROOT / "scripts"))
+
+from io_safety import PathSafetyError, project_root, validate_mcp_tool_args  # noqa: E402
+from manifest_contract import load_manifest  # noqa: E402
+
+MANIFEST = load_manifest()
+VERSION = str(MANIFEST.get("version", "0.15.0"))
 
 TOOLS = [
     {
         "name": "kubrick_do",
         "description": (
-            "Run a Kubrick intent (compile, retrieve, adapt, visual, learn, check, …)"
+            "Run a Kubrick intent (compile, retrieve, adapt, visual, learn, check, "
+            "design, script, image, video, …). Paths in args must stay inside "
+            "KUBRICK_PROJECT_DIR (or cwd) / skill out/."
         ),
         "inputSchema": {
             "type": "object",
             "required": ["intent"],
             "properties": {
-                "intent": {"type": "string"},
+                "intent": {
+                    "type": "string",
+                    "enum": sorted(MANIFEST["intents"].keys()),
+                },
                 "action": {"type": "string"},
                 "args": {
                     "type": "array",
@@ -84,10 +99,30 @@ def call_tool(name: str, arguments: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(args, list):
         args = [args]
 
+    try:
+        cleaned = validate_mcp_tool_args(
+            str(intent),
+            str(action) if action is not None else None,
+            args,
+            intents=MANIFEST["intents"],
+            root=project_root(),
+        )
+    except (PathSafetyError, ValueError) as exc:
+        return {
+            "isError": True,
+            "content": [{"type": "text", "text": f"MCP arg policy rejection: {exc}"}],
+            "structuredContent": {
+                "status": "INVALID_COMMAND",
+                "exit_code": 2,
+                "fail_closed": True,
+                "code": "MCP_ARG_POLICY",
+            },
+        }
+
     cli: list[str] = ["do", str(intent)]
     if action:
         cli += ["--action", str(action)]
-    cli += [str(a) for a in args]
+    cli += cleaned
 
     proc = subprocess.run(
         [PY, str(ROOT / "scripts/kubrick.py"), *cli],
@@ -129,11 +164,15 @@ def handle(message: dict[str, Any]) -> None:
             {
                 "protocolVersion": "2024-11-05",
                 "capabilities": {"tools": {}},
-                "serverInfo": {"name": "kubrick-operators", "version": "0.13.0"},
+                "serverInfo": {"name": "kubrick-operators", "version": VERSION},
                 "instructions": (
-                    "Optional Kubrick operator surface. Use kubrick_do with intent "
-                    "(and optional action/args). CLI remains authoritative for local work. "
-                    "Forge remains canonical for committed project state. Fail closed on weak evidence."
+                    "Optional Kubrick operator surface. "
+                    "Use kubrick_do with intent and optional action/args. "
+                    "CLI remains authoritative for local work. "
+                    "Forge remains canonical for committed project state. "
+                    "Fail closed on weak evidence. "
+                    "Path args must remain inside KUBRICK_PROJECT_DIR/cwd; "
+                    "writes into skill references/schemas/scripts are rejected."
                 ),
             },
         )

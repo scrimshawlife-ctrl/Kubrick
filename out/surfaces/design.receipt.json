@@ -1,0 +1,50 @@
+{
+  "action": "create",
+  "artifact_id": "kubrick-design-create-755d97d7962ecb2a",
+  "artifact_type": "design-document",
+  "authority": "PROPOSED",
+  "generated_at": "2026-08-04T00:29:52.143346+00:00",
+  "not_computable": [],
+  "project_id": "authority-transfer",
+  "provenance": {
+    "external_authoritative": [],
+    "inferred": [],
+    "observed": [
+      "dramatic_problem",
+      "desired_state_change",
+      "character_pressure",
+      "format",
+      "raw"
+    ],
+    "speculative": []
+  },
+  "result": {
+    "document_path": "/agent/Kubrick/out/surfaces/design.md",
+    "implementation_state": "DOMAIN",
+    "revision": "r-755d97d7962ecb2a",
+    "sections_present": [
+      "continuity-invariants",
+      "creative-objective",
+      "document-status",
+      "dramatic-engine",
+      "negative-constraints",
+      "open-questions",
+      "project-identity",
+      "provenance-map",
+      "revision-history"
+    ]
+  },
+  "schema_version": "0.15.0",
+  "shared_invariants": {
+    "preserve_chronology": true,
+    "preserve_geometry": true,
+    "preserve_identity": true,
+    "preserve_locked_facts": true,
+    "preserve_material_state": true,
+    "preserve_ownership": true,
+    "preserve_residue": true
+  },
+  "source_state_id": "state-bb60f613e1d3849c",
+  "status": "PROPOSED",
+  "surface": "design"
+}

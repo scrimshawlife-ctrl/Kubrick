@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kubrick.local/schemas/shot-contract.schema.json",
+  "title": "Kubrick video shot contract",
+  "type": "object",
+  "required": ["shot_id", "duration_seconds", "start_state", "action", "camera", "end_state", "continuity_invariants", "negative_constraints"],
+  "properties": {
+    "shot_id": {"type": "string"},
+    "source_state_id": {"type": "string"},
+    "duration_seconds": {"type": "number"},
+    "start_state": {"type": "object"},
+    "action": {"type": "object"},
+    "camera": {"type": "object"},
+    "physics": {"type": "object"},
+    "end_state": {"type": "object"},
+    "continuity_invariants": {"type": "array", "items": {"type": "string"}},
+    "negative_constraints": {"type": "array", "items": {"type": "string"}}
+  }
+}

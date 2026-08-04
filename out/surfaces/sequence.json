@@ -1,0 +1,121 @@
+{
+  "action": "sequence",
+  "artifact_id": "kubrick-video-sequence-a82da211f5b40a69",
+  "artifact_type": "video-sequence-packet",
+  "authority": "PROPOSED",
+  "generated_at": "2026-08-04T00:29:52.208383+00:00",
+  "not_computable": [],
+  "project_id": "local-project",
+  "provenance": {
+    "external_authoritative": [],
+    "inferred": [],
+    "observed": [
+      "brief"
+    ],
+    "speculative": []
+  },
+  "result": {
+    "implementation_state": "DOMAIN",
+    "shots": [
+      {
+        "action": {
+          "path_or_change": "personal command becomes institutional pressure",
+          "subject": "primary figure",
+          "verb": "transfers"
+        },
+        "camera": {
+          "framing": "NOT_COMPUTABLE",
+          "lens_behavior": "NOT_COMPUTABLE",
+          "movement": "static unless evidenced",
+          "position": "NOT_COMPUTABLE"
+        },
+        "continuity_invariants": [
+          "preserve_identity",
+          "preserve_ownership_rules",
+          "preserve_residue"
+        ],
+        "duration_seconds": 4.0,
+        "end_state": {
+          "summary": "personal command becomes institutional pressure"
+        },
+        "negative_constraints": [
+          "named occult labels",
+          "geometry reset",
+          "residue erasure"
+        ],
+        "physics": {
+          "forbidden": [
+            "teleportation",
+            "identity swap"
+          ],
+          "required": []
+        },
+        "shot_id": "shot-755d97d7962ecb2a",
+        "source_state_id": "state-a6f165d60070e8bf",
+        "start_state": {
+          "observable": "authority remains active after the leader exits because access and geometry preserve the system",
+          "summary": "pre-action institutional arrangement"
+        }
+      },
+      {
+        "action": {
+          "path_or_change": "personal command becomes institutional pressure",
+          "subject": "primary figure",
+          "verb": "transfers"
+        },
+        "camera": {
+          "framing": "NOT_COMPUTABLE",
+          "lens_behavior": "NOT_COMPUTABLE",
+          "movement": "static unless evidenced",
+          "position": "NOT_COMPUTABLE"
+        },
+        "continuity_invariants": [
+          "preserve_identity",
+          "preserve_ownership_rules",
+          "preserve_residue"
+        ],
+        "duration_seconds": 4.0,
+        "end_state": {
+          "summary": "personal command becomes institutional pressure with visible residue retained"
+        },
+        "negative_constraints": [
+          "named occult labels",
+          "geometry reset",
+          "residue erasure"
+        ],
+        "physics": {
+          "forbidden": [
+            "teleportation",
+            "identity swap"
+          ],
+          "required": []
+        },
+        "shot_id": "shot-c40237ccd313841e",
+        "source_state_id": "state-a6f165d60070e8bf",
+        "start_state": {
+          "summary": "personal command becomes institutional pressure"
+        }
+      }
+    ],
+    "transitions": [
+      {
+        "compatible": true,
+        "from": "shot-755d97d7962ecb2a",
+        "to": "shot-c40237ccd313841e"
+      }
+    ]
+  },
+  "schema_version": "0.15.0",
+  "shared_invariants": {
+    "preserve_chronology": true,
+    "preserve_geometry": true,
+    "preserve_identity": true,
+    "preserve_locked_facts": true,
+    "preserve_material_state": true,
+    "preserve_ownership": true,
+    "preserve_residue": true
+  },
+  "source_state_id": "state-6f947838dcc42670",
+  "status": "PROPOSED",
+  "surface": "video"
+}

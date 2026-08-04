@@ -1,0 +1,55 @@
+{
+  "action": "audit",
+  "artifact_id": "kubrick-design-audit-14c2179e8e74cfaf",
+  "artifact_type": "design-audit-report",
+  "authority": "OBSERVATION",
+  "generated_at": "2026-08-04T00:29:26.206654+00:00",
+  "not_computable": [],
+  "project_id": "local-project",
+  "provenance": {
+    "external_authoritative": [],
+    "inferred": [],
+    "observed": [
+      "input"
+    ],
+    "speculative": []
+  },
+  "result": {
+    "audit_status": "FAIL",
+    "finding_count": 3,
+    "findings": [
+      {
+        "code": "MISSING_OR_WEAK",
+        "message": "Visual grammar lacks enforceable content",
+        "section": "visual-grammar",
+        "severity": "high"
+      },
+      {
+        "code": "MISSING_OR_WEAK",
+        "message": "Image-generation rules lacks enforceable content",
+        "section": "image-rules",
+        "severity": "high"
+      },
+      {
+        "code": "MISSING_OR_WEAK",
+        "message": "Video-generation rules lacks enforceable content",
+        "section": "video-rules",
+        "severity": "high"
+      }
+    ],
+    "implementation_state": "DOMAIN"
+  },
+  "schema_version": "0.15.0",
+  "shared_invariants": {
+    "preserve_chronology": true,
+    "preserve_geometry": true,
+    "preserve_identity": true,
+    "preserve_locked_facts": true,
+    "preserve_material_state": true,
+    "preserve_ownership": true,
+    "preserve_residue": true
+  },
+  "source_state_id": "state-001f5ae25cb8e3bd",
+  "status": "PROPOSED",
+  "surface": "design"
+}

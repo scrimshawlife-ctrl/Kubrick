@@ -128,7 +128,7 @@ def main() -> int:
 
     print("Kubrick OpenClaw Skill Validation")
     print(f"skill_root: {SKILL_ROOT}")
-    print("version: 0.13.0")
+    print(f"version: {(SKILL_ROOT / "VERSION").read_text(encoding="utf-8").strip()}")
     print(f"python_scripts_checked: {len(list((SKILL_ROOT / 'scripts').glob('*.py')))}")
 
     for warning in warnings:

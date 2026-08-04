@@ -1,4 +1,15 @@
-# Changelog — Kubrick
+# Changelog
+
+## [0.15.0] - 2026-08-04
+
+### Added — OpenClaw parity with Hermes v0.15
+
+- Ported canonical manifest (`host: openclaw`), intent router, diagnostics, and MCP allowlisting.
+- Ported path/intake hardening (`io_safety`), provenance taxonomy, and production-surface domain compilers.
+- First-class `design` / `script` / `image` / `video` surfaces available on OpenClaw.
+- Preserved OpenClaw installer, external state dir, doctor, and ClawHub packaging.
+
+ — Kubrick
 
 Kubrick is the primary symbolic cinematic narrative engineering skill. It replaces the earlier scriptwriting skill as the recommended system for premise-to-production development with deep motif, geometric, cinematic, storyboard, and visual-fidelity encoding.
 

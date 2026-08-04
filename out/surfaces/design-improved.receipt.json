@@ -1,0 +1,44 @@
+{
+  "action": "improve",
+  "artifact_id": "kubrick-design-improve-090c6b6ef92a274c",
+  "artifact_type": "design-revision-receipt",
+  "authority": "PROPOSED",
+  "generated_at": "2026-08-04T00:29:52.284970+00:00",
+  "not_computable": [],
+  "project_id": "local-project",
+  "provenance": {
+    "external_authoritative": [],
+    "inferred": [],
+    "observed": [
+      "input",
+      "evidence"
+    ],
+    "speculative": []
+  },
+  "result": {
+    "diff": [
+      {
+        "change": "appended",
+        "reason": "new evidence",
+        "section": "provenance-map"
+      }
+    ],
+    "document_path": "/agent/Kubrick/out/surfaces/design-improved.md",
+    "implementation_state": "DOMAIN",
+    "preserved_section_count": 25,
+    "revision": "r-ae10ad76da5e6ec0"
+  },
+  "schema_version": "0.15.0",
+  "shared_invariants": {
+    "preserve_chronology": true,
+    "preserve_geometry": true,
+    "preserve_identity": true,
+    "preserve_locked_facts": true,
+    "preserve_material_state": true,
+    "preserve_ownership": true,
+    "preserve_residue": true
+  },
+  "source_state_id": "state-8d62aca76703a4f2",
+  "status": "PROPOSED",
+  "surface": "design"
+}

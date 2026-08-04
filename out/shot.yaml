@@ -1,0 +1,9 @@
+status: NOT_COMPUTABLE
+authority: NOT_COMPUTABLE
+surface: video
+action: shot
+diagnostic:
+  code: INSUFFICIENT_EVIDENCE
+  message: desired end state not evidenced
+not_computable:
+- end_state
