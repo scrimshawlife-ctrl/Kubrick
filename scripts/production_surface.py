@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Shared deterministic runtime for Kubrick first-class production surfaces.
 
-v0.15 domain compilers emit design.md and structured script/image/video packets.
-Fail closed on weak evidence. Never silently promote authority.
+v0.16 routes every design/script/image/video action through the canonical
+ProductionEngine lifecycle while preserving the public CLI contract.
 """
 from __future__ import annotations
 
@@ -16,7 +16,12 @@ SCRIPTS = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPTS))
 
 from io_safety import PathSafetyError, resolve_bounded_path, write_text_bounded  # noqa: E402
-from surface_compilers import compile_surface  # noqa: E402
+from production_engine import (  # noqa: E402
+    ProductionRequest,
+    build_surface,
+    write_artifact_tree,
+)
+from surface_compilers import COMPILERS, compile_surface  # noqa: E402
 
 VALID_SURFACES = {"design", "script", "image", "video"}
 
@@ -50,12 +55,25 @@ def _write_artifact(artifact: dict[str, Any], output: str | None) -> None:
 
     if output:
         out = resolve_bounded_path(output, for_write=True)
+        # Directory output → canonical artifact tree
+        if out.exists() and out.is_dir() or str(output).endswith("/"):
+            out.mkdir(parents=True, exist_ok=True)
+            # Rebuild result object for tree writer via engine envelope already present
+            write_text_bounded(
+                out / "latest.json",
+                json.dumps(artifact, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+            )
+            if markdown:
+                write_text_bounded(out / "document.md", markdown)
+            if artifact.get("receipt"):
+                write_text_bounded(
+                    out / "receipt.json",
+                    json.dumps(artifact["receipt"], indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+                )
+            return
         if markdown and out.suffix.lower() in {".md", ".markdown", ".fountain"}:
             write_text_bounded(out, markdown)
-            side = out.with_suffix(out.suffix + ".receipt.json")
-            # Keep receipt nearby without forcing .md.json awkwardness
-            if out.suffix.lower() in {".md", ".fountain"}:
-                side = out.with_name(out.stem + ".receipt.json")
+            side = out.with_name(out.stem + ".receipt.json")
             receipt = dict(artifact)
             if isinstance(receipt.get("result"), dict):
                 receipt["result"] = {
@@ -67,7 +85,6 @@ def _write_artifact(artifact: dict[str, Any], output: str | None) -> None:
                 json.dumps(receipt, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
             )
             return
-        # YAML-ish shot packets: if user asks for .yaml, dump result.shot/packet
         if out.suffix.lower() in {".yaml", ".yml"}:
             try:
                 import yaml  # type: ignore[import-untyped]
@@ -82,19 +99,25 @@ def _write_artifact(artifact: dict[str, Any], output: str | None) -> None:
         )
         return
 
-    # stdout
     if markdown and not sys.stdout.isatty():
-        # Agents often want the document body when no --output is set and action is design/script
         if artifact.get("surface") in {"design", "script"} and artifact.get("action") in {
             "create",
             "build",
             "improve",
             "update",
             "adapt",
+            "expand",
+            "summarize",
+            "rewrite",
+            "compress",
         }:
             sys.stdout.write(markdown)
             return
     sys.stdout.write(json.dumps(artifact, indent=2, sort_keys=True, ensure_ascii=False) + "\n")
+
+
+def _surface_registry(surface: str):
+    return build_surface(surface)
 
 
 def run(surface: str, actions: set[str]) -> int:
@@ -106,41 +129,80 @@ def run(surface: str, actions: set[str]) -> int:
     parser.add_argument("--brief")
     parser.add_argument("--input")
     parser.add_argument("--evidence")
-    parser.add_argument(
-        "--design",
-        help="Optional design.md path for revision linkage on script/image/video compiles",
-    )
+    parser.add_argument("--design", help="Optional design.md path for revision linkage")
     parser.add_argument("--provider", default="generic")
     parser.add_argument("--project-id", default="local-project")
     parser.add_argument("--output")
     parser.add_argument("--format", default="markdown")
     parser.add_argument("--duration", type=float, default=8.0)
+    parser.add_argument(
+        "--artifact-root",
+        help="Optional directory for receipts/artifacts/qa/metadata tree",
+    )
     args = parser.parse_args()
 
     try:
         loaded_input = _load_optional(args.input)
         loaded_evidence = _load_optional(args.evidence)
         loaded_design = _load_optional(getattr(args, "design", None))
-        # Allow --brief to be either inline text or a path to a brief file.
         if args.brief:
-            brief_path = Path(args.brief)
-            if brief_path.expanduser().exists() or (
-                not args.brief.strip().startswith("dramatic_problem")
-                and "/" in args.brief
-            ):
+            # Never treat multiline / long inline briefs as filesystem paths.
+            looks_inline = (
+                "\n" in args.brief
+                or args.brief.strip().startswith("dramatic_problem")
+                or len(args.brief) > 512
+            )
+            if not looks_inline:
                 try:
-                    args.brief = _load_optional(args.brief)
+                    if Path(args.brief).expanduser().exists():
+                        loaded = _load_optional(args.brief)
+                        if loaded is not None:
+                            args.brief = loaded
+                except OSError:
+                    pass
                 except (FileNotFoundError, PathSafetyError):
-                    pass  # treat as literal brief text
-        setattr(args, "_loaded_input", loaded_input)
-        setattr(args, "_loaded_evidence", loaded_evidence)
-        setattr(args, "_loaded_design", loaded_design)
-        # design create may also treat --input as evidence seed
+                    pass
         if surface == "design" and args.surface_action in {"create", "build"}:
             if not args.brief and not loaded_evidence and loaded_input:
-                setattr(args, "_loaded_evidence", loaded_input)
+                loaded_evidence = loaded_input
 
-        artifact = compile_surface(surface, args.surface_action, args)
+        request = ProductionRequest(
+            surface=surface,
+            action=args.surface_action,
+            brief=args.brief,
+            input_text=loaded_input,
+            evidence=loaded_evidence,
+            design_text=loaded_design,
+            provider=args.provider,
+            project_id=args.project_id,
+            format=args.format,
+            duration=args.duration,
+            output=args.output,
+        )
+        registry = _surface_registry(surface)
+        # Restrict to the entrypoint's declared actions for fail-closed routing.
+        if args.surface_action not in actions:
+            artifact = {
+                "status": "NOT_COMPUTABLE",
+                "authority": "NOT_COMPUTABLE",
+                "surface": surface,
+                "action": args.surface_action,
+                "diagnostic": {"code": "UNKNOWN_ACTION", "message": f"Action not enabled on {surface}"},
+            }
+            _write_artifact(artifact, args.output)
+            return 4
+
+        result = registry.execute(request)
+        artifact = result.to_dict()
+        # Preserve legacy compile_surface parity fields used by older tests.
+        if "shared_invariants" not in artifact:
+            artifact["shared_invariants"] = result.to_dict().get("shared_invariants")
+
+        if args.artifact_root:
+            root = resolve_bounded_path(args.artifact_root, for_write=True)
+            root.mkdir(parents=True, exist_ok=True)
+            write_artifact_tree(result, root)
+
         _write_artifact(artifact, args.output)
     except PathSafetyError as exc:
         fail = {
@@ -176,3 +238,11 @@ def run(surface: str, actions: set[str]) -> int:
     if artifact.get("status") == "NOT_COMPUTABLE":
         return 4
     return 0
+
+
+# Back-compat for direct imports used by older foundation tests.
+def build_artifact(surface: str, action: str, args: argparse.Namespace) -> dict[str, Any]:
+    setattr(args, "_loaded_input", getattr(args, "_loaded_input", None))
+    setattr(args, "_loaded_evidence", getattr(args, "_loaded_evidence", None))
+    setattr(args, "_loaded_design", getattr(args, "_loaded_design", None))
+    return compile_surface(surface, action, args)

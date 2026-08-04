@@ -1,6 +1,30 @@
-# Production surfaces example
+# Production surfaces example (v0.16)
 
-End-to-end v0.15 path: brief → design.md → script → image prompt → video shot → drift.
+End-to-end path through the canonical production engine:
+
+brief → design.md → script → image → video → QA → receipts
+
+## Quick demo
+
+```bash
+bash examples/production-surfaces/run_demo.sh
+```
+
+## Engine + artifact tree
+
+```bash
+python scripts/kubrick.py design create \
+  --brief examples/authority-transfer-storyboard/brief.yaml \
+  --project-id authority-transfer \
+  --artifact-root out/surfaces-demo \
+  --output out/surfaces-demo/design.md
+
+python scripts/kubrick.py qa design --input out/surfaces-demo/design.md
+python scripts/kubrick.py receipts --root out/surfaces-demo
+```
+
+See `docs/ARCHITECTURE-v0.16.md` for the shared lifecycle and full action map.
+
 
 ## Quick demo
 

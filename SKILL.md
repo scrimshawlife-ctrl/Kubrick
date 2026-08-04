@@ -3,7 +3,7 @@ name: "kubrick"
 description: "OpenClaw-native cinematic engineering, deterministic symbolism, storyboard continuity, provider adaptation, visual QA, and governed learning."
 license: MIT
 metadata:
-  kubrick_version: "0.15.0"
+  kubrick_version: "0.16.0"
   openclaw:
     requires:
       bins:

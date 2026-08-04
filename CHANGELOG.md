@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.16.0] - 2026-08-04
+
+### Added — OpenClaw parity with Hermes v0.16
+
+- Ported canonical `ProductionEngine` lifecycle (Surface/Request/Result/Artifact/Context/Validator/Receipt).
+- Expanded design/script/image/video actions, shared QA, artifact trees, and receipts CLI sugar.
+- Preserved OpenClaw installer, external state dir, doctor, retrieve, and ClawHub packaging.
+
 ## [0.15.0] - 2026-08-04
 
 ### Added — OpenClaw parity with Hermes v0.15

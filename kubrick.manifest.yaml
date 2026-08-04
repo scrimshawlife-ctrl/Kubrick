@@ -1,7 +1,7 @@
 {
   "manifest_version": 1,
   "name": "kubrick",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "host": "openclaw",
   "runtime_profiles": {
     "prose": {
@@ -69,7 +69,10 @@
         "reconcile": "design_surface.py",
         "drift": "design_surface.py",
         "update": "design_surface.py",
-        "validate": "design_surface.py"
+        "validate": "design_surface.py",
+        "expand": "design_surface.py",
+        "summarize": "design_surface.py",
+        "qa": "design_surface.py"
       }
     },
     "script": {
@@ -78,10 +81,20 @@
       "actions": {
         "create": "script_surface.py",
         "improve": "script_surface.py",
+        "rewrite": "script_surface.py",
+        "expand": "script_surface.py",
+        "compress": "script_surface.py",
         "diagnose": "script_surface.py",
         "adapt": "script_surface.py",
+        "continuity": "script_surface.py",
         "continuity-check": "script_surface.py",
-        "handoff": "script_surface.py"
+        "handoff": "script_surface.py",
+        "scene-extract": "script_surface.py",
+        "beat-validate": "script_surface.py",
+        "character-consistency": "script_surface.py",
+        "dialog-validate": "script_surface.py",
+        "genre-validate": "script_surface.py",
+        "qa": "script_surface.py"
       }
     },
     "image": {
@@ -89,10 +102,17 @@
       "default_action": "prompt",
       "actions": {
         "prompt": "image_surface.py",
+        "generate": "image_surface.py",
+        "improve": "image_surface.py",
         "sequence": "image_surface.py",
+        "batch": "image_surface.py",
         "reference": "image_surface.py",
         "negative": "image_surface.py",
         "adapt": "image_surface.py",
+        "composition": "image_surface.py",
+        "lighting": "image_surface.py",
+        "camera": "image_surface.py",
+        "symbol-extract": "image_surface.py",
         "qa": "image_surface.py"
       }
     },
@@ -103,7 +123,12 @@
         "shot": "video_surface.py",
         "prompt": "video_surface.py",
         "motion": "video_surface.py",
+        "blocking": "video_surface.py",
         "sequence": "video_surface.py",
+        "transition": "video_surface.py",
+        "animation": "video_surface.py",
+        "timeline": "video_surface.py",
+        "continuity": "video_surface.py",
         "adapt": "video_surface.py",
         "qa": "video_surface.py"
       }
@@ -369,6 +394,34 @@
     "validate": {
       "intent": "check",
       "action": "smoke"
+    },
+    "design-expand": {
+      "intent": "design",
+      "action": "expand"
+    },
+    "design-summarize": {
+      "intent": "design",
+      "action": "summarize"
+    },
+    "design-qa": {
+      "intent": "design",
+      "action": "qa"
+    },
+    "script-rewrite": {
+      "intent": "script",
+      "action": "rewrite"
+    },
+    "script-qa": {
+      "intent": "script",
+      "action": "qa"
+    },
+    "image-generate": {
+      "intent": "image",
+      "action": "generate"
+    },
+    "video-timeline": {
+      "intent": "video",
+      "action": "timeline"
     }
   },
   "recipes": {
@@ -449,45 +502,46 @@
     "grok-imagine"
   ],
   "artifact_types": [
-    "symbolic-architecture",
-    "motif-structure-graph",
-    "project-symbolic-ledger",
-    "storyboard-symbolic-state",
-    "model-adapter-packet",
-    "visual-observation",
-    "visual-fidelity-report",
+    "cinematic-project-state",
     "correction-iteration-receipt",
-    "pattern-use-receipt",
-    "pattern-evolution-proposal",
-    "multi-signal-evolution-receipt",
-    "forge-signal-bundle",
-    "design-specification",
-    "design-revision",
-    "script-package",
-    "script-diagnostic",
-    "image-prompt-package",
-    "image-sequence-package",
-    "video-shot-contract",
-    "video-sequence-package",
-    "production-surface-receipt",
-    "design-document",
     "design-audit-report",
+    "design-document",
+    "design-revision",
     "design-revision-receipt",
-    "script-development-packet",
-    "script-diagnostic-report",
-    "script-continuity-report",
+    "design-specification",
+    "forge-signal-bundle",
+    "image-prompt-package",
     "image-prompt-packet",
+    "image-sequence-package",
     "image-sequence-packet",
-    "visual-reference-packet",
-    "video-prompt-packet",
-    "shot-contract",
-    "video-sequence-packet",
-    "motion-contract",
     "media-reconciliation-report",
-    "cinematic-project-state"
+    "model-adapter-packet",
+    "motif-structure-graph",
+    "motion-contract",
+    "multi-signal-evolution-receipt",
+    "pattern-evolution-proposal",
+    "pattern-use-receipt",
+    "production-surface-receipt",
+    "project-symbolic-ledger",
+    "script-continuity-report",
+    "script-development-packet",
+    "script-diagnostic",
+    "script-diagnostic-report",
+    "script-package",
+    "shot-contract",
+    "storyboard-symbolic-state",
+    "symbolic-architecture",
+    "video-prompt-packet",
+    "video-sequence-package",
+    "video-sequence-packet",
+    "video-shot-contract",
+    "visual-fidelity-report",
+    "visual-observation",
+    "visual-reference-packet"
   ],
   "schemas": [
     "schemas/cinematic-pattern.schema.json",
+    "schemas/cinematic-project-state.schema.json",
     "schemas/continuity-forge-symbolic-export.schema.json",
     "schemas/correction-iteration-receipt.schema.yaml",
     "schemas/design-document.schema.json",
