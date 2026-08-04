@@ -355,12 +355,13 @@ kubrick do video adapt --packet shot.yaml --provider <provider>
 
 - add shot and motion schemas
 - implement temporal state propagation
-- add neutral video prompt packet
+- add neutral video prompt packet (`video prompt`)
 - add provider capability declarations and fail-closed adaptation
 - extend QA to motion, timing, camera, physics, identity persistence, and end state
 
 ### P2 — Cross-surface reconciliation
 
+- `design drift` (directory or multi-artifact evidence)
 - design ↔ script
 - design ↔ image
 - design ↔ video

@@ -245,6 +245,26 @@ def test_image_frame_carries_claims() -> None:
     assert frame["claims"]["dramatic_problem"]["authority"] == "OBSERVED"
 
 
+def test_video_qa_dimensions() -> None:
+    qa = sc.video_qa(
+        "shot end_state access transfers identity residue",
+        "identity persists; badge transfers; end state shows residue; camera static; motion of hand",
+        "p",
+    )
+    assert qa["result"]["dimensions"]["motion"] is True
+    assert qa["result"]["dimensions"]["identity_persistence"] is True
+    assert qa["result"]["dimensions"]["end_state"] is True
+
+
+def test_provider_capability_helpers() -> None:
+    from provider_capabilities import check_video_adapt, check_image_adapt, capabilities_for
+
+    assert check_image_adapt("flux") is None
+    assert check_video_adapt("flux") is not None
+    assert capabilities_for("grok-imagine")["video"] is True
+    assert check_video_adapt("grok-imagine", duration=20) is not None
+
+
 def main() -> None:
     test_design_create_and_improve_preserves_sections()
     test_yaml_brief_enriches_design_and_improve()
@@ -252,6 +272,8 @@ def main() -> None:
     test_design_drift_directory_compatible()
     test_image_frame_carries_claims()
     test_video_shot_embeds_design_revision()
+    test_video_qa_dimensions()
+    test_provider_capability_helpers()
     test_resolve_design_auto_discover()
     test_video_sequence_transition_compatible()
     test_video_shot_fails_without_end_state()

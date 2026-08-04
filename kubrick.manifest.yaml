@@ -101,6 +101,7 @@
       "default_action": "shot",
       "actions": {
         "shot": "video_surface.py",
+        "prompt": "video_surface.py",
         "motion": "video_surface.py",
         "sequence": "video_surface.py",
         "adapt": "video_surface.py",
@@ -230,6 +231,10 @@
     "video-shot": {
       "intent": "video",
       "action": "shot"
+    },
+    "video-prompt": {
+      "intent": "video",
+      "action": "prompt"
     },
     "storyboard-propagate": {
       "intent": "storyboard",
@@ -506,6 +511,7 @@
     "schemas/symbolic-architecture.schema.json",
     "schemas/symbolic-narrative-pattern.schema.json",
     "schemas/transformation-grammar.schema.json",
+    "schemas/video-prompt-packet.schema.json",
     "schemas/visual-fidelity-report.schema.yaml",
     "schemas/visual-observation.schema.yaml"
   ],

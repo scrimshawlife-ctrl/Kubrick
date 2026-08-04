@@ -13,6 +13,8 @@
 - `schemas/design-revision-receipt.schema.json` + adapt preservation regression tests.
 - Fountain/beat-sheet script formats; authority-tagged claims on packets.
 - `design drift` over artifact directories; production-surfaces demo script.
+- Provider capability declarations; video adapt fail-closed on image-only providers.
+- Neutral `video prompt` packet + richer video QA dimensions.
 
 ## [Unreleased]
 

@@ -29,11 +29,17 @@ echo "== image prompt + adapt =="
 "$PY" "$ROOT/scripts/kubrick.py" do image --action adapt \
   --input "$OUT/image.json" --provider flux --output "$OUT/image-flux.json"
 
-echo "== video shot + sequence =="
+echo "== video shot + prompt + sequence =="
 "$PY" "$ROOT/scripts/kubrick.py" do video --action shot \
   --brief "$BRIEF" --design "$OUT/design-improved.md" --output "$OUT/shot.yaml"
+"$PY" "$ROOT/scripts/kubrick.py" do video --action prompt \
+  --brief "$BRIEF" --design "$OUT/design-improved.md" --provider generic \
+  --output "$OUT/video-prompt.json"
 "$PY" "$ROOT/scripts/kubrick.py" do video --action sequence \
   --brief "$BRIEF" --design "$OUT/design-improved.md" --output "$OUT/sequence.json"
+"$PY" "$ROOT/scripts/kubrick.py" do video --action adapt \
+  --input "$OUT/shot.yaml" --provider grok-imagine --output "$OUT/video-adapted.json" || true
+
 
 echo "== design drift (directory evidence) =="
 "$PY" "$ROOT/scripts/kubrick.py" do design --action drift \

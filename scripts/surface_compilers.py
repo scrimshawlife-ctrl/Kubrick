@@ -1275,6 +1275,23 @@ def image_adapt(packet_text: str | None, project_id: str, provider: str) -> dict
             "action": "adapt",
             "diagnostic": {"code": "INSUFFICIENT_EVIDENCE", "message": "--input packet is required"},
         }
+    from provider_capabilities import capabilities_for, check_image_adapt, normalize_provider
+
+    cap_err = check_image_adapt(provider)
+    if cap_err:
+        return {
+            "status": "NOT_COMPUTABLE",
+            "authority": "NOT_COMPUTABLE",
+            "surface": "image",
+            "action": "adapt",
+            "diagnostic": cap_err,
+            "result": {
+                "implementation_state": "DOMAIN",
+                "provider": normalize_provider(provider),
+                "capabilities": cap_err.get("capabilities"),
+            },
+            "artifact_type": "image-prompt-packet",
+        }
     meta = _base_meta("image", "adapt", project_id, {"packet": packet_text, "provider": provider})
     try:
         packet = _parse_surface_or_adapter_packet(packet_text)
@@ -1288,7 +1305,8 @@ def image_adapt(packet_text: str | None, project_id: str, provider: str) -> dict
             status = report.get("status") or adapted.get("validation", {}).get("status") or "VALID"
         meta["result"] = {
             "implementation_state": "DOMAIN",
-            "provider": provider,
+            "provider": normalize_provider(provider),
+            "capabilities": capabilities_for(provider),
             "adapted_packet": adapted,
             "preservation_report": report
             if isinstance(report, dict)
@@ -1302,8 +1320,240 @@ def image_adapt(packet_text: str | None, project_id: str, provider: str) -> dict
         meta["status"] = "NOT_COMPUTABLE"
         meta["authority"] = "NOT_COMPUTABLE"
         meta["diagnostic"] = {"code": "ADAPTER_NOT_COMPUTABLE", "message": str(exc)}
-        meta["result"] = {"implementation_state": "DOMAIN", "provider": provider}
+        meta["result"] = {
+            "implementation_state": "DOMAIN",
+            "provider": normalize_provider(provider),
+            "capabilities": capabilities_for(provider),
+        }
     meta["artifact_type"] = "image-prompt-packet"
+    return meta
+
+
+def _shot_dict_to_adapter_packet(shot: dict[str, Any], provider: str = "generic") -> dict[str, Any]:
+    start = shot.get("start_state") or {}
+    end = shot.get("end_state") or {}
+    action = shot.get("action") or {}
+    camera = shot.get("camera") or {}
+    prompt = "; ".join(
+        str(x)
+        for x in (
+            start.get("observable") or start.get("summary"),
+            action.get("path_or_change") or action.get("verb"),
+            end.get("summary"),
+            camera.get("framing"),
+        )
+        if x and str(x) != "NOT_COMPUTABLE"
+    )
+    frame = {
+        "frame_id": shot.get("shot_id") or f"frame-{_digest(prompt)}",
+        "prompt": prompt or "NOT_COMPUTABLE",
+        "state_constraints": [
+            c
+            for c in (
+                action.get("path_or_change"),
+                end.get("summary"),
+                *(end.get("residue") or [])[:2],
+            )
+            if c and c != "NOT_COMPUTABLE"
+        ],
+        "continuity_from_previous": list(shot.get("continuity_invariants") or []),
+    }
+    return {
+        "source_graph_id": shot.get("source_state_id") or "surface",
+        "provider": provider,
+        "frames": [frame],
+        "shared_constraints": {
+            "negative_constraints": list(shot.get("negative_constraints") or []),
+        },
+        "validation": {"status": "VALID", "errors": []},
+        "private_state_policy": {
+            "graph_mutation_allowed": False,
+            "pattern_links_exposed": False,
+            "lexicon_links_exposed": False,
+        },
+        "duration_seconds": shot.get("duration_seconds"),
+    }
+
+
+def _parse_video_adapt_input(packet_text: str) -> tuple[dict[str, Any], float | None]:
+    """Return adapter packet + optional duration from surface/shot/adapter input."""
+    text = packet_text.strip()
+    data: Any
+    if text.startswith("{"):
+        data = json.loads(text)
+    else:
+        try:
+            import yaml  # type: ignore[import-untyped]
+        except ImportError as exc:
+            raise RuntimeError("PyYAML required to parse YAML packets") from exc
+        data = yaml.safe_load(text) or {}
+    if not isinstance(data, dict):
+        raise ValueError("packet root must be an object")
+
+    duration = None
+    # Surface video receipt with result.shot
+    if isinstance(data.get("result"), dict) and "shot" in data["result"]:
+        shot = data["result"]["shot"]
+        duration = shot.get("duration_seconds")
+        return _shot_dict_to_adapter_packet(shot), duration
+    # Raw shot contract
+    if "shot_id" in data and ("start_state" in data or "end_state" in data):
+        duration = data.get("duration_seconds")
+        return _shot_dict_to_adapter_packet(data), duration
+    # Sequence packet — adapt first shot only (fail closed on multi if needed later)
+    if isinstance(data.get("result"), dict) and data["result"].get("shots"):
+        shot = data["result"]["shots"][0]
+        duration = shot.get("duration_seconds")
+        return _shot_dict_to_adapter_packet(shot), duration
+    # Image-style packet with frames
+    packet = _parse_surface_or_adapter_packet(packet_text)
+    return _to_adapter_packet(packet), duration
+
+
+def video_prompt(
+    brief: str | None,
+    evidence: str | None,
+    project_id: str,
+    duration: float = 8.0,
+    design_text: str | None = None,
+    provider: str = "generic",
+) -> dict[str, Any]:
+    """Compile a neutral video prompt packet from brief (+ optional design)."""
+    shot_meta = video_shot(brief, evidence, project_id, duration=duration, design_text=design_text)
+    if shot_meta.get("status") == "NOT_COMPUTABLE":
+        shot_meta["action"] = "prompt"
+        shot_meta["artifact_type"] = "video-prompt-packet"
+        return shot_meta
+    from provider_capabilities import capabilities_for, check_video_shot, normalize_provider
+
+    shot = shot_meta["result"]["shot"]
+    cap_warn = check_video_shot(provider, duration=float(duration))
+    adapter = _shot_dict_to_adapter_packet(shot, provider=normalize_provider(provider))
+    meta = _base_meta(
+        "video",
+        "prompt",
+        project_id,
+        {"brief": brief or "", "evidence": evidence or "", "provider": provider},
+    )
+    meta["result"] = {
+        "implementation_state": "DOMAIN",
+        "provider": normalize_provider(provider),
+        "capabilities": capabilities_for(provider),
+        "shot": shot,
+        "packet": adapter,
+        "claims": shot.get("claims") or {},
+    }
+    if cap_warn:
+        meta["result"]["capability_advisory"] = cap_warn
+        # Keep provider-neutral packet; do not hard-fail prompt compile for advisory.
+    meta["artifact_type"] = "video-prompt-packet"
+    return _attach_design_revision(meta, design_text)
+
+
+def video_adapt(packet_text: str | None, project_id: str, provider: str) -> dict[str, Any]:
+    if not packet_text:
+        return {
+            "status": "NOT_COMPUTABLE",
+            "authority": "NOT_COMPUTABLE",
+            "surface": "video",
+            "action": "adapt",
+            "diagnostic": {"code": "INSUFFICIENT_EVIDENCE", "message": "--input packet is required"},
+        }
+    from provider_capabilities import capabilities_for, check_video_adapt, normalize_provider
+
+    meta = _base_meta("video", "adapt", project_id, {"packet": packet_text, "provider": provider})
+    try:
+        adapter_packet, duration = _parse_video_adapt_input(packet_text)
+        cap_err = check_video_adapt(provider, duration=duration)
+        if cap_err:
+            meta["status"] = "NOT_COMPUTABLE"
+            meta["authority"] = "NOT_COMPUTABLE"
+            meta["diagnostic"] = cap_err
+            meta["result"] = {
+                "implementation_state": "DOMAIN",
+                "provider": normalize_provider(provider),
+                "capabilities": cap_err.get("capabilities") or capabilities_for(provider),
+            }
+            meta["artifact_type"] = "video-prompt-packet"
+            meta["not_computable"] = ["provider_capability"]
+            return meta
+
+        from adapt_provider import adapt
+
+        adapted = adapt(adapter_packet, provider)
+        report = adapted.get("preservation_report") or adapted.get("validation") or {}
+        status = "VALID"
+        if isinstance(report, dict):
+            status = report.get("status") or adapted.get("validation", {}).get("status") or "VALID"
+        meta["result"] = {
+            "implementation_state": "DOMAIN",
+            "provider": normalize_provider(provider),
+            "capabilities": capabilities_for(provider),
+            "adapted_packet": adapted,
+            "preservation_report": report if isinstance(report, dict) else {"status": status},
+            "duration_seconds": duration,
+        }
+        if status != "VALID":
+            meta["status"] = "NOT_COMPUTABLE"
+            meta["authority"] = "NOT_COMPUTABLE"
+            meta["not_computable"] = ["provider_semantic_preservation"]
+        meta["artifact_id"] = (
+            f"kubrick-video-adapt-{_digest({'packet': packet_text, 'provider': provider})}"
+        )
+    except Exception as exc:  # noqa: BLE001
+        meta["status"] = "NOT_COMPUTABLE"
+        meta["authority"] = "NOT_COMPUTABLE"
+        meta["diagnostic"] = {"code": "ADAPTER_NOT_COMPUTABLE", "message": str(exc)}
+        meta["result"] = {
+            "implementation_state": "DOMAIN",
+            "provider": normalize_provider(provider),
+            "capabilities": capabilities_for(provider),
+        }
+    meta["artifact_type"] = "video-prompt-packet"
+    return meta
+
+
+def video_qa(expected: str | None, observation: str | None, project_id: str) -> dict[str, Any]:
+    if not expected or not observation:
+        return {
+            "status": "NOT_COMPUTABLE",
+            "authority": "NOT_COMPUTABLE",
+            "surface": "video",
+            "action": "qa",
+            "diagnostic": {
+                "code": "INSUFFICIENT_EVIDENCE",
+                "message": "Provide --input expected packet text and --evidence observation text",
+            },
+        }
+    exp_tokens = set(re.findall(r"[a-z0-9_]{4,}", expected.lower()))
+    obs_tokens = set(re.findall(r"[a-z0-9_]{4,}", observation.lower()))
+    overlap = len(exp_tokens & obs_tokens) / max(1, len(exp_tokens))
+    obs = observation.lower()
+    dimensions = {
+        "identity": overlap >= 0.2 or "identity" in obs,
+        "geometry": overlap >= 0.15 or "geometry" in obs or "door" in obs,
+        "residue": "residue" in obs or "crack" in obs or overlap >= 0.25,
+        "motion": any(k in obs for k in ("move", "transfer", "walk", "hand", "motion")) or overlap >= 0.2,
+        "timing": any(k in obs for k in ("second", "duration", "beat", "pause", "hold")) or overlap >= 0.3,
+        "camera": any(k in obs for k in ("camera", "framing", "pan", "track", "static")) or overlap >= 0.25,
+        "physics": any(k in obs for k in ("physics", "fall", "weight", "impact", "gravity")) or overlap >= 0.3,
+        "identity_persistence": "same" in obs or "persist" in obs or "identity" in obs or overlap >= 0.25,
+        "end_state": "end" in obs or "after" in obs or "final" in obs or overlap >= 0.25,
+    }
+    critical = ("identity", "end_state", "identity_persistence")
+    critical_ok = all(dimensions[k] for k in critical)
+    meta = _base_meta("video", "qa", project_id, {"expected": expected, "observation": observation})
+    meta["result"] = {
+        "implementation_state": "DOMAIN",
+        "overlap_ratio": round(overlap, 4),
+        "qa_status": "PASS" if critical_ok and overlap >= 0.15 else "FAIL",
+        "dimensions": dimensions,
+    }
+    meta["artifact_type"] = "media-reconciliation-report"
+    if not critical_ok or overlap < 0.15:
+        meta["status"] = "NOT_COMPUTABLE"
+        meta["authority"] = "NOT_COMPUTABLE"
+        meta["not_computable"] = [k for k in critical if not dimensions[k]]
     return meta
 
 
@@ -1612,32 +1862,6 @@ def video_sequence(
     return _attach_design_revision(meta, design_text)
 
 
-def video_adapt(packet_text: str | None, project_id: str, provider: str) -> dict[str, Any]:
-    adapted = image_adapt(packet_text, project_id, provider)
-    adapted["surface"] = "video"
-    adapted["action"] = "adapt"
-    adapted["artifact_type"] = "video-prompt-packet"
-    if adapted.get("status") != "NOT_COMPUTABLE":
-        adapted["artifact_id"] = (
-            f"kubrick-video-adapt-{_digest({'packet': packet_text, 'provider': provider})}"
-        )
-    return adapted
-
-
-def video_qa(expected: str | None, observation: str | None, project_id: str) -> dict[str, Any]:
-    result = image_qa(expected, observation, project_id)
-    if result.get("status") != "NOT_COMPUTABLE" or result.get("result"):
-        result["surface"] = "video"
-        result["action"] = "qa"
-        if "result" in result:
-            result["result"]["dimensions"] = {
-                **result["result"].get("dimensions", {}),
-                "motion": "move" in (observation or "").lower() or result["result"].get("overlap_ratio", 0) >= 0.2,
-                "end_state": "end" in (observation or "").lower() or result["result"].get("overlap_ratio", 0) >= 0.25,
-            }
-    return result
-
-
 def _design_for_args(a: Any) -> str | None:
     return resolve_design_text(
         _read(a, "design"),
@@ -1686,6 +1910,14 @@ COMPILERS: dict[tuple[str, str], Any] = {
         a.project_id,
         getattr(a, "duration", 8.0),
         design_text=_design_for_args(a),
+    ),
+    ("video", "prompt"): lambda a: video_prompt(
+        a.brief,
+        _read(a, "evidence"),
+        a.project_id,
+        getattr(a, "duration", 8.0),
+        design_text=_design_for_args(a),
+        provider=getattr(a, "provider", "generic"),
     ),
     ("video", "motion"): lambda a: video_motion(a.brief or _read(a, "input"), a.project_id),
     ("video", "sequence"): lambda a: video_sequence(

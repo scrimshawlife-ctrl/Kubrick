@@ -55,7 +55,50 @@ class ProductionSurfaceArtifact(TypedDict, total=False):
     authority: str
     provenance: dict[str, list[str]]
     shared_invariants: dict[str, bool]
+    source_design_revision: str
     result: dict[str, Any]
+
+
+class AuthorityClaim(TypedDict, total=False):
+    text: str
+    authority: str
+
+
+class ShotContract(TypedDict, total=False):
+    shot_id: str
+    source_state_id: str
+    source_design_revision: str
+    duration_seconds: float
+    start_state: dict[str, Any]
+    action: dict[str, Any]
+    camera: dict[str, Any]
+    physics: dict[str, Any]
+    end_state: dict[str, Any]
+    continuity_invariants: list[str]
+    negative_constraints: list[str]
+    claims: dict[str, Any]
+
+
+class DesignRevisionReceipt(TypedDict, total=False):
+    schema_version: str
+    artifact_id: str
+    artifact_type: str
+    authority: str
+    status: str
+    project_id: str
+    result: dict[str, Any]
+
+
+class ProviderCapabilities(TypedDict, total=False):
+    image: bool
+    video: bool
+    max_duration_seconds: float
+    camera_motion: bool
+    dialogue_audio: bool
+    multi_shot: bool
+    physics_hints: bool
+    identity_lock: bool
+    unknown_provider: bool
 
 
 REQUIRED_KEYS: dict[str, tuple[str, ...]] = {
@@ -64,6 +107,9 @@ REQUIRED_KEYS: dict[str, tuple[str, ...]] = {
     "storyboard-symbolic-state": ("frames",),
     "model-adapter-packet": ("frames", "shared_constraints"),
     "production-surface": ("artifact_id", "surface", "action", "status", "authority"),
+    "shot-contract": ("shot_id", "duration_seconds", "start_state", "end_state"),
+    "design-revision-receipt": ("artifact_id", "artifact_type", "result"),
+    "provider-capabilities": ("image", "video"),
 }
 
 
