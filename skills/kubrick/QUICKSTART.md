@@ -350,9 +350,10 @@ Shortcut: `python scripts/kubrick.py recipe verify` (runs `do check --action smo
 |---|---|
 | `README.md` | Public overview and architecture |
 | `SKILL.md` | Hermes operating contract |
-| `docs/ROADMAP-v0.14.md` | Current roadmap |
-| `docs/RELEASE-NOTES-v0.14.md` | What shipped in 0.14 |
+| `docs/ROADMAP-v0.16.md` | Current roadmap |
+| `docs/RELEASE-NOTES-v0.16.md` | What shipped in 0.16 |
 | `docs/README.md` | Full docs index |
+| `docs/archive/` | Historical roadmaps and shipped plans |
 | `references/continuity-forge-integration.md` | Forge handoff + feedback |
 | `references/hermes-model-adapters.md` | Adapter invariants |
 | `references/hermes-visual-qa.md` | Visual QA contract |

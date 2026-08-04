@@ -5,8 +5,7 @@ Track issue: https://github.com/scrimshawlife-ctrl/Kubrick/issues/32
 Bring the permanent `openclaw` branch to Hermes `main` / v0.16 contracts without
 erasing OpenClaw packaging, external state (`KUBRICK_STATE_DIR`), doctor, or overlays.
 
-Local parity branch: `cursor/openclaw-v016-parity-44a4`  
-Remote tip (verified 2026-08-04): `origin/openclaw` @ `db695bc`
+Remote tip: `origin/openclaw` (see `git log origin/openclaw -1`).
 
 ## Port these from Hermes main (v0.16)
 

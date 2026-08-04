@@ -9,9 +9,11 @@ Current release: **0.16.0** (see root `VERSION`).
 | [`../README.md`](../README.md) | Everyone | Public overview, install, architecture |
 | [`../QUICKSTART.md`](../QUICKSTART.md) | Operators | Intent-first command workflows + recipes |
 | [`../SKILL.md`](../SKILL.md) | Hermes runtime | Canonical skill operating contract |
+| [`../CONTRIBUTING.md`](../CONTRIBUTING.md) | Contributors | Dev setup, hub sync, invariants |
 | [`HERMES-OFFICIAL-SUBMISSION.md`](HERMES-OFFICIAL-SUBMISSION.md) | Maintainers | Official optional-skills PR + community publish checklist |
 | [`OPENCLAW.md`](OPENCLAW.md) | OpenClaw users | OpenClaw Agent Skill edition (Prabu; branch `openclaw`) |
-| [`../CHANGELOG.md`](../CHANGELOG.md) | Maintainers | Release history |
+| [`ISSUE-TRIAGE.md`](ISSUE-TRIAGE.md) | Maintainers | Open-issue close/keep recommendations |
+| [`archive/`](archive/) | Everyone | Historical roadmaps and shipped plans |
 
 ## Runtime editions
 
@@ -35,8 +37,8 @@ python scripts/kubrick.py do <intent> [--action <action>] [flags]
 | Doc | Purpose |
 |---|---|
 | [`FIRST-CLASS-PRODUCTION-SURFACES.md`](FIRST-CLASS-PRODUCTION-SURFACES.md) | Design / script / image / video surface contracts |
-| [`superpowers/specs/2026-07-30-operator-intent-router-design.md`](superpowers/specs/2026-07-30-operator-intent-router-design.md) | Design: intents, aliases, UX, MCP |
-| [`superpowers/plans/2026-07-30-operator-intent-router.md`](superpowers/plans/2026-07-30-operator-intent-router.md) | Implementation plan |
+| [`archive/superpowers/specs/2026-07-30-operator-intent-router-design.md`](archive/superpowers/specs/2026-07-30-operator-intent-router-design.md) | Design: intents, aliases, UX, MCP (archived) |
+| [`archive/superpowers/plans/2026-07-30-operator-intent-router.md`](archive/superpowers/plans/2026-07-30-operator-intent-router.md) | Implementation plan (archived) |
 | [`../scripts/intent_router.py`](../scripts/intent_router.py) | Registry + resolve + help |
 | [`../QUICKSTART.md`](../QUICKSTART.md) | Human recipes and examples |
 
@@ -54,13 +56,15 @@ Legacy flat command names remain soft aliases. MCP exposes a single tool: `kubri
 
 ## Historical release docs
 
+Archived under [`archive/`](archive/) (see [`archive/README.md`](archive/README.md)):
+
 | Doc | Notes |
 |---|---|
-| [`ROADMAP-v0.15.md`](ROADMAP-v0.15.md) / [`RELEASE-NOTES-v0.15.md`](RELEASE-NOTES-v0.15.md) / [`RELEASE-CHECKLIST-v0.15.md`](RELEASE-CHECKLIST-v0.15.md) | v0.15 hardening + surfaces prelude |
-| [`ROADMAP-v0.14.md`](ROADMAP-v0.14.md) / [`RELEASE-NOTES-v0.14.md`](RELEASE-NOTES-v0.14.md) / [`RELEASE-CHECKLIST-v0.14.md`](RELEASE-CHECKLIST-v0.14.md) | v0.14 shipped scope |
-| [`ROADMAP-v0.13.md`](ROADMAP-v0.13.md) / [`RELEASE-NOTES-v0.13.md`](RELEASE-NOTES-v0.13.md) / [`RELEASE-CHECKLIST-v0.13.md`](RELEASE-CHECKLIST-v0.13.md) | v0.13 Wave 2/3 and router context |
-| [`ROADMAP-v0.12.md`](ROADMAP-v0.12.md) / [`RELEASE-NOTES-v0.12.md`](RELEASE-NOTES-v0.12.md) / [`RELEASE-CHECKLIST-v0.12.md`](RELEASE-CHECKLIST-v0.12.md) | v0.12 compiler / storyboard / outcome learning |
-| [`ROADMAP-v0.11.md`](ROADMAP-v0.11.md) | Original Wave 1–3 production-hardening plan |
+| [`archive/releases/ROADMAP-v0.15.md`](archive/releases/ROADMAP-v0.15.md) (+ notes/checklist) | v0.15 hardening + surfaces prelude |
+| [`archive/releases/ROADMAP-v0.14.md`](archive/releases/ROADMAP-v0.14.md) (+ notes/checklist) | v0.14 shipped scope |
+| [`archive/releases/ROADMAP-v0.13.md`](archive/releases/ROADMAP-v0.13.md) (+ notes/checklist) | v0.13 Wave 2/3 and router context |
+| [`archive/releases/ROADMAP-v0.12.md`](archive/releases/ROADMAP-v0.12.md) (+ notes/checklist) | v0.12 compiler / storyboard / outcome learning |
+| [`archive/releases/ROADMAP-v0.11.md`](archive/releases/ROADMAP-v0.11.md) | Original Wave 1–3 production-hardening plan |
 
 ## Reference contracts
 

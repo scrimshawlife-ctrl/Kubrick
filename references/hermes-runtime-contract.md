@@ -81,7 +81,7 @@ python scripts/kubrick.py do <intent> [--action <action>] [flags]
 
 Registry and resolve logic: `scripts/intent_router.py`.  
 Canonical registry: `kubrick.manifest.yaml`. The router loads this file with the Python standard library, so routing does not depend on PyYAML.
-Design: `docs/superpowers/specs/2026-07-30-operator-intent-router-design.md`.
+Design: `docs/archive/superpowers/specs/2026-07-30-operator-intent-router-design.md`.
 
 See root `README.md`, `QUICKSTART.md`, and `docs/README.md` for workflows and the docs index.
 
