@@ -1,15 +1,15 @@
-# CI hardening (pending `workflow` OAuth scope)
+# CI
 
-GitHub OAuth tokens without the `workflow` scope cannot push commits that
-modify `.github/workflows/*`. The hardened Hermes eval workflow lives here
-until a maintainer refreshes auth:
+Active workflow: [`.github/workflows/hermes-evals.yml`](../../.github/workflows/hermes-evals.yml).
 
-```bash
-gh auth refresh -s workflow
-cp docs/ci/hermes-evals.hardened.yml .github/workflows/hermes-evals.yml
-git commit -am "ci: harden Hermes Skill Evals gates"
-git push
-```
+`hermes-evals.hardened.yml` in this directory is the same hardened definition kept as a
+docs-side reference copy (useful if a future edit must land without the `workflow`
+OAuth scope). Prefer editing the live workflow under `.github/workflows/` and keeping
+this file in sync.
 
-Hardening adds stdlib surface/io tests, `requirements-ci.txt` installs,
-hub-sync checks, and a `dev-static` ruff/mypy/pytest job.
+Hardening includes:
+
+- stdlib surface / io / cross-surface tests on the matrix job
+- `requirements-ci.txt` installs for validation-eval
+- hub-sync gate (`scripts/check_hub_sync.py`)
+- `dev-static` job: ruff + mypy + pytest on core modules

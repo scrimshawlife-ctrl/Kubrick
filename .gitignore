@@ -1,11 +1,31 @@
 __pycache__/
 *.py[cod]
+*$py.class
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.coverage
+htmlcov/
+.tox/
+.venv/
+venv/
 out/
 dist/
+build/
+*.egg-info/
 *.bak
+*.swp
+*~
 .DS_Store
+Thumbs.db
+.env
+.env.*
+!.env.example
+
 # Mutable skill overlays generated at runtime
 references/usage/
+
+# Ephemeral agent / local PR scratch (never commit)
+PR_BODY.md
+PR_BODY_HARDENING.md
+PUSH_INSTRUCTIONS.md

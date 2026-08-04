@@ -50,6 +50,8 @@ EXCLUDE_FILE_NAMES = {
     "package_optional_skill.sh",
     "sync_hub_skill.sh",
     "PR_BODY.md",
+    "PR_BODY_HARDENING.md",
+    "PUSH_INSTRUCTIONS.md",
 }
 
 

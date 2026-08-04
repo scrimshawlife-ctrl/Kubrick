@@ -18,6 +18,7 @@ copy_tree() {
       --exclude '*.pyc' \
       --exclude 'PR_BODY.md' \
       --exclude 'PR_BODY_HARDENING.md' \
+      --exclude 'PUSH_INSTRUCTIONS.md' \
       --exclude 'scripts/package_optional_skill.sh' \
       --exclude 'scripts/sync_hub_skill.sh' \
       --exclude 'tests/' \
@@ -35,6 +36,7 @@ copy_tree() {
       --exclude '*.pyc' \
       --exclude 'PR_BODY.md' \
       --exclude 'PR_BODY_HARDENING.md' \
+      --exclude 'PUSH_INSTRUCTIONS.md' \
       --exclude 'tests' \
       --exclude 'scripts/package_optional_skill.sh' \
       --exclude 'scripts/sync_hub_skill.sh' \
@@ -46,6 +48,6 @@ copy_tree
 find "${DEST}" -type d -name '__pycache__' -prune -exec rm -rf {} + 2>/dev/null || true
 find "${DEST}" -type f -name '*.pyc' -delete 2>/dev/null || true
 rm -f "${DEST}/scripts/package_optional_skill.sh" "${DEST}/scripts/sync_hub_skill.sh" \
-  "${DEST}/PR_BODY.md" "${DEST}/PR_BODY_HARDENING.md" 2>/dev/null || true
+  "${DEST}/PR_BODY.md" "${DEST}/PR_BODY_HARDENING.md" "${DEST}/PUSH_INSTRUCTIONS.md" 2>/dev/null || true
 echo "Synced root → ${DEST}"
 echo "files: $(find "${DEST}" -type f | wc -l)"

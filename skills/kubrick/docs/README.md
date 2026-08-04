@@ -1,6 +1,6 @@
 # Kubrick Documentation
 
-Current release: **0.14.0** (see root `VERSION`).
+Current release: **0.16.0** (see root `VERSION`).
 
 ## Start here
 
@@ -17,7 +17,7 @@ Current release: **0.14.0** (see root `VERSION`).
 
 | Edition | Branch | Notes |
 |---|---|---|
-| **Hermes** | [`main`](https://github.com/scrimshawlife-ctrl/Kubrick/tree/main) | Canonical Hermes skill; deterministic v0.14 contract |
+| **Hermes** | [`main`](https://github.com/scrimshawlife-ctrl/Kubrick/tree/main) | Canonical Hermes skill; deterministic v0.16 contract |
 | **OpenClaw** | [`openclaw`](https://github.com/scrimshawlife-ctrl/Kubrick/tree/openclaw) | Agent Skill packaging by **Prabu** ([PR #1](https://github.com/scrimshawlife-ctrl/Kubrick/pull/1)); external state dir; doctor / portability tests |
 
 See [`OPENCLAW.md`](OPENCLAW.md) for install commands, credit, and what differs between editions.
@@ -30,10 +30,11 @@ Primary CLI (Hermes + humans):
 python scripts/kubrick.py do <intent> [--action <action>] [flags]
 ```
 
-**12 intents:** `compile` · `retrieve` · `ledger` · `design` · `storyboard` · `adapt` · `visual` · `learn` · `check` · `operate` · `mcp` · `bundle`
+**15 intents:** `adapt` · `bundle` · `check` · `compile` · `design` · `image` · `learn` · `ledger` · `mcp` · `operate` · `retrieve` · `script` · `storyboard` · `video` · `visual`
 
 | Doc | Purpose |
 |---|---|
+| [`FIRST-CLASS-PRODUCTION-SURFACES.md`](FIRST-CLASS-PRODUCTION-SURFACES.md) | Design / script / image / video surface contracts |
 | [`superpowers/specs/2026-07-30-operator-intent-router-design.md`](superpowers/specs/2026-07-30-operator-intent-router-design.md) | Design: intents, aliases, UX, MCP |
 | [`superpowers/plans/2026-07-30-operator-intent-router.md`](superpowers/plans/2026-07-30-operator-intent-router.md) | Implementation plan |
 | [`../scripts/intent_router.py`](../scripts/intent_router.py) | Registry + resolve + help |
@@ -41,26 +42,24 @@ python scripts/kubrick.py do <intent> [--action <action>] [flags]
 
 Legacy flat command names remain soft aliases. MCP exposes a single tool: `kubrick_do`.
 
-## Current release (v0.14)
+## Current release (v0.16)
 
 | Doc | Purpose |
 |---|---|
-| [`ROADMAP-v0.14.md`](ROADMAP-v0.14.md) | Shipped scope + next priorities |
-| [`RELEASE-NOTES-v0.14.md`](RELEASE-NOTES-v0.14.md) | What landed in 0.14.0 |
-| [`RELEASE-CHECKLIST-v0.14.md`](RELEASE-CHECKLIST-v0.14.md) | Release gates and tag procedure |
-
-Wave 2 ([#3](https://github.com/scrimshawlife-ctrl/Kubrick/issues/3)) and Wave 3 ([#4](https://github.com/scrimshawlife-ctrl/Kubrick/issues/4)) shipped via [PR #24](https://github.com/scrimshawlife-ctrl/Kubrick/pull/24).
+| [`ROADMAP-v0.16.md`](ROADMAP-v0.16.md) | Shipped scope + next priorities |
+| [`RELEASE-NOTES-v0.16.md`](RELEASE-NOTES-v0.16.md) | What landed in 0.16.0 |
+| [`RELEASE-CHECKLIST-v0.16.md`](RELEASE-CHECKLIST-v0.16.md) | Release gates and tag procedure |
+| [`ARCHITECTURE-v0.16.md`](ARCHITECTURE-v0.16.md) | Production engine + surface architecture |
+| [`DELIVERABLES-v0.16.md`](DELIVERABLES-v0.16.md) | Deliverable inventory for 0.16 |
 
 ## Historical release docs
 
 | Doc | Notes |
 |---|---|
-| [`ROADMAP-v0.13.md`](ROADMAP-v0.13.md) | v0.13 Wave 2/3 and router context |
-| [`RELEASE-NOTES-v0.13.md`](RELEASE-NOTES-v0.13.md) | v0.13 release notes |
-| [`RELEASE-CHECKLIST-v0.13.md`](RELEASE-CHECKLIST-v0.13.md) | v0.13 release gates |
-| [`ROADMAP-v0.12.md`](ROADMAP-v0.12.md) | v0.12 status; points forward to 0.13 |
-| [`RELEASE-NOTES-v0.12.md`](RELEASE-NOTES-v0.12.md) | v0.12 compiler / storyboard / outcome learning |
-| [`RELEASE-CHECKLIST-v0.12.md`](RELEASE-CHECKLIST-v0.12.md) | v0.12 gates (historical) |
+| [`ROADMAP-v0.15.md`](ROADMAP-v0.15.md) / [`RELEASE-NOTES-v0.15.md`](RELEASE-NOTES-v0.15.md) / [`RELEASE-CHECKLIST-v0.15.md`](RELEASE-CHECKLIST-v0.15.md) | v0.15 hardening + surfaces prelude |
+| [`ROADMAP-v0.14.md`](ROADMAP-v0.14.md) / [`RELEASE-NOTES-v0.14.md`](RELEASE-NOTES-v0.14.md) / [`RELEASE-CHECKLIST-v0.14.md`](RELEASE-CHECKLIST-v0.14.md) | v0.14 shipped scope |
+| [`ROADMAP-v0.13.md`](ROADMAP-v0.13.md) / [`RELEASE-NOTES-v0.13.md`](RELEASE-NOTES-v0.13.md) / [`RELEASE-CHECKLIST-v0.13.md`](RELEASE-CHECKLIST-v0.13.md) | v0.13 Wave 2/3 and router context |
+| [`ROADMAP-v0.12.md`](ROADMAP-v0.12.md) / [`RELEASE-NOTES-v0.12.md`](RELEASE-NOTES-v0.12.md) / [`RELEASE-CHECKLIST-v0.12.md`](RELEASE-CHECKLIST-v0.12.md) | v0.12 compiler / storyboard / outcome learning |
 | [`ROADMAP-v0.11.md`](ROADMAP-v0.11.md) | Original Wave 1–3 production-hardening plan |
 
 ## Reference contracts
@@ -94,6 +93,7 @@ Full schema set: [`../schemas/`](../schemas/).
 | Path | Purpose |
 |---|---|
 | `examples/authority-transfer-storyboard/` | Canonical three-frame storyboard |
+| `examples/production-surfaces/` | First-class design/script/image/video examples |
 | `references/examples/forge-signals/` | Forge multi-signal extraction fixture |
 | `references/patterns/contemporary/cultural-signal-packs/` | Time-sensitive cultural packs |
 | `templates/design-specification.yaml` | Design-spec template |
@@ -101,13 +101,10 @@ Full schema set: [`../schemas/`](../schemas/).
 ## Verification commands
 
 ```bash
-python scripts/kubrick.py validate-skill
-python scripts/kubrick.py validate-corpus
-python scripts/kubrick.py coverage
-python scripts/kubrick.py eval
-python scripts/test_outcome_governance.py
-python scripts/test_wave2_wave3.py
-python scripts/test_design_specification.py
-python scripts/kubrick.py repeatability --output out/kubrick/repeatability-report.json
+python scripts/kubrick.py do check --action smoke
+python scripts/kubrick.py do check --action skill
+python scripts/check_hub_sync.py
+python scripts/test_surface_compilers.py
+python scripts/test_cross_surface.py
 python scripts/audit_release_version.py --strict
 ```
