@@ -12,16 +12,14 @@ try:
     import yaml
 except ImportError:
     print("pyyaml required. pip install pyyaml", file=sys.stderr); raise SystemExit(1)
-SCRIPT_DIR=Path(__file__).resolve().parent
-sys.path.insert(0, str(SCRIPT_DIR))
-from provenance import COLLISION_TYPES, HARD_FAIL_COLLISIONS  # noqa: E402
-SKILL_ROOT=SCRIPT_DIR.parent
-PATTERNS_DIR=SKILL_ROOT/"references"/"patterns"
-CACHE_DIR=SKILL_ROOT/"references"/"usage"/"cache"
-RECEIPT_DIR=SKILL_ROOT/"references"/"usage"/"receipts"
+from kubrick_paths import PATTERNS_DIR, ensure_state_dirs, state_paths
+
+CACHE_DIR=state_paths()["cache"]
+RECEIPT_DIR=state_paths()["receipts"]
 THRESHOLD=0.55
 MAX_SUPPORTING=2
 WEIGHTS={"dramatic_fit":0.24,"character_fit":0.10,"cinematic_fit":0.12,"cultural_fit":0.10,"source_quality":0.10,"mutation_potential":0.14,"continuity_compatibility":0.10,"payoff_compatibility":0.10}
+COLLISION_TYPES={"REDUNDANT","CONTRADICTORY","CULTURALLY_INCOMPATIBLE","RHYTHMICALLY_OVERLAPPING","PAYOFF_COMPETITION"}
 
 def canonical_json(value:Any)->str:
     return json.dumps(value,sort_keys=True,separators=(",",":"),default=lambda item:item.isoformat() if hasattr(item,"isoformat") else str(item))
@@ -43,6 +41,12 @@ def load_all_patterns()->Dict[str,Dict[str,Any]]:
     for path in PATTERNS_DIR.rglob("*.json"):
         pattern=_load(path); pid=pattern.get("pattern_id")
         if pid: patterns[pid]=pattern
+    overlay_dir=state_paths()["patterns"]
+    if overlay_dir.exists():
+        for path in overlay_dir.rglob("*.json"):
+            overlay=_load(path); pid=overlay.get("pattern_id")
+            if pid and pid in patterns:
+                patterns[pid]={**patterns[pid],**overlay}
     return patterns
 
 def ledger_snapshot(brief:Dict[str,Any])->Dict[str,Any]:
@@ -63,6 +67,10 @@ def production_cost(pattern:Dict[str,Any])->float:
 
 def detect_collisions(pattern,ledger):
     collisions=[]; text=canonical_json(pattern).lower(); pid=pattern.get("pattern_id","")
+    for prohibited in ledger["prohibited"]:
+        prohibited_text=str(prohibited).lower()
+        if prohibited_text==pid.lower() or prohibited_text in text:
+            collisions.append({"type":"PROHIBITED","with":str(prohibited)})
     for active in ledger["active"]:
         if active.lower() in text or active.lower()==pid.lower(): collisions.append({"type":"REDUNDANT","with":active})
     for collision in ledger["collisions"]:
@@ -86,7 +94,7 @@ def score_pattern(pattern,brief,ledger):
     total=sum(components[k]*w for k,w in WEIGHTS.items()); cost=production_cost(pattern); budget=brief.get("production_cost_ceiling")
     if isinstance(budget,(int,float)) and cost>float(budget): total-=min(0.35,cost-float(budget))
     collisions=detect_collisions(pattern,ledger)
-    if any(i["type"] in HARD_FAIL_COLLISIONS for i in collisions): total=0.0
+    if any(i["type"] in {"PROHIBITED","CONTRADICTORY","CULTURALLY_INCOMPATIBLE"} for i in collisions): total=0.0
     else: total-=min(0.3,0.08*len(collisions))
     return {"pattern_id":pattern["pattern_id"],"total_score":round(max(0.0,min(1.0,total)),4),"score_components":{k:round(v,4) for k,v in components.items()},"collisions":collisions,"production_cost_score":round(cost,4),"provenance_refs":pattern.get("source_refs",[]),"mutation_requirements":mutation,"lexicon_links":pattern.get("lexicon_links",[])}
 
@@ -113,22 +121,47 @@ def read_brief(path): return _load(Path(path)) if path else yaml.safe_load(sys.s
 
 def build_receipt(brief,ranked,ledger):
     eligible=[x for x in ranked if x["total_score"]>=THRESHOLD]; primary=eligible[0] if eligible else None; supporting=eligible[1:1+MAX_SUPPORTING]
-    return {"retrieval_receipt":{"request_hash":cache_key(brief,ledger),"algorithm":"deterministic-v0.11","timestamp":datetime.now(timezone.utc).isoformat(),"selected_primary_grammar":primary["pattern_id"] if primary else None,"selected_supporting_grammars":[x["pattern_id"] for x in supporting],"ranked_patterns":ranked[:8] if primary else [],"confidence":primary["total_score"] if primary else 0.0,"status":"SELECTED" if primary else "NOT_COMPUTABLE","reason_vector":[] if primary else reason_vector(ranked,ledger),"pattern_gap_report":gap_report(brief,ranked),"ledger_snapshot":ledger,"brief":brief}}
+    rejected=[
+        {
+            "pattern_id": item["pattern_id"],
+            "reason": ", ".join(
+                collision["type"]
+                for collision in item.get("collisions", [])
+                if collision["type"] in {
+                    "PROHIBITED",
+                    "CONTRADICTORY",
+                    "CULTURALLY_INCOMPATIBLE",
+                }
+            ),
+        }
+        for item in ranked
+        if any(
+            collision["type"] in {
+                "PROHIBITED",
+                "CONTRADICTORY",
+                "CULTURALLY_INCOMPATIBLE",
+            }
+            for collision in item.get("collisions", [])
+        )
+    ]
+    return {"retrieval_receipt":{"request_hash":cache_key(brief,ledger),"algorithm":"deterministic-v0.11-openclaw","timestamp":datetime.now(timezone.utc).isoformat(),"selected_primary_grammar":primary["pattern_id"] if primary else None,"selected_supporting_grammars":[x["pattern_id"] for x in supporting],"ranked_patterns":ranked[:8] if primary else [],"rejected_patterns":rejected,"confidence":primary["total_score"] if primary else 0.0,"status":"SELECTED" if primary else "NOT_COMPUTABLE","reason_vector":[] if primary else reason_vector(ranked,ledger),"pattern_gap_report":gap_report(brief,ranked),"ledger_snapshot":ledger,"brief":brief}}
 
 def persist(receipt):
-    CACHE_DIR.mkdir(parents=True,exist_ok=True); RECEIPT_DIR.mkdir(parents=True,exist_ok=True); key=receipt["retrieval_receipt"]["request_hash"]
+    ensure_state_dirs(); key=receipt["retrieval_receipt"]["request_hash"]
     cache=CACHE_DIR/f"{key}.json"; logged=RECEIPT_DIR/f"receipt-{key}-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S')}.json"
     payload=json.dumps(receipt,indent=2,default=lambda item:item.isoformat() if hasattr(item,"isoformat") else str(item))+"\n"
     for p in (cache,logged):p.write_text(payload,encoding="utf-8")
     return cache,logged
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument("--brief");p.add_argument("--no-cache",action="store_true");p.add_argument("--gap-report-only",action="store_true");a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument("--brief");p.add_argument("--no-cache",action="store_true");p.add_argument("--no-log",action="store_true");p.add_argument("--gap-report-only",action="store_true");a=p.parse_args()
     brief=read_brief(a.brief);ledger=ledger_snapshot(brief);key=cache_key(brief,ledger);cache=CACHE_DIR/f"{key}.json"
     if not a.no_cache and cache.exists():
         receipt=_load(cache);receipt["retrieval_receipt"]["cache_hit"]=True;print(yaml.safe_dump(receipt,sort_keys=False));raise SystemExit(0 if receipt["retrieval_receipt"]["status"]=="SELECTED" else 1)
     ranked=sorted((score_pattern(pattern,brief,ledger) for pattern in load_all_patterns().values()),key=lambda x:(-x["total_score"],x["pattern_id"]));receipt=build_receipt(brief,ranked,ledger);receipt["retrieval_receipt"]["cache_hit"]=False
     if a.gap_report_only:print(yaml.safe_dump(receipt["retrieval_receipt"]["pattern_gap_report"],sort_keys=False));return
-    cache_path,logged=persist(receipt);receipt["retrieval_receipt"]["cached_to"]=str(cache_path);receipt["retrieval_receipt"]["logged_to"]=str(logged);print(yaml.safe_dump(receipt,sort_keys=False));raise SystemExit(0 if receipt["retrieval_receipt"]["status"]=="SELECTED" else 1)
+    if not a.no_log:
+        cache_path,logged=persist(receipt);receipt["retrieval_receipt"]["cached_to"]=str(cache_path);receipt["retrieval_receipt"]["logged_to"]=str(logged)
+    print(yaml.safe_dump(receipt,sort_keys=False));raise SystemExit(0 if receipt["retrieval_receipt"]["status"]=="SELECTED" else 1)
 
 if __name__=="__main__":main()
