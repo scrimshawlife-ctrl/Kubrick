@@ -1,6 +1,6 @@
 {
   "action": "prompt",
-  "artifact_id": "kubrick-image-prompt-168234e94d242229",
+  "artifact_id": "kubrick-image-prompt-8bffca315eed4fd4",
   "artifact_type": "image-prompt-packet",
   "authority": "PROPOSED",
   "generated_at": "FROZEN",
@@ -30,7 +30,7 @@
       "surface": "image"
     },
     "outputs": {
-      "artifact_id": "kubrick-image-prompt-168234e94d242229",
+      "artifact_id": "kubrick-image-prompt-8bffca315eed4fd4",
       "artifact_type": "image-prompt-packet",
       "has_document": false,
       "status": "PROPOSED"
@@ -44,7 +44,7 @@
       ],
       "speculative": []
     },
-    "receipt_hash": "c84f88180e3616257eefbec01f51681e",
+    "receipt_hash": "491fab0088b2e7506bbc1458b2aa8ff5",
     "receipt_id": "receipt-dff6a455a483e3ed",
     "schema_version": "0.16.0",
     "surface": "image",
@@ -149,7 +149,7 @@
     "preserve_residue": true
   },
   "source_design_revision": "r-81a44fd28fa41daf",
-  "source_state_id": "state-99d673133985e5f5",
+  "source_state_id": "state-489ef086aae09e0d",
   "status": "PROPOSED",
   "surface": "image",
   "warnings": []

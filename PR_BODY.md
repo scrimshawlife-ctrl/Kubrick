@@ -1,6 +1,9 @@
 ## Summary
 
-Adds `kubrick`, an optional creative-production skill for cinematic composition, screenplay/scene engineering, visual continuity, symbolic encoding, storyboard state propagation, multi-provider image-prompt adaptation, and production-design QA.
+Adds `kubrick` **v0.16.0**, an optional creative-production skill for cinematic
+composition, screenplay/scene engineering, visual continuity, symbolic encoding,
+storyboard state propagation, multi-provider image-prompt adaptation, first-class
+`design` / `script` / `image` / `video` production surfaces, and production-design QA.
 
 Path:
 
@@ -17,18 +20,23 @@ It complements existing creative skills (diagrams, pixel art, meme generation, c
 ## What the skill provides
 
 - Deterministic operator surface: `python3 ${HERMES_SKILL_DIR}/scripts/kubrick.py do <intent> …`
+- Shared production engine with validate→compile→receipt lifecycle
+- Surface sugar: `kubrick design|script|image|video|qa|receipts|validate`
 - Motif/structure graph, project symbolic ledger, storyboard state propagation
 - Anti-slop / symbolic quality gates with fail-closed `NOT_COMPUTABLE` behavior
 - Multi-provider adapters (generic, Flux, SD3, Midjourney, Grok Imagine)
 - Optional Continuity Forge feedback path (never required)
 - Stdlib-first helpers; optional `pyyaml` / `jsonschema` with explicit degraded paths
-- Eval fixtures and release validation scripts
+- Eval fixtures (`evals/golden/v016/`) and release validation scripts
 
 ## Validation
 
 - [x] Confirmed local Hermes detection under `~/.hermes/skills/kubrick` (trust: local)
 - [x] `python3 scripts/kubrick.py do check --action skill` → PASS
 - [x] `python3 scripts/kubrick.py do check --action smoke` → PASS
+- [x] `python3 scripts/audit_release_version.py --strict` → READY (v0.16.0)
+- [x] `python3 scripts/test_v016_phased_acceptance.py` → PASS
+- [x] `python3 scripts/test_golden_v016.py` → PASS
 - [ ] Positive activation: cinematic visual-system / screenplay prompt loads Kubrick
 - [ ] Negative activation: unrelated checksum/devops prompt does **not** load Kubrick
 - [x] Script paths documented via `${HERMES_SKILL_DIR}`

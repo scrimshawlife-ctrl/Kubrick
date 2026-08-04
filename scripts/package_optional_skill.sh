@@ -18,26 +18,50 @@ mkdir -p "${TARGET}"
 
 # Core skill payload only — exclude git metadata, CI, historical planning docs,
 # and packaging helpers that are not needed inside hermes-agent.
-rsync -a --delete \
-  --exclude '.git/' \
-  --exclude '.github/' \
-  --exclude 'dist/' \
-  --exclude 'out/' \
-  --exclude '__pycache__/' \
-  --exclude '**/__pycache__/' \
-  --exclude '*.pyc' \
-  --exclude '.pytest_cache/' \
-  --exclude 'docs/superpowers/' \
-  --exclude 'docs/ROADMAP-v0.11.md' \
-  --exclude 'docs/ROADMAP-v0.12.md' \
-  --exclude 'docs/RELEASE-CHECKLIST-v0.12.md' \
-  --exclude 'docs/RELEASE-NOTES-v0.12.md' \
-  --exclude 'PR_BODY.md' \
-  --exclude 'scripts/package_optional_skill.sh' \
-  --exclude 'tests/' \
-  --exclude 'skills/' \
-  --exclude 'skills.sh.json' \
-  "${ROOT}/" "${TARGET}/"
+if command -v rsync >/dev/null 2>&1; then
+  rsync -a --delete \
+    --exclude '.git/' \
+    --exclude '.github/' \
+    --exclude 'dist/' \
+    --exclude 'out/' \
+    --exclude '__pycache__/' \
+    --exclude '**/__pycache__/' \
+    --exclude '*.pyc' \
+    --exclude '.pytest_cache/' \
+    --exclude 'docs/superpowers/' \
+    --exclude 'docs/ROADMAP-v0.11.md' \
+    --exclude 'docs/ROADMAP-v0.12.md' \
+    --exclude 'docs/RELEASE-CHECKLIST-v0.12.md' \
+    --exclude 'docs/RELEASE-NOTES-v0.12.md' \
+    --exclude 'PR_BODY.md' \
+    --exclude 'scripts/package_optional_skill.sh' \
+    --exclude 'tests/' \
+    --exclude 'skills/' \
+    --exclude 'skills.sh.json' \
+    "${ROOT}/" "${TARGET}/"
+else
+  rm -rf "${TARGET}"
+  mkdir -p "${TARGET}"
+  tar -C "${ROOT}" \
+    --exclude '.git' \
+    --exclude '.github' \
+    --exclude 'dist' \
+    --exclude 'out' \
+    --exclude '__pycache__' \
+    --exclude '*.pyc' \
+    --exclude '.pytest_cache' \
+    --exclude 'docs/superpowers' \
+    --exclude 'docs/ROADMAP-v0.11.md' \
+    --exclude 'docs/ROADMAP-v0.12.md' \
+    --exclude 'docs/RELEASE-CHECKLIST-v0.12.md' \
+    --exclude 'docs/RELEASE-NOTES-v0.12.md' \
+    --exclude 'PR_BODY.md' \
+    --exclude 'scripts/package_optional_skill.sh' \
+    --exclude 'tests' \
+    --exclude 'skills' \
+    --exclude 'skills.sh.json' \
+    -cf - . | tar -C "${TARGET}" -xf -
+fi
 
 # Repository-level tests live outside the optional skill payload in hermes-agent.
 mkdir -p "${DEST_ROOT%/}/tests/skills"
