@@ -132,7 +132,20 @@ def test_end_to_end_surfaces() -> None:
         assert recon["artifact_type"] == "media-reconciliation-report"
         assert "result" in recon
 
-        # Provider adapt preservation report (criteria #8)
+        design_receipt = improved.with_name(improved.stem + ".receipt.json")
+        assert design_receipt.is_file()
+        receipt_data = json.loads(design_receipt.read_text(encoding="utf-8"))
+        assert receipt_data["artifact_type"] == "design-revision-receipt"
+        assert isinstance(receipt_data["result"].get("diff"), list)
+
+        # Provider adapt + artifact schema validation need the validation profile.
+        try:
+            import jsonschema  # noqa: F401
+            import yaml  # noqa: F401
+        except ImportError:
+            print("skip adapt/schema checks (validation profile not installed)")
+            return
+
         adapted = out / "image-adapted.json"
         proc = run(
             [
@@ -147,19 +160,6 @@ def test_end_to_end_surfaces() -> None:
         report = adapted_data["result"]["preservation_report"]
         assert report.get("critical_invariants_preserved") is True or report.get("status") == "VALID"
 
-        # Schema validation for design revision receipt + image packet (criteria #11)
-        design_receipt = improved.with_name(improved.stem + ".receipt.json")
-        assert design_receipt.is_file()
-        receipt_data = json.loads(design_receipt.read_text(encoding="utf-8"))
-        assert receipt_data["artifact_type"] == "design-revision-receipt"
-        assert isinstance(receipt_data["result"].get("diff"), list)
-        # Schema validation requires the validation profile (PyYAML + jsonschema).
-        try:
-            import jsonschema  # noqa: F401
-            import yaml  # noqa: F401
-        except ImportError:
-            print("skip artifact schema validation (validation profile not installed)")
-            return
         for artifact, schema in (
             (design_receipt, "schemas/design-revision-receipt.schema.json"),
             (image, "schemas/image-prompt-packet.schema.json"),
