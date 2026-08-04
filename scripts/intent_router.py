@@ -78,7 +78,7 @@ class RouterError(Exception):
 
 
 def format_top_level_help() -> str:
-    """List the 12 intents only; aliases are not first-class."""
+    """List registered intents only; aliases are not first-class."""
     lines = [
         "usage: kubrick do <intent> [--action <action>] [flags]",
         "",

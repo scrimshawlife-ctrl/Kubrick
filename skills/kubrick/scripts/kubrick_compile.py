@@ -11,21 +11,23 @@ try:
 except ImportError:
     abort(diagnostic(status="DEPENDENCY_UNAVAILABLE",code="PY_YAML_REQUIRED",exit_code=3,message="PyYAML is required for compile; install the validation runtime profile",context={"package":"PyYAML","profile":"validation"}))
 ROOT=Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "scripts"))
+from io_safety import PathSafetyError, load_structured, resolve_bounded_path, write_structured, write_text_bounded  # noqa: E402
 PY=sys.executable
 RUN_IDENTITY={}
 
 def read(path):
-    p=Path(path); return json.loads(p.read_text(encoding="utf-8")) if p.suffix==".json" else yaml.safe_load(p.read_text(encoding="utf-8")) or {}
+    return load_structured(path)
 
 def write(path,data):
-    path=Path(path); path.parent.mkdir(parents=True,exist_ok=True); path.write_text(yaml.safe_dump(data,sort_keys=False),encoding="utf-8")
+    write_structured(path, data)
 
 def run(cmd): return subprocess.run(cmd,cwd=ROOT,text=True,capture_output=True)
 
 def fail(out,stage,reasons,diagnostic_output=None):
     payload=diagnostic(status="NOT_COMPUTABLE",code="COMPILE_NOT_COMPUTABLE",exit_code=4,message=f"compile stopped at {stage}",reason_vector=reasons,context={"stage":stage,"implementation_output":diagnostic_output[-2000:] if diagnostic_output else ""})
     final={"status":"NOT_COMPUTABLE","compiler_version":"0.3.0",**RUN_IDENTITY,"stage":stage,"reason_vector":reasons,"diagnostic":payload}
-    (out/"compile-receipt.json").write_text(json.dumps(final,indent=2),encoding="utf-8"); print(json.dumps(final,indent=2)); raise SystemExit(4)
+    write_text_bounded(out/"compile-receipt.json", json.dumps(final,indent=2) + "\n"); print(json.dumps(final,indent=2)); raise SystemExit(4)
 
 def validate(out,artifact,schema,label):
     report=out/f"schema-{label}.json"; result=run([PY,str(ROOT/"scripts/validate_artifact.py"),"--artifact",str(artifact),"--schema",str(ROOT/schema),"--output",str(report)])
@@ -57,8 +59,11 @@ def build_structured_packet(brief,graph,selected):
 def main():
     global RUN_IDENTITY
     p=argparse.ArgumentParser(); p.add_argument("--brief",required=True); p.add_argument("--ledger"); p.add_argument("--mode",choices=["single-frame","scene","storyboard","diagnostic"],default="single-frame"); p.add_argument("--storyboard-plan"); p.add_argument("--provider",choices=["none","generic","grok-imagine","flux","sd3","midjourney"],default="none"); p.add_argument("--out",required=True); a=p.parse_args()
-    out=Path(a.out); out.mkdir(parents=True,exist_ok=True); brief=read(a.brief)
-    if a.ledger: brief["symbolic_ledger"]=read(a.ledger)
+    try:
+        out=resolve_bounded_path(a.out, for_write=True); out.mkdir(parents=True,exist_ok=True); brief=read(a.brief)
+        if a.ledger: brief["symbolic_ledger"]=read(a.ledger)
+    except (PathSafetyError, OSError, ValueError) as exc:
+        abort(diagnostic(status="INVALID_COMMAND",code="PATH_POLICY",exit_code=2,message=str(exc),context={"surface":"compile"}))
     identity_input={"brief":brief,"storyboard_plan":read(a.storyboard_plan) if a.storyboard_plan else None}
     RUN_IDENTITY=compile_identity(identity_input,mode=a.mode,provider=a.provider)
     normalized=out/"brief.normalized.yaml"; write(normalized,brief)
@@ -85,7 +90,7 @@ def main():
     write(out/"audience-constraints.yaml",audience); text_audit=run([PY,str(ROOT/"scripts/audit_anti_slop.py"),"--text",yaml.safe_dump(audience),"--json"])
     try: text_data=json.loads(text_audit.stdout)
     except Exception: text_data={"status":"FAIL","violations":[{"gate":"UNKNOWN","repair":"inspect audit output"}]}
-    (out/"text-anti-slop-report.json").write_text(json.dumps(text_data,indent=2),encoding="utf-8")
+    write_text_bounded(out/"text-anti-slop-report.json", json.dumps(text_data,indent=2) + "\n")
     if translate.returncode!=0 or text_audit.returncode!=0: fail(out,"translation",["TRANSLATION_OR_TEXT_AUDIT_FAILED"],translate.stderr or text_audit.stdout)
     artifacts={"retrieval":"retrieval-receipt.yaml","private_graph":graph_path.name,"structured_packet":structured_path.name,"structured_audit":"structured-anti-slop-report.json","audience":"audience-constraints.yaml","text_audit":"text-anti-slop-report.json"}; storyboard_path=None
     if a.mode=="storyboard":
@@ -110,6 +115,6 @@ def main():
             if provider.returncode!=0: fail(out,"adapter",[f"{a.provider.upper().replace('-','_')}_ADAPTER_FAILED"],provider.stdout or provider.stderr)
             artifacts["provider_packet"]=provider_path.name
     final={"status":"COMPILED","compiler_version":"0.3.0",**RUN_IDENTITY,"timestamp":datetime.now(timezone.utc).isoformat(),"mode":a.mode,"provider":a.provider,"selected_primary":selected,"artifacts":artifacts,"schema_reports":schema_reports,"reason_vector":[]}
-    (out/"compile-receipt.json").write_text(json.dumps(final,indent=2),encoding="utf-8"); print(json.dumps(final,indent=2))
+    write_text_bounded(out/"compile-receipt.json", json.dumps(final,indent=2) + "\n"); print(json.dumps(final,indent=2))
 
 if __name__=="__main__": main()

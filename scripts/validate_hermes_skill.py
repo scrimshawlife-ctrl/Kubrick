@@ -29,6 +29,8 @@ REQUIRED_PATHS = [
     "scripts/retrieve_symbolic_patterns.py",
     "scripts/manifest_contract.py",
     "scripts/diagnostics.py",
+    "scripts/io_safety.py",
+    "scripts/provenance.py",
     "scripts/runtime_identity.py",
     "scripts/validate_manifest.py",
     "scripts/test_receipt_identity.py",

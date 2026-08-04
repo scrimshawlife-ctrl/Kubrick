@@ -18,13 +18,13 @@ except ImportError:
 
 PROVIDERS = {"grok-imagine", "flux", "sd3", "midjourney", "generic"}
 
+import sys as _sys
+_sys.path.insert(0, str(Path(__file__).resolve().parent))
+from io_safety import load_structured, resolve_bounded_path, write_structured  # noqa: E402
+
 
 def load(path: str) -> dict[str, Any]:
-    p = Path(path)
-    text = p.read_text(encoding="utf-8")
-    if p.suffix == ".json":
-        return json.loads(text) or {}
-    return yaml.safe_load(text) or {}
+    return load_structured(path)
 
 
 def join_parts(parts: list[Any]) -> str:
@@ -297,9 +297,7 @@ def main() -> None:
     result = adapt(load(args.packet), provider)
     text = yaml.safe_dump(result, sort_keys=False)
     if args.output:
-        out = Path(args.output)
-        out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(text, encoding="utf-8")
+        write_structured(args.output, result)
     else:
         print(text)
     raise SystemExit(0 if result["validation"]["status"] == "VALID" else 1)

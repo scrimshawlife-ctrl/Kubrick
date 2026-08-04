@@ -1,0 +1,46 @@
+{
+  "authority": "PROPOSED",
+  "dramatic_pressure": "authority remains active after the leader exits because access and geometry preserve the system",
+  "generated_at": "FROZEN",
+  "locked_invariants": {
+    "preserve_chronology": true,
+    "preserve_geometry": true,
+    "preserve_identity": true,
+    "preserve_locked_facts": true,
+    "preserve_material_state": true,
+    "preserve_ownership": true,
+    "preserve_residue": true
+  },
+  "not_computable": [],
+  "project_id": "golden-authority",
+  "provenance": {
+    "external_authoritative": [],
+    "inferred": [],
+    "observed": [
+      "brief",
+      "design",
+      "script"
+    ],
+    "speculative": []
+  },
+  "provider_independent_negatives": [
+    "named occult labels",
+    "identity reset",
+    "geometry reset",
+    "residue erasure"
+  ],
+  "schema_version": "0.16.0",
+  "source_design_revision": "r-81a44fd28fa41daf",
+  "source_script_revision": "s-9bd5127a0a95eaa5",
+  "source_state_id": "state-3578e6f6c24acc5d",
+  "visual_grammar": [
+    "empty command chair",
+    "cracked access badge",
+    "controlled doorway",
+    "source: observed_1",
+    "source: observed_2",
+    "repeated work cells",
+    "peripheral checkpoint",
+    "institutional persistence"
+  ]
+}

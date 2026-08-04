@@ -1,6 +1,6 @@
 [project]
 name = "kubrick-skill"
-version = "0.14.0"
+version = "0.15.0"
 description = "Development metadata for the standalone Kubrick Hermes skill"
 requires-python = ">=3.10"
 dependencies = []
@@ -25,6 +25,10 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
+
+[tool.ruff.lint.per-file-ignores]
+"scripts/surface_compilers.py" = ["E501"]
+"scripts/test_surface_compilers.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.10"

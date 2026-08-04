@@ -1,7 +1,7 @@
 {
   "manifest_version": 1,
   "name": "kubrick",
-  "version": "0.15.0-dev",
+  "version": "0.16.0",
   "host": "hermes",
   "runtime_profiles": {
     "prose": {
@@ -13,81 +13,575 @@
       "guarantee": "Core routing, structural validation, deterministic hashing, graph operations, production-surface contracts, and JSON artifacts with Python 3.10+."
     },
     "validation": {
-      "dependencies": ["PyYAML>=6", "jsonschema>=4"],
+      "dependencies": [
+        "PyYAML==6.0.2",
+        "jsonschema==4.25.0"
+      ],
       "guarantee": "Full YAML parsing and JSON Schema validation."
     },
     "dev": {
-      "dependencies": ["pytest>=8", "ruff>=0.12", "mypy>=1.16", "PyYAML>=6", "jsonschema>=4"],
+      "dependencies": [
+        "pytest==8.4.1",
+        "ruff==0.12.7",
+        "mypy==1.17.0",
+        "PyYAML==6.0.2",
+        "jsonschema==4.25.0"
+      ],
       "guarantee": "Tests, static checks, corpus QA, and release validation."
     }
   },
   "intents": {
-    "compile": {"description": "Full brief-to-packet compile", "default_action": "run", "actions": {"run": "kubrick_compile.py"}},
-    "retrieve": {"description": "Registry-aware pattern retrieval", "default_action": "retrieve", "actions": {"retrieve": "retrieve_symbolic_patterns_registry.py"}},
-    "ledger": {"description": "Project symbolic ledger", "default_action": null, "actions": {"init": "symbolic_ledger.py", "audit": "symbolic_ledger.py", "mutate": "symbolic_ledger.py", "rehydrate": "symbolic_ledger.py", "apply-forge": "symbolic_ledger.py", "export-retrieval": "symbolic_ledger.py", "record-pattern": "symbolic_ledger.py"}},
-    "design": {"description": "First-class design.md lifecycle", "default_action": "create", "actions": {"build": "design_surface.py", "create": "design_surface.py", "improve": "design_surface.py", "audit": "design_surface.py", "reconcile": "design_surface.py", "update": "design_surface.py", "validate": "design_surface.py"}},
-    "script": {"description": "First-class script development and continuity", "default_action": "create", "actions": {"create": "script_surface.py", "improve": "script_surface.py", "diagnose": "script_surface.py", "adapt": "script_surface.py", "continuity-check": "script_surface.py", "handoff": "script_surface.py"}},
-    "image": {"description": "First-class still-image prompt engineering", "default_action": "prompt", "actions": {"prompt": "image_surface.py", "sequence": "image_surface.py", "reference": "image_surface.py", "negative": "image_surface.py", "adapt": "image_surface.py", "qa": "image_surface.py"}},
-    "video": {"description": "First-class temporal video prompt engineering", "default_action": "shot", "actions": {"shot": "video_surface.py", "motion": "video_surface.py", "sequence": "video_surface.py", "adapt": "video_surface.py", "qa": "video_surface.py"}},
-    "storyboard": {"description": "Multi-frame state", "default_action": null, "actions": {"propagate": "propagate_graph_state.py", "compare": "compare_frame_state.py"}},
-    "adapt": {"description": "Neutral packet and provider adaptation", "default_action": "build", "actions": {"build": "build_model_adapter_packet.py", "provider": "adapt_provider.py"}},
-    "visual": {"description": "Visual QA loop", "default_action": null, "actions": {"normalize": "normalize_visual_observation.py", "compare": "compare_visual_observation.py", "correct": "build_visual_correction_packet.py", "govern": "govern_correction_iteration.py", "closed-loop": "closed_loop_visual_qa.py"}},
-    "learn": {"description": "Outcomes and multi-signal evolution", "default_action": null, "actions": {"outcome": "record_pattern_outcome.py", "evolve": "propose_pattern_evolution.py", "forge-signals": "extract_forge_signals.py"}},
-    "check": {"description": "Validation and regression", "default_action": "smoke", "actions": {"skill": "validate_hermes_skill.py", "manifest": "validate_manifest.py", "corpus": "validate_pattern_corpus.py", "coverage": "audit_corpus_coverage.py", "artifact": "validate_artifact.py", "repeatability": "check_repeatability.py", "release": "audit_release_version.py", "eval": "run_hermes_evals.py", "smoke": "validate_hermes_skill.py"}},
-    "operate": {"description": "Graph/ledger operators", "default_action": null, "actions": {"saturation-score": "graph_operators.py", "counterpoint": "graph_operators.py", "convergence-lock": "graph_operators.py", "surface-occult-audit": "graph_operators.py", "symbolic-architecture-export": "graph_operators.py", "motif-mutation": "graph_operators.py"}},
-    "mcp": {"description": "Optional MCP server", "default_action": "serve", "actions": {"serve": "mcp_kubrick_server.py"}},
-    "bundle": {"description": "Grok review bundle", "default_action": "build", "actions": {"build": "build_grok_review_bundle.py"}}
+    "compile": {
+      "description": "Full brief-to-packet compile",
+      "default_action": "run",
+      "actions": {
+        "run": "kubrick_compile.py"
+      }
+    },
+    "retrieve": {
+      "description": "Registry-aware pattern retrieval",
+      "default_action": "retrieve",
+      "actions": {
+        "retrieve": "retrieve_symbolic_patterns_registry.py"
+      }
+    },
+    "ledger": {
+      "description": "Project symbolic ledger",
+      "default_action": null,
+      "actions": {
+        "init": "symbolic_ledger.py",
+        "audit": "symbolic_ledger.py",
+        "mutate": "symbolic_ledger.py",
+        "rehydrate": "symbolic_ledger.py",
+        "apply-forge": "symbolic_ledger.py",
+        "export-retrieval": "symbolic_ledger.py",
+        "record-pattern": "symbolic_ledger.py"
+      }
+    },
+    "design": {
+      "description": "First-class design.md lifecycle",
+      "default_action": "create",
+      "actions": {
+        "build": "design_surface.py",
+        "create": "design_surface.py",
+        "improve": "design_surface.py",
+        "audit": "design_surface.py",
+        "reconcile": "design_surface.py",
+        "drift": "design_surface.py",
+        "update": "design_surface.py",
+        "validate": "design_surface.py",
+        "expand": "design_surface.py",
+        "summarize": "design_surface.py",
+        "qa": "design_surface.py"
+      }
+    },
+    "script": {
+      "description": "First-class script development and continuity",
+      "default_action": "create",
+      "actions": {
+        "create": "script_surface.py",
+        "improve": "script_surface.py",
+        "rewrite": "script_surface.py",
+        "expand": "script_surface.py",
+        "compress": "script_surface.py",
+        "diagnose": "script_surface.py",
+        "adapt": "script_surface.py",
+        "continuity": "script_surface.py",
+        "continuity-check": "script_surface.py",
+        "handoff": "script_surface.py",
+        "scene-extract": "script_surface.py",
+        "beat-validate": "script_surface.py",
+        "character-consistency": "script_surface.py",
+        "dialog-validate": "script_surface.py",
+        "genre-validate": "script_surface.py",
+        "qa": "script_surface.py"
+      }
+    },
+    "image": {
+      "description": "First-class still-image prompt engineering",
+      "default_action": "prompt",
+      "actions": {
+        "prompt": "image_surface.py",
+        "generate": "image_surface.py",
+        "improve": "image_surface.py",
+        "sequence": "image_surface.py",
+        "batch": "image_surface.py",
+        "reference": "image_surface.py",
+        "negative": "image_surface.py",
+        "adapt": "image_surface.py",
+        "composition": "image_surface.py",
+        "lighting": "image_surface.py",
+        "camera": "image_surface.py",
+        "symbol-extract": "image_surface.py",
+        "qa": "image_surface.py"
+      }
+    },
+    "video": {
+      "description": "First-class temporal video prompt engineering",
+      "default_action": "shot",
+      "actions": {
+        "shot": "video_surface.py",
+        "prompt": "video_surface.py",
+        "motion": "video_surface.py",
+        "blocking": "video_surface.py",
+        "sequence": "video_surface.py",
+        "transition": "video_surface.py",
+        "animation": "video_surface.py",
+        "timeline": "video_surface.py",
+        "continuity": "video_surface.py",
+        "adapt": "video_surface.py",
+        "qa": "video_surface.py"
+      }
+    },
+    "storyboard": {
+      "description": "Multi-frame state",
+      "default_action": null,
+      "actions": {
+        "propagate": "propagate_graph_state.py",
+        "compare": "compare_frame_state.py"
+      }
+    },
+    "adapt": {
+      "description": "Neutral packet and provider adaptation",
+      "default_action": "build",
+      "actions": {
+        "build": "build_model_adapter_packet.py",
+        "provider": "adapt_provider.py"
+      }
+    },
+    "visual": {
+      "description": "Visual QA loop",
+      "default_action": null,
+      "actions": {
+        "normalize": "normalize_visual_observation.py",
+        "compare": "compare_visual_observation.py",
+        "correct": "build_visual_correction_packet.py",
+        "govern": "govern_correction_iteration.py",
+        "closed-loop": "closed_loop_visual_qa.py"
+      }
+    },
+    "learn": {
+      "description": "Outcomes and multi-signal evolution",
+      "default_action": null,
+      "actions": {
+        "outcome": "record_pattern_outcome.py",
+        "evolve": "propose_pattern_evolution.py",
+        "forge-signals": "extract_forge_signals.py"
+      }
+    },
+    "check": {
+      "description": "Validation and regression",
+      "default_action": "smoke",
+      "actions": {
+        "skill": "validate_hermes_skill.py",
+        "manifest": "validate_manifest.py",
+        "corpus": "validate_pattern_corpus.py",
+        "coverage": "audit_corpus_coverage.py",
+        "artifact": "validate_artifact.py",
+        "repeatability": "check_repeatability.py",
+        "release": "audit_release_version.py",
+        "eval": "run_hermes_evals.py",
+        "smoke": "validate_hermes_skill.py",
+        "hub-sync": "check_hub_sync.py"
+      }
+    },
+    "operate": {
+      "description": "Graph/ledger operators",
+      "default_action": null,
+      "actions": {
+        "saturation-score": "graph_operators.py",
+        "counterpoint": "graph_operators.py",
+        "convergence-lock": "graph_operators.py",
+        "surface-occult-audit": "graph_operators.py",
+        "symbolic-architecture-export": "graph_operators.py",
+        "motif-mutation": "graph_operators.py"
+      }
+    },
+    "mcp": {
+      "description": "Optional MCP server",
+      "default_action": "serve",
+      "actions": {
+        "serve": "mcp_kubrick_server.py"
+      }
+    },
+    "bundle": {
+      "description": "Grok review bundle",
+      "default_action": "build",
+      "actions": {
+        "build": "build_grok_review_bundle.py"
+      }
+    }
   },
   "legacy_aliases": {
-    "compile": {"intent": "compile", "action": "run"},
-    "retrieve": {"intent": "retrieve", "action": "retrieve"},
-    "ledger": {"intent": "ledger", "action": "init", "passthrough_action": true},
-    "design-build": {"intent": "design", "action": "build"},
-    "design-create": {"intent": "design", "action": "create"},
-    "design-improve": {"intent": "design", "action": "improve"},
-    "script-create": {"intent": "script", "action": "create"},
-    "script-improve": {"intent": "script", "action": "improve"},
-    "image-prompt": {"intent": "image", "action": "prompt"},
-    "video-shot": {"intent": "video", "action": "shot"},
-    "storyboard-propagate": {"intent": "storyboard", "action": "propagate"},
-    "storyboard-compare": {"intent": "storyboard", "action": "compare"},
-    "adapter-build": {"intent": "adapt", "action": "build"},
-    "adapt-provider": {"intent": "adapt", "action": "provider"},
-    "adapt-grok": {"intent": "adapt", "action": "provider", "fixed_flags": ["--provider", "grok-imagine"]},
-    "adapt-flux": {"intent": "adapt", "action": "provider", "fixed_flags": ["--provider", "flux"]},
-    "adapt-sd3": {"intent": "adapt", "action": "provider", "fixed_flags": ["--provider", "sd3"]},
-    "adapt-midjourney": {"intent": "adapt", "action": "provider", "fixed_flags": ["--provider", "midjourney"]},
-    "visual-normalize": {"intent": "visual", "action": "normalize"},
-    "visual-compare": {"intent": "visual", "action": "compare"},
-    "visual-correct": {"intent": "visual", "action": "correct"},
-    "correction-govern": {"intent": "visual", "action": "govern"},
-    "closed-loop-qa": {"intent": "visual", "action": "closed-loop"},
-    "outcome-record": {"intent": "learn", "action": "outcome"},
-    "evolution-propose": {"intent": "learn", "action": "evolve"},
-    "forge-signals": {"intent": "learn", "action": "forge-signals"},
-    "validate-skill": {"intent": "check", "action": "skill"},
-    "validate-corpus": {"intent": "check", "action": "corpus"},
-    "coverage": {"intent": "check", "action": "coverage"},
-    "artifact-validate": {"intent": "check", "action": "artifact"},
-    "repeatability": {"intent": "check", "action": "repeatability"},
-    "eval": {"intent": "check", "action": "eval"},
-    "operator": {"intent": "operate", "action": "saturation-score", "passthrough_action": true},
-    "mcp-server": {"intent": "mcp", "action": "serve"},
-    "grok-review-bundle": {"intent": "bundle", "action": "build"}
+    "compile": {
+      "intent": "compile",
+      "action": "run"
+    },
+    "retrieve": {
+      "intent": "retrieve",
+      "action": "retrieve"
+    },
+    "ledger": {
+      "intent": "ledger",
+      "action": "init",
+      "passthrough_action": true
+    },
+    "design-build": {
+      "intent": "design",
+      "action": "build"
+    },
+    "design-create": {
+      "intent": "design",
+      "action": "create"
+    },
+    "design-improve": {
+      "intent": "design",
+      "action": "improve"
+    },
+    "design-drift": {
+      "intent": "design",
+      "action": "drift"
+    },
+    "script-create": {
+      "intent": "script",
+      "action": "create"
+    },
+    "script-improve": {
+      "intent": "script",
+      "action": "improve"
+    },
+    "image-prompt": {
+      "intent": "image",
+      "action": "prompt"
+    },
+    "video-shot": {
+      "intent": "video",
+      "action": "shot"
+    },
+    "video-prompt": {
+      "intent": "video",
+      "action": "prompt"
+    },
+    "storyboard-propagate": {
+      "intent": "storyboard",
+      "action": "propagate"
+    },
+    "storyboard-compare": {
+      "intent": "storyboard",
+      "action": "compare"
+    },
+    "adapter-build": {
+      "intent": "adapt",
+      "action": "build"
+    },
+    "adapt-provider": {
+      "intent": "adapt",
+      "action": "provider"
+    },
+    "adapt-grok": {
+      "intent": "adapt",
+      "action": "provider",
+      "fixed_flags": [
+        "--provider",
+        "grok-imagine"
+      ]
+    },
+    "adapt-flux": {
+      "intent": "adapt",
+      "action": "provider",
+      "fixed_flags": [
+        "--provider",
+        "flux"
+      ]
+    },
+    "adapt-sd3": {
+      "intent": "adapt",
+      "action": "provider",
+      "fixed_flags": [
+        "--provider",
+        "sd3"
+      ]
+    },
+    "adapt-midjourney": {
+      "intent": "adapt",
+      "action": "provider",
+      "fixed_flags": [
+        "--provider",
+        "midjourney"
+      ]
+    },
+    "visual-normalize": {
+      "intent": "visual",
+      "action": "normalize"
+    },
+    "visual-compare": {
+      "intent": "visual",
+      "action": "compare"
+    },
+    "visual-correct": {
+      "intent": "visual",
+      "action": "correct"
+    },
+    "correction-govern": {
+      "intent": "visual",
+      "action": "govern"
+    },
+    "closed-loop-qa": {
+      "intent": "visual",
+      "action": "closed-loop"
+    },
+    "outcome-record": {
+      "intent": "learn",
+      "action": "outcome"
+    },
+    "evolution-propose": {
+      "intent": "learn",
+      "action": "evolve"
+    },
+    "forge-signals": {
+      "intent": "learn",
+      "action": "forge-signals"
+    },
+    "validate-skill": {
+      "intent": "check",
+      "action": "skill"
+    },
+    "validate-corpus": {
+      "intent": "check",
+      "action": "corpus"
+    },
+    "coverage": {
+      "intent": "check",
+      "action": "coverage"
+    },
+    "artifact-validate": {
+      "intent": "check",
+      "action": "artifact"
+    },
+    "repeatability": {
+      "intent": "check",
+      "action": "repeatability"
+    },
+    "eval": {
+      "intent": "check",
+      "action": "eval"
+    },
+    "operator": {
+      "intent": "operate",
+      "action": "saturation-score",
+      "passthrough_action": true
+    },
+    "mcp-server": {
+      "intent": "mcp",
+      "action": "serve"
+    },
+    "grok-review-bundle": {
+      "intent": "bundle",
+      "action": "build"
+    },
+    "create": {
+      "intent": "compile",
+      "action": "run"
+    },
+    "revise": {
+      "intent": "design",
+      "action": "improve"
+    },
+    "inspect": {
+      "intent": "operate",
+      "action": "saturation-score",
+      "passthrough_action": true
+    },
+    "validate": {
+      "intent": "check",
+      "action": "smoke"
+    },
+    "design-expand": {
+      "intent": "design",
+      "action": "expand"
+    },
+    "design-summarize": {
+      "intent": "design",
+      "action": "summarize"
+    },
+    "design-qa": {
+      "intent": "design",
+      "action": "qa"
+    },
+    "script-rewrite": {
+      "intent": "script",
+      "action": "rewrite"
+    },
+    "script-qa": {
+      "intent": "script",
+      "action": "qa"
+    },
+    "image-generate": {
+      "intent": "image",
+      "action": "generate"
+    },
+    "video-timeline": {
+      "intent": "video",
+      "action": "timeline"
+    }
   },
   "recipes": {
-    "storyboard-example": ["do", "compile", "--brief", "examples/authority-transfer-storyboard/brief.yaml", "--ledger", "examples/authority-transfer-storyboard/symbolic-ledger.yaml", "--mode", "storyboard", "--storyboard-plan", "examples/authority-transfer-storyboard/storyboard-plan.yaml", "--provider", "grok-imagine", "--out", "out/kubrick/authority-transfer"],
-    "design-improvement": ["do", "design", "--action", "improve", "--input", "design.md", "--evidence", "project-evidence.md", "--output", "out/design-improvement.json"],
-    "script-diagnosis": ["do", "script", "--action", "diagnose", "--input", "script.md", "--output", "out/script-diagnosis.json"],
-    "image-prompt": ["do", "image", "--action", "prompt", "--brief", "A continuity-safe cinematic still", "--provider", "generic", "--output", "out/image-prompt.json"],
-    "video-shot": ["do", "video", "--action", "shot", "--brief", "A continuity-safe cinematic shot", "--provider", "generic", "--output", "out/video-shot.json"],
-    "verify": ["do", "check", "--action", "smoke"]
+    "storyboard-example": [
+      "do",
+      "compile",
+      "--brief",
+      "examples/authority-transfer-storyboard/brief.yaml",
+      "--ledger",
+      "examples/authority-transfer-storyboard/symbolic-ledger.yaml",
+      "--mode",
+      "storyboard",
+      "--storyboard-plan",
+      "examples/authority-transfer-storyboard/storyboard-plan.yaml",
+      "--provider",
+      "grok-imagine",
+      "--out",
+      "out/kubrick/authority-transfer"
+    ],
+    "design-improvement": [
+      "do",
+      "design",
+      "--action",
+      "improve",
+      "--input",
+      "design.md",
+      "--evidence",
+      "project-evidence.md",
+      "--output",
+      "out/design-improvement.json"
+    ],
+    "script-diagnosis": [
+      "do",
+      "script",
+      "--action",
+      "diagnose",
+      "--input",
+      "script.md",
+      "--output",
+      "out/script-diagnosis.json"
+    ],
+    "image-prompt": [
+      "do",
+      "image",
+      "--action",
+      "prompt",
+      "--brief",
+      "A continuity-safe cinematic still",
+      "--provider",
+      "generic",
+      "--output",
+      "out/image-prompt.json"
+    ],
+    "video-shot": [
+      "do",
+      "video",
+      "--action",
+      "shot",
+      "--brief",
+      "A continuity-safe cinematic shot",
+      "--provider",
+      "generic",
+      "--output",
+      "out/video-shot.json"
+    ],
+    "verify": [
+      "do",
+      "check",
+      "--action",
+      "smoke"
+    ]
   },
-  "providers": ["generic", "flux", "sd3", "midjourney", "grok-imagine"],
-  "artifact_types": ["symbolic-architecture", "motif-structure-graph", "project-symbolic-ledger", "storyboard-symbolic-state", "model-adapter-packet", "visual-observation", "visual-fidelity-report", "correction-iteration-receipt", "pattern-use-receipt", "pattern-evolution-proposal", "multi-signal-evolution-receipt", "forge-signal-bundle", "design-specification", "design-revision", "script-package", "script-diagnostic", "image-prompt-package", "image-sequence-package", "video-shot-contract", "video-sequence-package", "production-surface-receipt"],
-  "schemas": ["schemas/diagnostic.schema.json", "schemas/provider-preservation-report.schema.json", "schemas/symbolic-architecture.schema.json", "schemas/motif-structure-graph.schema.yaml", "schemas/project-symbolic-ledger.schema.yaml", "schemas/storyboard-symbolic-state.schema.yaml", "schemas/model-adapter-packet.schema.yaml", "schemas/visual-observation.schema.yaml", "schemas/visual-fidelity-report.schema.yaml", "schemas/correction-iteration-receipt.schema.yaml", "schemas/pattern-use-receipt.schema.yaml", "schemas/pattern-evolution-proposal.schema.yaml", "schemas/multi-signal-evolution-receipt.schema.yaml", "schemas/forge-signal-bundle.schema.yaml", "schemas/design-specification.schema.yaml"],
-  "optional_integrations": ["continuity-forge", "mcp", "model-apis", "vision-apis"],
-  "authority_classes": ["PROPOSED", "OBSERVATION", "NOT_COMPUTABLE", "AUTHORITATIVE_EXTERNAL"],
+  "providers": [
+    "generic",
+    "flux",
+    "sd3",
+    "midjourney",
+    "grok-imagine"
+  ],
+  "artifact_types": [
+    "cinematic-project-state",
+    "correction-iteration-receipt",
+    "design-audit-report",
+    "design-document",
+    "design-revision",
+    "design-revision-receipt",
+    "design-specification",
+    "forge-signal-bundle",
+    "image-prompt-package",
+    "image-prompt-packet",
+    "image-sequence-package",
+    "image-sequence-packet",
+    "media-reconciliation-report",
+    "model-adapter-packet",
+    "motif-structure-graph",
+    "motion-contract",
+    "multi-signal-evolution-receipt",
+    "pattern-evolution-proposal",
+    "pattern-use-receipt",
+    "production-surface-receipt",
+    "project-symbolic-ledger",
+    "script-continuity-report",
+    "script-development-packet",
+    "script-diagnostic",
+    "script-diagnostic-report",
+    "script-package",
+    "shot-contract",
+    "storyboard-symbolic-state",
+    "symbolic-architecture",
+    "video-prompt-packet",
+    "video-sequence-package",
+    "video-sequence-packet",
+    "video-shot-contract",
+    "visual-fidelity-report",
+    "visual-observation",
+    "visual-reference-packet"
+  ],
+  "schemas": [
+    "schemas/cinematic-pattern.schema.json",
+    "schemas/cinematic-project-state.schema.json",
+    "schemas/continuity-forge-symbolic-export.schema.json",
+    "schemas/correction-iteration-receipt.schema.yaml",
+    "schemas/design-document.schema.json",
+    "schemas/design-revision-receipt.schema.json",
+    "schemas/design-specification.schema.yaml",
+    "schemas/diagnostic.schema.json",
+    "schemas/forge-signal-bundle.schema.yaml",
+    "schemas/image-prompt-packet.schema.json",
+    "schemas/media-reconciliation-report.schema.json",
+    "schemas/model-adapter-packet.schema.yaml",
+    "schemas/motif-structure-graph.schema.yaml",
+    "schemas/multi-signal-evolution-receipt.schema.yaml",
+    "schemas/narrative-affordance.schema.json",
+    "schemas/pattern-evolution-proposal.schema.yaml",
+    "schemas/pattern-use-receipt.schema.yaml",
+    "schemas/project-symbolic-ledger.schema.yaml",
+    "schemas/provider-preservation-report.schema.json",
+    "schemas/shot-contract.schema.json",
+    "schemas/storyboard-symbolic-state.schema.yaml",
+    "schemas/structured-symbolic-audit.schema.yaml",
+    "schemas/symbolic-architecture.schema.json",
+    "schemas/symbolic-narrative-pattern.schema.json",
+    "schemas/transformation-grammar.schema.json",
+    "schemas/video-prompt-packet.schema.json",
+    "schemas/visual-fidelity-report.schema.yaml",
+    "schemas/visual-observation.schema.yaml"
+  ],
+  "optional_integrations": [
+    "continuity-forge",
+    "mcp",
+    "model-apis",
+    "vision-apis"
+  ],
+  "authority_classes": [
+    "PROPOSED",
+    "OBSERVATION",
+    "NOT_COMPUTABLE",
+    "AUTHORITATIVE_EXTERNAL"
+  ],
   "exit_codes": {
     "0": "success",
     "1": "validation or execution failure",

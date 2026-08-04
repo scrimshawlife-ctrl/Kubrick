@@ -29,6 +29,7 @@ REQUIRED_LEGACY = {
     "evolution-propose", "forge-signals", "validate-skill", "validate-corpus",
     "coverage", "artifact-validate", "repeatability", "eval", "operator",
     "mcp-server", "grok-review-bundle",
+    "create", "revise", "inspect", "validate",
 }
 
 
@@ -137,8 +138,13 @@ def test_recipes_resolve():
 
 
 def test_entrypoint_forwards_surface_action():
+    brief = (
+        "dramatic_problem: badge changes hands\n"
+        "desired_state_change: access transfers\n"
+        "character_pressure: outsider waits"
+    )
     proc = subprocess.run(
-        [PY, str(ROOT / "scripts/kubrick.py"), "do", "video", "--action", "shot", "--brief", "test shot"],
+        [PY, str(ROOT / "scripts/kubrick.py"), "do", "video", "--action", "shot", "--brief", brief],
         cwd=ROOT,
         text=True,
         capture_output=True,
@@ -147,8 +153,9 @@ def test_entrypoint_forwards_surface_action():
     artifact = json.loads(proc.stdout)
     assert artifact["surface"] == "video"
     assert artifact["action"] == "shot"
-    required = artifact["result"]["contract"]["required_temporal_fields"]
-    assert "start_state" in required and "end_state" in required
+    shot = artifact["result"]["shot"]
+    assert shot["start_state"] and shot["end_state"]
+    assert "continuity_invariants" in shot
 
 
 def test_surface_fails_closed_without_evidence():

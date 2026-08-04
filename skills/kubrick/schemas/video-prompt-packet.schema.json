@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kubrick.local/schemas/video-prompt-packet.schema.json",
+  "title": "Kubrick video prompt packet",
+  "type": "object",
+  "required": ["artifact_id", "artifact_type", "authority", "result"],
+  "properties": {
+    "artifact_id": {"type": "string"},
+    "artifact_type": {"const": "video-prompt-packet"},
+    "authority": {"type": "string"},
+    "status": {"type": "string"},
+    "source_design_revision": {"type": "string"},
+    "result": {
+      "type": "object",
+      "properties": {
+        "provider": {"type": "string"},
+        "capabilities": {"type": "object"},
+        "shot": {"type": "object"},
+        "packet": {"type": "object"},
+        "adapted_packet": {"type": "object"},
+        "preservation_report": {"type": "object"},
+        "implementation_state": {"type": "string"}
+      }
+    }
+  }
+}

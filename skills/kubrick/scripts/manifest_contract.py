@@ -109,6 +109,18 @@ def validate_manifest(data: object, root: Path = ROOT) -> list[str]:
         for relative in schemas:
             if not isinstance(relative, str) or not (root / relative).is_file():
                 errors.append(f"schema path is missing: {relative!r}")
+        # Every on-disk schema must be registered (no silent orphans).
+        disk = sorted(
+            f"schemas/{path.name}"
+            for path in (root / "schemas").iterdir()
+            if path.is_file() and path.suffix in {".json", ".yaml", ".yml"}
+        )
+        listed = [s for s in schemas if isinstance(s, str)]
+        orphaned = sorted(set(disk) - set(listed))
+        if orphaned:
+            errors.append(
+                "schemas/ contains unregistered files: " + ", ".join(orphaned)
+            )
 
     if not isinstance(data.get("providers"), list) or "generic" not in data["providers"]:
         errors.append("providers must include generic")
