@@ -67,6 +67,7 @@
         "improve": "design_surface.py",
         "audit": "design_surface.py",
         "reconcile": "design_surface.py",
+        "drift": "design_surface.py",
         "update": "design_surface.py",
         "validate": "design_surface.py"
       }
@@ -209,6 +210,10 @@
     "design-improve": {
       "intent": "design",
       "action": "improve"
+    },
+    "design-drift": {
+      "intent": "design",
+      "action": "drift"
     },
     "script-create": {
       "intent": "script",
@@ -486,6 +491,7 @@
     "schemas/diagnostic.schema.json",
     "schemas/forge-signal-bundle.schema.yaml",
     "schemas/image-prompt-packet.schema.json",
+    "schemas/media-reconciliation-report.schema.json",
     "schemas/model-adapter-packet.schema.yaml",
     "schemas/motif-structure-graph.schema.yaml",
     "schemas/multi-signal-evolution-receipt.schema.yaml",

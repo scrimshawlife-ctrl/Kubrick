@@ -82,6 +82,33 @@ def _claim(text: str, label: str = "PROPOSED") -> str:
     return f"- [{label}] {text}"
 
 
+def _authority_tag(text: str, authority: str = "OBSERVED") -> dict[str, str]:
+    return {"text": text, "authority": authority}
+
+
+def _claim_bundle(fields: dict[str, Any]) -> dict[str, Any]:
+    """Structured claim map for criteria #9 (authority-tagged production claims)."""
+    claims: dict[str, Any] = {}
+    if fields.get("dramatic_problem"):
+        claims["dramatic_problem"] = _authority_tag(fields["dramatic_problem"], "OBSERVED")
+    if fields.get("desired_state_change"):
+        claims["desired_state_change"] = _authority_tag(fields["desired_state_change"], "OBSERVED")
+    else:
+        claims["desired_state_change"] = _authority_tag("not evidenced", "NOT_COMPUTABLE")
+    if fields.get("character_pressure"):
+        claims["character_pressure"] = _authority_tag(fields["character_pressure"], "OBSERVED")
+    for key in ("geometry", "residue", "observable_evidence", "production_constraints"):
+        items = list(fields.get(key) or [])
+        if items:
+            claims[key] = [_authority_tag(item, "OBSERVED") for item in items[:6]]
+    claims["invariants"] = [
+        _authority_tag("preserve_identity", "PROPOSED"),
+        _authority_tag("preserve_ownership", "PROPOSED"),
+        _authority_tag("preserve_residue", "PROPOSED"),
+    ]
+    return claims
+
+
 def _as_str_list(value: Any) -> list[str]:
     if value is None:
         return []
@@ -786,41 +813,96 @@ def script_create(
         fields = _extract_brief_fields(design_text, None)
     revision = f"s-{_digest(fields)}"
     design_rev = _design_revision(design_text) or "pending"
-    body = "\n".join(
-        [
-            f"# Script package — {project_id}",
-            "",
-            f"Format: {fmt}",
-            f"Design revision link: {design_rev}",
-            f"Script revision: {revision}",
-            "",
-            "## Dramatic intent",
-            fields["dramatic_problem"] or "NOT_COMPUTABLE",
-            "",
-            "## Observable action",
-            fields["desired_state_change"] or "NOT_COMPUTABLE",
-            "",
-            "## Character pressure",
-            fields["character_pressure"] or "NOT_COMPUTABLE",
-            "",
-            "## Dialogue",
-            "NOT_COMPUTABLE — no dialogue evidenced",
-            "",
-            "## Continuity requirements",
-            "- Preserve identity, ownership, chronology, residue",
-            "",
-            "## Production implications",
-            "NOT_COMPUTABLE — awaiting production constraints",
-            "",
-        ]
-    )
+    fmt_norm = (fmt or "markdown").lower().strip()
+    if fmt_norm in {"fountain", "screenplay"}:
+        body = "\n".join(
+            [
+                f"Title: {project_id}",
+                f"Credit: Kubrick PROPOSED package",
+                f"Draft date: {_now()[:10]}",
+                f"Contact: design-revision {design_rev}",
+                "",
+                f"= Script revision {revision}",
+                "",
+                "INT. INSTITUTIONAL INTERIOR - DAY",
+                "",
+                fields["dramatic_problem"] or "NOT_COMPUTABLE",
+                "",
+                (
+                    f"Observable action: {fields['desired_state_change']}"
+                    if fields["desired_state_change"]
+                    else "NOT_COMPUTABLE — desired state change not evidenced"
+                ),
+                "",
+                (
+                    f"Character pressure: {fields['character_pressure']}"
+                    if fields["character_pressure"]
+                    else "NOT_COMPUTABLE — character pressure not evidenced"
+                ),
+                "",
+                "NOTE: Dialogue is NOT_COMPUTABLE — no dialogue evidenced.",
+                "",
+            ]
+        )
+    elif fmt_norm in {"beat-sheet", "beats"}:
+        body = "\n".join(
+            [
+                f"# Beat sheet — {project_id}",
+                "",
+                f"Design revision: {design_rev}",
+                f"Script revision: {revision}",
+                "",
+                "1. Setup — " + (fields["dramatic_problem"] or "NOT_COMPUTABLE"),
+                "2. Pressure — " + (fields["character_pressure"] or "NOT_COMPUTABLE"),
+                "3. Turn — " + (fields["desired_state_change"] or "NOT_COMPUTABLE"),
+                "4. Residue — "
+                + (
+                    "; ".join(fields.get("residue") or [])
+                    or "NOT_COMPUTABLE — residue not evidenced"
+                ),
+                "",
+            ]
+        )
+    else:
+        body = "\n".join(
+            [
+                f"# Script package — {project_id}",
+                "",
+                f"Format: {fmt_norm}",
+                f"Design revision link: {design_rev}",
+                f"Script revision: {revision}",
+                "",
+                "## Dramatic intent",
+                fields["dramatic_problem"] or "NOT_COMPUTABLE",
+                "",
+                "## Observable action",
+                fields["desired_state_change"] or "NOT_COMPUTABLE",
+                "",
+                "## Character pressure",
+                fields["character_pressure"] or "NOT_COMPUTABLE",
+                "",
+                "## Dialogue",
+                "NOT_COMPUTABLE — no dialogue evidenced",
+                "",
+                "## Continuity requirements",
+                "- Preserve identity, ownership, chronology, residue",
+                "",
+                "## Production implications",
+                (
+                    "\n".join(f"- {c}" for c in (fields.get("production_constraints") or [])[:4])
+                    or "NOT_COMPUTABLE — awaiting production constraints"
+                ),
+                "",
+            ]
+        )
     meta = _base_meta("script", "create", project_id, fields)
     meta["result"] = {
         "implementation_state": "DOMAIN",
         "script_revision": revision,
         "source_design_revision": design_rev,
-        "format": fmt,
+        "format": fmt_norm,
         "document_markdown": body,
+        "claims": _claim_bundle(fields),
         "continuity_requirements": [
             "preserve_identity",
             "preserve_ownership",
@@ -1018,6 +1100,7 @@ def _neutral_frame_from_text(text: str, provider: str) -> dict[str, Any]:
         "state_constraints": constraints,
         "continuity_from_previous": [],
         "negative_constraints": negatives,
+        "claims": _claim_bundle(fields),
         "provider": provider,
         "provider_syntax_only": True,
     }
@@ -1284,6 +1367,7 @@ def video_shot(
             "geometry reset",
             "residue erasure",
         ],
+        "claims": _claim_bundle(fields),
     }
     if design_rev:
         shot["source_design_revision"] = design_rev
@@ -1331,8 +1415,161 @@ def video_motion(brief: str | None, project_id: str) -> dict[str, Any]:
     return meta
 
 
-def video_sequence(brief: str | None, evidence: str | None, project_id: str) -> dict[str, Any]:
-    shot_a = video_shot(brief, evidence, project_id, duration=4.0)
+def design_drift(existing: str, against: str | None, project_id: str) -> dict[str, Any]:
+    """Project-wide cross-surface drift report (design ↔ script/image/video)."""
+    if not existing.strip():
+        return {
+            "status": "NOT_COMPUTABLE",
+            "authority": "NOT_COMPUTABLE",
+            "surface": "design",
+            "action": "drift",
+            "diagnostic": {"code": "INSUFFICIENT_EVIDENCE", "message": "--input design.md is required"},
+        }
+    if not against or not against.strip():
+        return {
+            "status": "NOT_COMPUTABLE",
+            "authority": "NOT_COMPUTABLE",
+            "surface": "design",
+            "action": "drift",
+            "diagnostic": {
+                "code": "INSUFFICIENT_EVIDENCE",
+                "message": "Provide --evidence (script/image/video artifact or directory dump)",
+            },
+        }
+
+    sections = parse_design_md(existing)
+    design_tokens = set(re.findall(r"[a-z0-9_]{4,}", existing.lower()))
+    findings: list[dict[str, Any]] = []
+
+    # Split concatenated multi-artifact evidence on a stable delimiter if present.
+    chunks = re.split(r"\n---KUBRICK_ARTIFACT---\n", against)
+    if len(chunks) == 1:
+        chunks = [against]
+
+    surfaces_seen: list[str] = []
+    for idx, chunk in enumerate(chunks):
+        text = chunk.strip()
+        if not text:
+            continue
+        surface = "unknown"
+        artifact_type = "raw"
+        payload_text = text
+        if text.startswith("{"):
+            try:
+                data = json.loads(text)
+                surface = str(data.get("surface") or data.get("artifact_type") or "packet")
+                artifact_type = str(data.get("artifact_type") or "json")
+                payload_text = json.dumps(data.get("result") or data, ensure_ascii=False)
+                if data.get("source_design_revision"):
+                    design_rev = _design_revision(existing)
+                    if design_rev and data["source_design_revision"] != design_rev:
+                        findings.append(
+                            {
+                                "severity": "high",
+                                "code": "REVISION_MISMATCH",
+                                "collision": "CONTRADICTORY",
+                                "surface": surface,
+                                "message": (
+                                    f"artifact design revision {data['source_design_revision']} "
+                                    f"!= design {design_rev}"
+                                ),
+                            }
+                        )
+            except json.JSONDecodeError:
+                surface = "text"
+        elif text.lstrip().startswith("# Script") or "Dramatic intent" in text[:400]:
+            surface = "script"
+            artifact_type = "script-development-packet"
+        elif "shot_id:" in text or "end_state:" in text:
+            surface = "video"
+            artifact_type = "shot-contract"
+        elif text.lstrip().startswith("# Design"):
+            surface = "design"
+            artifact_type = "design-document"
+        surfaces_seen.append(f"{surface}:{artifact_type}")
+
+        against_tokens = set(re.findall(r"[a-z0-9_]{4,}", payload_text.lower()))
+        overlap = len(design_tokens & against_tokens)
+        ratio = overlap / max(1, len(design_tokens))
+        if overlap < 3 or ratio < 0.02:
+            findings.append(
+                {
+                    "severity": "high",
+                    "code": "LOW_OVERLAP",
+                    "collision": "CONTRADICTORY",
+                    "surface": surface,
+                    "message": f"low lexical overlap with design ({overlap} shared tokens)",
+                    "chunk": idx,
+                }
+            )
+        # Provider coupling leak from media into design space
+        if re.search(r"\b(flux|midjourney|sd3|grok-imagine)\b", payload_text, re.I) and surface in {
+            "image",
+            "video",
+            "packet",
+        }:
+            # provider syntax in media is fine; flag only if design also lacks negatives
+            if not sections.get("negative-constraints", "").strip():
+                findings.append(
+                    {
+                        "severity": "medium",
+                        "code": "PROVIDER_WITHOUT_NEGATIVES",
+                        "collision": "PROVIDER_SEMANTIC_DROP",
+                        "surface": surface,
+                        "message": "media references providers while design negatives are empty",
+                    }
+                )
+        # Continuity keyword absence
+        if surface in {"script", "video", "shot-contract", "image"} and not any(
+            k in payload_text.lower() for k in ("identity", "residue", "ownership", "continuity")
+        ):
+            findings.append(
+                {
+                    "severity": "medium",
+                    "code": "CONTINUITY_SILENCE",
+                    "collision": "RESIDUE_ERASURE",
+                    "surface": surface,
+                    "message": "artifact lacks continuity vocabulary present in design contract",
+                }
+            )
+
+    # Core design sections weak
+    for sid in ("dramatic-engine", "continuity-invariants", "negative-constraints"):
+        if _is_placeholder_section(sections.get(sid, "")):
+            findings.append(
+                {
+                    "severity": "high",
+                    "code": "WEAK_DESIGN_SECTION",
+                    "collision": "CONTRADICTORY",
+                    "surface": "design",
+                    "message": f"design section `{sid}` is placeholder-only",
+                }
+            )
+
+    high = [f for f in findings if f.get("severity") == "high"]
+    meta = _base_meta("design", "drift", project_id, {"input": existing, "against": against})
+    meta["result"] = {
+        "implementation_state": "DOMAIN",
+        "surfaces_compared": surfaces_seen,
+        "findings": findings,
+        "finding_count": len(findings),
+        "compatible": not high,
+        "drift_status": "FAIL" if high else "PASS",
+    }
+    meta["artifact_type"] = "media-reconciliation-report"
+    if high:
+        meta["status"] = "PROPOSED"
+        meta["authority"] = "OBSERVATION"
+    return meta
+
+
+def video_sequence(
+    brief: str | None,
+    evidence: str | None,
+    project_id: str,
+    design_text: str | None = None,
+) -> dict[str, Any]:
+    shot_a = video_shot(brief, evidence, project_id, duration=4.0, design_text=design_text)
     if shot_a.get("status") == "NOT_COMPUTABLE":
         shot_a["action"] = "sequence"
         return shot_a
@@ -1342,7 +1579,8 @@ def video_sequence(brief: str | None, evidence: str | None, project_id: str) -> 
     shot2["shot_id"] = f"shot-{_digest(shot1['shot_id'] + '|2')}"
     shot2["start_state"] = dict(shot1["end_state"])
     shot2["end_state"] = {
-        "summary": (shot1["end_state"].get("summary") or "") + " with visible residue retained"
+        "summary": (shot1["end_state"].get("summary") or "") + " with visible residue retained",
+        "residue": list((shot1.get("end_state") or {}).get("residue") or []),
     }
     # Compatibility proof
     compatible = shot2["start_state"].get("summary") == shot1["end_state"].get("summary")
@@ -1368,9 +1606,10 @@ def video_sequence(brief: str | None, evidence: str | None, project_id: str) -> 
                 "compatible": True,
             }
         ],
+        "claims": shot1.get("claims") or {},
     }
     meta["artifact_type"] = "video-sequence-packet"
-    return meta
+    return _attach_design_revision(meta, design_text)
 
 
 def video_adapt(packet_text: str | None, project_id: str, provider: str) -> dict[str, Any]:
@@ -1414,6 +1653,7 @@ COMPILERS: dict[tuple[str, str], Any] = {
     ("design", "improve"): lambda a: design_improve(_read(a, "input") or "", _read(a, "evidence"), a.project_id),
     ("design", "audit"): lambda a: design_audit(_read(a, "input") or "", _read(a, "evidence"), a.project_id),
     ("design", "reconcile"): lambda a: design_reconcile(_read(a, "input") or "", _read(a, "evidence"), a.project_id),
+    ("design", "drift"): lambda a: design_drift(_read(a, "input") or "", _read(a, "evidence"), a.project_id),
     ("design", "update"): lambda a: design_update(_read(a, "input") or "", _read(a, "evidence"), a.project_id),
     ("design", "validate"): lambda a: design_validate(_read(a, "input") or "", a.project_id),
     ("script", "create"): lambda a: script_create(
@@ -1448,9 +1688,8 @@ COMPILERS: dict[tuple[str, str], Any] = {
         design_text=_design_for_args(a),
     ),
     ("video", "motion"): lambda a: video_motion(a.brief or _read(a, "input"), a.project_id),
-    ("video", "sequence"): lambda a: _attach_design_revision(
-        video_sequence(a.brief, _read(a, "evidence"), a.project_id),
-        _design_for_args(a),
+    ("video", "sequence"): lambda a: video_sequence(
+        a.brief, _read(a, "evidence"), a.project_id, design_text=_design_for_args(a)
     ),
     ("video", "adapt"): lambda a: video_adapt(_read(a, "input"), a.project_id, a.provider),
     ("video", "qa"): lambda a: video_qa(_read(a, "input"), _read(a, "evidence"), a.project_id),

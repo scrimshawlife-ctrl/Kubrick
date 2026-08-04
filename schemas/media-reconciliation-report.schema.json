@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kubrick.local/schemas/media-reconciliation-report.schema.json",
+  "title": "Kubrick media reconciliation / drift report",
+  "type": "object",
+  "required": ["artifact_id", "artifact_type", "authority", "status", "result"],
+  "properties": {
+    "artifact_id": {"type": "string"},
+    "artifact_type": {"const": "media-reconciliation-report"},
+    "authority": {"type": "string"},
+    "status": {"type": "string"},
+    "project_id": {"type": "string"},
+    "result": {
+      "type": "object",
+      "properties": {
+        "findings": {"type": "array"},
+        "finding_count": {"type": "integer"},
+        "compatible": {"type": "boolean"},
+        "drift_status": {"type": "string"},
+        "surfaces_compared": {"type": "array", "items": {"type": "string"}},
+        "implementation_state": {"type": "string"}
+      }
+    }
+  }
+}

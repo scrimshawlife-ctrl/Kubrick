@@ -206,9 +206,51 @@ def test_resolve_design_auto_discover(monkeypatch=None) -> None:
                 os.environ["KUBRICK_PROJECT_DIR"] = old
 
 
+def test_fountain_script_and_claims() -> None:
+    brief = (ROOT / "examples/authority-transfer-storyboard/brief.yaml").read_text(encoding="utf-8")
+    packet = sc.script_create(brief, None, "authority-transfer", fmt="fountain")
+    assert packet["status"] == "PROPOSED"
+    body = packet["result"]["document_markdown"]
+    assert "INT." in body
+    assert packet["result"]["format"] == "fountain"
+    claims = packet["result"]["claims"]
+    assert claims["dramatic_problem"]["authority"] == "OBSERVED"
+    assert claims["desired_state_change"]["authority"] == "OBSERVED"
+
+
+def test_design_drift_directory_compatible() -> None:
+    brief = (ROOT / "examples/authority-transfer-storyboard/brief.yaml").read_text(encoding="utf-8")
+    design = sc.design_create(brief, None, "authority-transfer")
+    design_md = design["result"]["document_markdown"]
+    script = sc.script_create(brief, None, "authority-transfer", design_text=design_md)
+    image = sc.image_prompt(brief, None, design_md, "authority-transfer", "generic")
+    against = "\n---KUBRICK_ARTIFACT---\n".join(
+        [
+            script["result"]["document_markdown"],
+            json.dumps(image),
+        ]
+    )
+    drift = sc.design_drift(design_md, against, "authority-transfer")
+    assert drift["artifact_type"] == "media-reconciliation-report"
+    assert "result" in drift
+    assert drift["result"]["finding_count"] >= 0
+    assert isinstance(drift["result"]["surfaces_compared"], list)
+
+
+def test_image_frame_carries_claims() -> None:
+    brief = (ROOT / "examples/authority-transfer-storyboard/brief.yaml").read_text(encoding="utf-8")
+    image = sc.image_prompt(brief, None, None, "authority-transfer", "generic")
+    frame = image["result"]["packet"]["frames"][0]
+    assert "claims" in frame
+    assert frame["claims"]["dramatic_problem"]["authority"] == "OBSERVED"
+
+
 def main() -> None:
     test_design_create_and_improve_preserves_sections()
     test_yaml_brief_enriches_design_and_improve()
+    test_fountain_script_and_claims()
+    test_design_drift_directory_compatible()
+    test_image_frame_carries_claims()
     test_video_shot_embeds_design_revision()
     test_resolve_design_auto_discover()
     test_video_sequence_transition_compatible()

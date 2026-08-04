@@ -11,6 +11,8 @@
 - YAML brief intake enriches design create/improve; placeholders replaceable without wiping LOCKED sections.
 - `--design` / project `design.md` auto-discovery; shot YAML embeds `source_design_revision`.
 - `schemas/design-revision-receipt.schema.json` + adapt preservation regression tests.
+- Fountain/beat-sheet script formats; authority-tagged claims on packets.
+- `design drift` over artifact directories; production-surfaces demo script.
 
 ## [Unreleased]
 

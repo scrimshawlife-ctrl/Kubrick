@@ -25,6 +25,17 @@ def _load_optional(path: str | None) -> str | None:
     if not path:
         return None
     resolved = resolve_bounded_path(path, for_write=False)
+    if resolved.is_dir():
+        chunks: list[str] = []
+        for child in sorted(resolved.iterdir()):
+            if not child.is_file():
+                continue
+            if child.suffix.lower() not in {".md", ".markdown", ".fountain", ".json", ".yaml", ".yml", ".txt"}:
+                continue
+            chunks.append(child.read_text(encoding="utf-8"))
+        if not chunks:
+            raise FileNotFoundError(f"evidence directory has no readable artifacts: {resolved}")
+        return "\n---KUBRICK_ARTIFACT---\n".join(chunks)
     if not resolved.is_file():
         raise FileNotFoundError(f"input not found: {resolved}")
     return resolved.read_text(encoding="utf-8")
@@ -43,7 +54,7 @@ def _write_artifact(artifact: dict[str, Any], output: str | None) -> None:
             write_text_bounded(out, markdown)
             side = out.with_suffix(out.suffix + ".receipt.json")
             # Keep receipt nearby without forcing .md.json awkwardness
-            if out.suffix.lower() == ".md":
+            if out.suffix.lower() in {".md", ".fountain"}:
                 side = out.with_name(out.stem + ".receipt.json")
             receipt = dict(artifact)
             if isinstance(receipt.get("result"), dict):
