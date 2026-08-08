@@ -17,6 +17,7 @@ sys.path.insert(0, str(SCRIPTS))
 from kubrick_wizard import (  # noqa: E402
     ANSWERS_SCHEMA,
     WizardError,
+    interactive_collect,
     merge_preset,
     resolve_plan,
     validate_answers,
@@ -24,6 +25,15 @@ from kubrick_wizard import (  # noqa: E402
 import intent_router as ir  # noqa: E402
 
 REG = ir.INTENT_REGISTRY
+
+
+def test_interactive_check():
+    with mock.patch("builtins.input", side_effect=["check", "smoke"]):
+        ans = interactive_collect(REG)
+    assert ans["intent"] == "check"
+    validated = validate_answers(ans, REG)
+    plan = resolve_plan(validated)
+    assert plan["intent"] == "check"
 
 
 def test_preset_verify_argv():
