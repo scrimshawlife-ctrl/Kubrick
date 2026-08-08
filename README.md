@@ -253,6 +253,17 @@ brief
 → compile receipt
 ```
 
+
+### Guided wizard (Hermes Desktop-friendly)
+
+```bash
+python3 scripts/kubrick.py do wizard --preset verify --json
+python3 scripts/kubrick.py do wizard --answers answers.json --print-only
+python3 scripts/kubrick.py do wizard --answers answers.json --run
+```
+
+See `docs/specs/2026-08-08-kubrick-hermes-wizard-design.md`.
+
 ## Operator Commands
 
 Primary surface:

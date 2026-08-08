@@ -1,7 +1,7 @@
 ---
 name: kubrick
 description: Builds continuity-safe cinematic stories and visuals.
-version: 0.16.0
+version: 0.17.0
 author: Daniel Meyer (@scrimshawlife-ctrl) / Applied Alchemy Labs
 license: MIT
 platforms: [linux, macos, windows]
@@ -189,6 +189,27 @@ For deeper rules, load only the reference needed for the task:
 - `references/corpus-usage.md` for retrieval and cultural boundaries
 - `references/design-specification-compiler.md` for design compilation
 - `references/continuity-forge-integration.md` for optional handoff
+
+
+## Wizard (Hermes + Desktop)
+
+When the operator is unsure which `do` intent to run, wants a guided production path,
+or you would freestyle flags:
+
+1. Collect missing fields **in chat** (one at a time). Do **not** use interactive stdin from the agent tool path.
+2. Write `kubrick-wizard-answers.v1` JSON to a temp file.
+3. `python3 scripts/kubrick.py do wizard --answers FILE --print-only` (or `--json`).
+4. On approval: `do wizard --answers FILE --run` or run the printed argv.
+5. Never set `allow_mutate: true` unless the user explicitly approved ledger/evolution/operate writes.
+
+```bash
+python3 scripts/kubrick.py do wizard --preset verify --json
+python3 scripts/kubrick.py do wizard --preset storyboard-compile --answers answers.json --print-only
+python3 scripts/kubrick.py do wizard --answers answers.json --run
+python3 scripts/kubrick.py recipe wizard-verify
+```
+
+Prefer **wizard** when unsure; use `do <intent>` directly when flags are already known.
 
 ## Pitfalls
 
