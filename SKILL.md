@@ -254,3 +254,7 @@ computable, and which optional integration or human authority is required next.
 
 Current release context: `docs/ROADMAP-v0.16.md` and
 `docs/RELEASE-NOTES-v0.16.md`.
+
+See also: [docs/ROADMAP-v0.17.md](docs/ROADMAP-v0.17.md)
+
+See also: [docs/RELEASE-NOTES-v0.17.md](docs/RELEASE-NOTES-v0.17.md)
