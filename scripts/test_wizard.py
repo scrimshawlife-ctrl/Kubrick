@@ -104,3 +104,41 @@ def test_unknown_intent_rejected():
             {"schema": ANSWERS_SCHEMA, "intent": "not-an-intent"},
             REG,
         )
+
+
+def run_cli(*args: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [sys.executable, str(SCRIPTS / "kubrick.py"), *args],
+        cwd=str(ROOT),
+        capture_output=True,
+        text=True,
+    )
+
+
+def test_wizard_help_lists_or_runs():
+    r = run_cli("do", "wizard", "--help")
+    # either wizard-specific help or top-level; returncode 0
+    assert r.returncode == 0
+
+
+def test_wizard_print_only_verify_json():
+    with tempfile.TemporaryDirectory() as td:
+        p = Path(td) / "a.json"
+        p.write_text(json.dumps({
+            "schema": "kubrick-wizard-answers.v1",
+            "intent": "check",
+            "action": "smoke",
+        }), encoding="utf-8")
+        r = run_cli("do", "wizard", "--answers", str(p), "--json")
+        assert r.returncode == 0, r.stderr
+        plan = json.loads(r.stdout)
+        assert plan["intent"] == "check"
+        assert plan["action"] == "smoke"
+        assert plan["run"] is False
+
+
+def test_wizard_non_tty_without_answers_exits_2():
+    r = run_cli("do", "wizard")
+    assert r.returncode == 2
+    assert "answers" in r.stderr.lower() or "non-interactive" in r.stderr.lower()
+

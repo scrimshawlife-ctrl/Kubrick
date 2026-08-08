@@ -3,7 +3,9 @@
 
 from __future__ import annotations
 
+import argparse
 import json
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -310,17 +312,64 @@ def interactive_collect(registry: dict) -> dict[str, Any]:
     return answers
 
 
-def parse_wizard_argv(argv: list[str]) -> dict[str, Any]:
-    """Parse wizard flags from argv list (no program name). Returns namespace-like dict."""
-    # Implement simple argparse in main() of this module — see Task 2.
-    raise NotImplementedError
+def parse_wizard_argv(argv: list[str] | None = None) -> argparse.Namespace:
+    """Parse wizard flags from argv list (no program name)."""
+    p = argparse.ArgumentParser(prog="kubrick do wizard")
+    p.add_argument("--answers", default=None, help="path to answers JSON, or - for stdin")
+    p.add_argument("--preset", choices=sorted(PRESETS), default=None)
+    p.add_argument("--print-only", action="store_true", help="plan only (default without --run)")
+    p.add_argument("--run", action="store_true", help="execute resolved plan via kubrick.py")
+    p.add_argument("--json", action="store_true", help="emit plan as JSON")
+    return p.parse_args(argv)
+
+
+def _execute_plan(plan: dict[str, Any]) -> int:
+    """Re-enter kubrick do path without nesting wizard."""
+    argv = list(plan["argv"])
+    if argv[:2] == ["do", "wizard"] or (argv and argv[0] == "wizard"):
+        print("wizard error: refusing to dispatch wizard", file=sys.stderr)
+        return 2
+    r = subprocess.run(
+        [sys.executable, str(Path(__file__).resolve().parent / "kubrick.py"), *argv],
+        cwd=str(Path(__file__).resolve().parent.parent),
+    )
+    return int(r.returncode)
 
 
 def main(argv: list[str] | None = None) -> int:
     """CLI entry for wizard flags. Used by kubrick.py special-case and direct invoke."""
-    # Fully implemented in Task 2 when wiring; Task 1 may leave a minimal stub
-    # that only supports library functions for unit tests.
-    raise SystemExit("use via kubrick do wizard — wire in Task 2")
+    import intent_router as ir
+
+    args = parse_wizard_argv(argv)
+
+    try:
+        answers_in = load_answers(args.answers) if args.answers else None
+        if args.preset or answers_in is not None:
+            raw = merge_preset(args.preset, answers_in)
+        else:
+            if not sys.stdin.isatty():
+                print(
+                    "wizard: non-interactive use requires --answers and/or --preset "
+                    "(Hermes Desktop: collect fields in chat, then pass --answers)",
+                    file=sys.stderr,
+                )
+                return 2
+            raw = interactive_collect(ir.INTENT_REGISTRY)
+        answers = validate_answers(raw, ir.INTENT_REGISTRY)
+        plan = resolve_plan(answers, run=bool(args.run))
+        if args.json:
+            sys.stdout.write(format_plan_json(plan))
+        else:
+            sys.stdout.write(format_plan_human(plan))
+        if not args.run:
+            return 0
+        return _execute_plan(plan)
+    except WizardError as e:
+        print(f"wizard error: {e.message}", file=sys.stderr)
+        return 2
+    except json.JSONDecodeError as e:
+        print(f"wizard error: invalid JSON: {e}", file=sys.stderr)
+        return 2
 
 
 if __name__ == "__main__":

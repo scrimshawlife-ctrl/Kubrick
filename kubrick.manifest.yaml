@@ -210,6 +210,13 @@
       "actions": {
         "build": "build_grok_review_bundle.py"
       }
+    },
+    "wizard": {
+      "description": "Guided plan/execute for Hermes (answers JSON or interactive TTY)",
+      "default_action": "plan",
+      "actions": {
+        "plan": "kubrick_wizard.py"
+      }
     }
   },
   "legacy_aliases": {
@@ -493,6 +500,13 @@
       "check",
       "--action",
       "smoke"
+    ],
+    "wizard-verify": [
+      "do",
+      "wizard",
+      "--preset",
+      "verify",
+      "--json"
     ]
   },
   "providers": [
@@ -568,7 +582,8 @@
     "schemas/transformation-grammar.schema.json",
     "schemas/video-prompt-packet.schema.json",
     "schemas/visual-fidelity-report.schema.yaml",
-    "schemas/visual-observation.schema.yaml"
+    "schemas/visual-observation.schema.yaml",
+    "schemas/wizard-answers.v1.schema.json"
   ],
   "optional_integrations": [
     "continuity-forge",
