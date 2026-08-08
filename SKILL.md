@@ -111,6 +111,7 @@ one proposal-only tool, `kubrick_do`, through the same intent router.
 | `operate` | Run graph and ledger operators |
 | `mcp` | Serve the optional MCP adapter |
 | `bundle` | Build a Grok review bundle |
+| `wizard` | Guided plan/execute via answers JSON or interactive TTY |
 
 Task aliases: `create` → compile, `revise` → design improve, `inspect` → operate, `validate` → check smoke.
 

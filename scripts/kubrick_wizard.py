@@ -361,6 +361,7 @@ def main(argv: list[str] | None = None) -> int:
             sys.stdout.write(format_plan_json(plan))
         else:
             sys.stdout.write(format_plan_human(plan))
+        sys.stdout.flush()
         if not args.run:
             return 0
         return _execute_plan(plan)

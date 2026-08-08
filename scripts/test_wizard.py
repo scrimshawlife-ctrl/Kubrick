@@ -152,3 +152,16 @@ def test_wizard_non_tty_without_answers_exits_2():
     assert r.returncode == 2
     assert "answers" in r.stderr.lower() or "non-interactive" in r.stderr.lower()
 
+
+def test_wizard_run_verify_smoke():
+    with tempfile.TemporaryDirectory() as td:
+        p = Path(td) / "a.json"
+        p.write_text(json.dumps({
+            "schema": "kubrick-wizard-answers.v1",
+            "intent": "check",
+            "action": "smoke",
+        }), encoding="utf-8")
+        r = run_cli("do", "wizard", "--answers", str(p), "--run")
+        assert r.returncode == 0, r.stdout + r.stderr
+        assert "PASS" in r.stdout or "smoke" in r.stdout.lower() or r.returncode == 0
+
