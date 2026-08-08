@@ -1,0 +1,149 @@
+{
+  "status": "PASS",
+  "total_sidecars": 49,
+  "manifested_sidecars": 35,
+  "registry_sidecars": 37,
+  "domains": {
+    "alchemical": 7,
+    "cinematic": 17,
+    "contemporary": 6,
+    "myth-folklore": 1,
+    "ritual-liminal": 1,
+    "semiotic": 6,
+    "sound-rhythmic": 4,
+    "spatial-geometric": 7
+  },
+  "source_tiers": {
+    "COMPARATIVE": 13,
+    "PRIMARY": 18,
+    "SCHOLARLY": 18
+  },
+  "route_counts": {},
+  "top_lexicon_links": [
+    [
+      "salt",
+      6
+    ],
+    [
+      "egregore",
+      6
+    ],
+    [
+      "axis_mundi",
+      4
+    ],
+    [
+      "eternal_return",
+      4
+    ],
+    [
+      "coagulation",
+      3
+    ],
+    [
+      "rubedo",
+      3
+    ],
+    [
+      "true_name",
+      3
+    ],
+    [
+      "resonance",
+      3
+    ],
+    [
+      "threshold",
+      3
+    ],
+    [
+      "sulfur",
+      2
+    ],
+    [
+      "syzygy",
+      2
+    ],
+    [
+      "separation",
+      2
+    ],
+    [
+      "talisman",
+      2
+    ],
+    [
+      "polarity",
+      2
+    ],
+    [
+      "world_soul",
+      2
+    ],
+    [
+      "tzimtzum",
+      2
+    ],
+    [
+      "silence",
+      2
+    ],
+    [
+      "empty_center",
+      2
+    ],
+    [
+      "demiurge",
+      2
+    ],
+    [
+      "kenoma",
+      2
+    ]
+  ],
+  "manifest_coverage": {
+    "wave1-batch1.yaml": 7,
+    "wave1-batch2.yaml": 7,
+    "wave1-batch3.yaml": 7,
+    "wave1-batch4.yaml": 7,
+    "wave1-batch5.yaml": 7
+  },
+  "unmanifested_sidecars": [
+    "acousmatic_sound",
+    "alchemical_nigredo_putrefaction",
+    "bresson_hands",
+    "denis_marching",
+    "kubrick_monolith",
+    "kubrick_one_point_control_void",
+    "kubrick_red_culmination",
+    "kubrick_symmetry_empty_center",
+    "liminal_threshold_crossing",
+    "memetic_template_half_life",
+    "peircean_icon_index_symbol",
+    "platform_attention_economy_gaze",
+    "propp_villainy_lack_mediation",
+    "tarkovsky_water_reflection"
+  ],
+  "manifest_ids_without_sidecars": [],
+  "registry_ids_without_sidecars": [],
+  "sidecars_not_in_registry": [
+    "acousmatic_sound",
+    "alchemical_nigredo_putrefaction",
+    "bresson_hands",
+    "denis_marching",
+    "kubrick_monolith",
+    "kubrick_one_point_control_void",
+    "kubrick_red_culmination",
+    "kubrick_symmetry_empty_center",
+    "liminal_threshold_crossing",
+    "peircean_icon_index_symbol",
+    "propp_villainy_lack_mediation",
+    "tarkovsky_water_reflection"
+  ],
+  "index_references_without_sidecars": [],
+  "errors": [],
+  "warnings": [
+    "14 sidecars are not represented in wave manifests",
+    "12 sidecars are not listed in executable registry"
+  ]
+}
